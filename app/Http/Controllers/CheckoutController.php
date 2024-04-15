@@ -55,7 +55,7 @@ class CheckoutController extends Controller
                         'unit_amount' => $item['price'] * 100,
                     ],
                     'quantity' => $item['quantity'],
-                    'tax_rates' => ['txr_1P3JhAJQ5u1m2fEs9mBMawIb']
+//                    'tax_rates' => ['txr_1P3JhAJQ5u1m2fEs9mBMawIb']
                 ];
             }
         }
