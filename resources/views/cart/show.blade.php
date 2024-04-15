@@ -44,17 +44,17 @@
 
                 <table class="table-fixed w-full border-collapse border border-gold/50 rounded-xl">
                     <tbody>
-                    <tr class="border-b border-gold/50">
-                        <td class="p-2 border-r border-gold/50">Subtotal</td>
-                        <td class="p-2" id="cartSubtotal">£{{App\Helpers\Money::format($data['cart']['total'])}}</td>
-                    </tr>
-                    <tr class="border-b border-gold/50">
-                        <td class="p-2 border-r border-gold/50">Tax</td>
-                        <td class="p-2" id="cartTax">£{{App\Helpers\Money::format($data['cart']['tax'])}}</td>
-                    </tr>
+{{--                    <tr class="border-b border-gold/50">--}}
+{{--                        <td class="p-2 border-r border-gold/50">Subtotal</td>--}}
+{{--                        <td class="p-2" id="cartSubtotal">£{{App\Helpers\Money::format($data['cart']['total'])}}</td>--}}
+{{--                    </tr>--}}
+{{--                    <tr class="border-b border-gold/50">--}}
+{{--                        <td class="p-2 border-r border-gold/50">Tax</td>--}}
+{{--                        <td class="p-2" id="cartTax">£{{App\Helpers\Money::format($data['cart']['tax'])}}</td>--}}
+{{--                    </tr>--}}
                     <tr class="border-b border-gold/50">
                         <td class="p-2 border-r border-gold/50">Total</td>
-                        <td class="p-2" id="cartTotal">£{{App\Helpers\Money::format($data['cart']['total_with_tax'])}}</td>
+                        <td class="p-2" id="cartTotal">£{{App\Helpers\Money::format($data['cart']['total'])}}</td>
                     </tr>
                     </tbody>
                 </table>

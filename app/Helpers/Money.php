@@ -5,7 +5,8 @@ namespace App\Helpers;
 class Money{
 
     static function addTax($price){
-        return $price * 1.2;
+//        return $price * 1.2;
+        return $price;
     }
 
     static function format($price){

@@ -43,7 +43,7 @@
                 <div class="mt-4 lg:mt-0">
                     <p>{{$product->name}}</p>
                     <p>£{{App\Helpers\Money::addTaxAndFormat($product->price)}}</p>
-                    <small>Tax Included</small>
+{{--                    <small>Tax Included</small>--}}
                 </div>
 
                 <div>

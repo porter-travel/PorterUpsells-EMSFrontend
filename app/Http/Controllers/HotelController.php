@@ -12,8 +12,28 @@ class HotelController extends Controller
     {
 
         $hotel = \App\Models\Hotel::find($id);
+        $name = '';
+        $booking_ref = '';
+        $arrival_date = '';
+        $email_address = '';
 
-        return view('hotel.welcome')->with('hotel', $hotel);
+        if($request->has('name')){
+            $name = $request->input('name');
+        }
+
+        if($request->has('booking_ref')){
+            $booking_ref = $request->input('booking_ref');
+        }
+
+        if($request->has('arrival_date')){
+            $arrival_date = $request->input('arrival_date');
+        }
+
+        if($request->has('email_address')){
+            $email_address = $request->input('email_address');
+        }
+
+        return view('hotel.welcome')->with(['hotel'=> $hotel, 'name' => $name, 'booking_ref' => $booking_ref, 'arrival_date' => $arrival_date, 'email_address' => $email_address]);
     }
 
 
