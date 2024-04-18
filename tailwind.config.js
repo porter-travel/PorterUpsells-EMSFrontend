@@ -16,7 +16,12 @@ export default {
             'black' : '#000000',
             'teal' : '#95F2F2',
             'white' : '#FFFFFF',
-            'grey': '#EFEFEF'
+            'grey': '#EFEFEF',
+            'yellow': '#F7F8C6',
+            'pink': '#F5D6E1',
+            'lightBlue': '#C7EDF2',
+            'mint': '#D4F6D1',
+          'purple': '#D3B2E7'
         },
         extend: {
             fontFamily: {

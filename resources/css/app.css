@@ -11,5 +11,17 @@ input::-webkit-inner-spin-button {
 }
 
 input[type=number] {
-    -moz-appearance:textfield; /* Firefox */
+    -moz-appearance: textfield; /* Firefox */
+}
+
+.grandstander {
+    font-family: 'Grandstander', display;
+}
+
+.open-sans {
+    font-family: 'Open Sans', sans-serif;
+}
+
+.narrow-container {
+    max-width: 750px;
 }
