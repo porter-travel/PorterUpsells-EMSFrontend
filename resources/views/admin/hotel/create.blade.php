@@ -30,6 +30,11 @@
                             <input type="file" name="logo" id="logo">
                         </div>
 
+                        <div class="mt-4">
+                            <x-input-label class="text-black font-sans" for="featured_image" :value="__('Featured Image')"/>
+                            <input type="file" name="featured_image" id="featured_image">
+                        </div>
+
                         <x-primary-button class="w-full justify-center mt-4">Add Hotel</x-primary-button>
                     </form>
 

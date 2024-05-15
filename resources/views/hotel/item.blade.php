@@ -10,8 +10,8 @@
                 </svg>
             </a>
 
-            <div class="bg-gold px-4 py-6  rounded-3xl">
-                <img src="{{$hotel->logo}}" alt="{{$hotel->name}}" class="w-[30px]"/>
+            <div class="bg-yellow px-6 py-4 rounded-3xl">
+                <img src="/img/hank.png" alt="{{$hotel->name}}" class="w-[30px]"/>
             </div>
 
             <a href="/hotel/{{$hotel_id}}/cart" class="text-black text-sm relative">
@@ -34,25 +34,27 @@
             </a>
         </div>
     </div>
-    <div class="container mx-auto p-4 mt-4">
-        <div class="flex flex-wrap">
-            <div class="lg:basis-1/2 basis-full lg:pr-4">
-                <img src="{{$product->image}}" alt="{{$product->name}}" class="w-full">
-            </div>
-            <div class="lg:basis-1/2 basis-full lg:pl-4">
-                <div class="mt-4 lg:mt-0">
-                    <p>{{$product->name}}</p>
-                    <p>£{{App\Helpers\Money::addTaxAndFormat($product->price)}}</p>
-{{--                    <small>Tax Included</small>--}}
+    <div class="narrow-container mx-auto p-4 mt-4">
+        <form id="addToCart" action="/cart/add" method="post">
+            <div class="flex flex-wrap items-end">
+                <div class="lg:basis-1/2 basis-full lg:pr-4">
+                    <img src="{{$product->image}}" alt="{{$product->name}}" class="w-full rounded">
                 </div>
+                <div class="lg:basis-1/2 basis-full lg:pl-4">
+                    <div class="mt-4 lg:mt-0">
+                        <p class="open-sans text-3xl mb-2">{{$product->name}}</p>
+                        <p class="open-sans text-xl mb-6">£{{App\Helpers\Money::addTaxAndFormat($product->price)}}</p>
+                        {{--                    <small>Tax Included</small>--}}
+                    </div>
 
-                <div>
-                    <form id="addToCart" action="/cart/add" method="post">
+                    <div>
+
                         @csrf
                         <input type="hidden" name="product_id" value="{{$product->id}}">
                         <input type="hidden" name="hotel_id" value="{{$hotel_id}}">
                         <input type="hidden" name="product_name" value="{{$product->name}}">
-                        <div class="mt-4">
+                        <div @if(is_countable($variations) && count($variations) <= 1) style="display: none"
+                             @endif class="mt-4">
                             <label class="block w-full" for="options">Options</label>
                             <select id="options" name="variation_id">
                                 @foreach($variations as $variation)
@@ -62,22 +64,32 @@
                             </select>
                         </div>
                         <div class="mt-4">
-                            <x-input-label for="quantity" :value="__('Quantity')"/>
+                            <x-input-label class="text-[#5a5a5a] text-xl" for="quantity" :value="__('Quantity')"/>
                             <div class="w-[100px]">
                                 <x-number-input :key="'quantity'" :quantity="1"/>
                             </div>
                         </div>
-                        <x-primary-button class="w-full justify-center mt-4">Add to basket</x-primary-button>
 
-                        <span id="success"
-                              class="hidden text-black bg-teal my-4 p-2 w-full block">Added to basket</span>
-                    </form>
-                </div>
 
-                <div class="mt-4">
-                    {{$product->description}}
+                    </div>
+
+
                 </div>
             </div>
-        </div>
+
+            <div class="mt-4">
+                <p class="text-[#5a5a5a] text-xl">Staying for more than one night? Select the day you would like this on.</p>
+
+            </div>
+
+            <x-primary-button class=" justify-center mt-4">Add to basket</x-primary-button>
+
+            <span id="success"
+                  class="hidden text-black bg-teal my-4 p-2 w-full block">Added to basket</span>
+
+            <div class="mt-4">
+                {{$product->description}}
+            </div>
+        </form>
     </div>
 </x-guest-layout>

@@ -17,23 +17,23 @@ class HotelController extends Controller
         $arrival_date = '';
         $email_address = '';
 
-        if($request->has('name')){
+        if ($request->has('name')) {
             $name = $request->input('name');
         }
 
-        if($request->has('booking_ref')){
+        if ($request->has('booking_ref')) {
             $booking_ref = $request->input('booking_ref');
         }
 
-        if($request->has('arrival_date')){
+        if ($request->has('arrival_date')) {
             $arrival_date = $request->input('arrival_date');
         }
 
-        if($request->has('email_address')){
+        if ($request->has('email_address')) {
             $email_address = $request->input('email_address');
         }
 
-        return view('hotel.welcome')->with(['hotel'=> $hotel, 'name' => $name, 'booking_ref' => $booking_ref, 'arrival_date' => $arrival_date, 'email_address' => $email_address]);
+        return view('hotel.welcome')->with(['hotel' => $hotel, 'name' => $name, 'booking_ref' => $booking_ref, 'arrival_date' => $arrival_date, 'email_address' => $email_address]);
     }
 
 
@@ -69,30 +69,26 @@ class HotelController extends Controller
 
     function store(Request $request)
     {
-
-//dd();
-        // Validate the request
-//        $request->validate([
-//            'logo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Example validation rules
-//        ]);
-
-        // Store the file on AWS S3
-        $filePath = $request->file('logo')->store('hotel-logos', 's3');
-
-        // You can also specify visibility and ACL (Access Control List) if needed
-        // $filePath = $request->file('logo')->store('path/to/your/s3/folder', 's3', 'public');
-
-        // If you need to generate a URL to the uploaded file
-        $url = Storage::disk('s3')->url($filePath);
-
-//        dd($url);
-        // Other actions after successful upload
-
         $hotel = new \App\Models\Hotel();
+
         $hotel->name = $request->name;
         $hotel->address = $request->address;
-        $hotel->logo = $url;
         $hotel->user_id = auth()->user()->id;
+
+
+        if ($request->file('logo')) {
+            $logoFilePath = $request->file('logo')->store('hotel-logos', 's3');
+
+            $url = Storage::disk('s3')->url($logoFilePath);
+            $hotel->logo = $url;
+        }
+
+        if ($request->file('featured_image')) {
+            $featuredImageFilePath = $request->file('featured_image')->store('hotel-featured-images', 's3');
+            $featuredImageUrl = Storage::disk('s3')->url($featuredImageFilePath);
+            $hotel->featured_image = $featuredImageUrl;
+        }
+
         $hotel->save();
         return redirect()->route('hotel.edit', ['id' => $hotel->id]);
     }
@@ -117,6 +113,12 @@ class HotelController extends Controller
 
         if ($request->file('logo')) {
             $filePath = $request->file('logo')->store('hotel-logos', 's3');
+            $url = Storage::disk('s3')->url($filePath);
+            $hotel->logo = $url;
+        }
+
+        if ($request->file('featured_image')) {
+            $filePath = $request->file('featured_image')->store('hotel-logos', 's3');
             $url = Storage::disk('s3')->url($filePath);
             $hotel->logo = $url;
         }

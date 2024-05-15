@@ -72,7 +72,19 @@
                             <input type="file" name="logo" id="logo" value="{{$hotel->logo}}">
                         </div>
 
-                        <x-primary-button class="w-full justify-center mt-4">Add Hotel</x-primary-button>
+                        <x-primary-button class="w-full justify-center mt-4">Update Logo</x-primary-button>
+                    </form>
+
+                    <form enctype="multipart/form-data" method="post" action="/admin/hotel/{{$hotel->id}}/update">
+
+                        <div class="mt-4">
+                            <div class="mt-4">
+                                <x-input-label class="text-black font-sans" for="featured_image" :value="__('Featured Image')"/>
+                                <input type="file" name="featured_image" id="featured_image">
+                            </div>
+                        </div>
+
+                        <x-primary-button class="w-full justify-center mt-4">Update Featured Image</x-primary-button>
                     </form>
 
                 </div>
