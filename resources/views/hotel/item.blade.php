@@ -55,6 +55,11 @@
                         <input type="hidden" name="product_name" value="{{$product->name}}">
                         <div @if(is_countable($variations) && count($variations) <= 1) style="display: none"
                              @endif class="mt-4">
+                            @if(is_countable($variations) && count($variations) <= 1)
+                                <input type="hidden" name="product_type" value="simple">
+                            @else
+                                <input type="hidden" name="product_type" value="variable">
+                            @endif
                             <label class="block w-full" for="options">Options</label>
                             <select id="options" name="variation_id">
                                 @foreach($variations as $variation)
@@ -78,8 +83,25 @@
             </div>
 
             <div class="mt-4">
-                <p class="text-[#5a5a5a] text-xl">Staying for more than one night? Select the day you would like this on.</p>
 
+                <details>
+                    <summary><p class="cursor-pointer text-[#5a5a5a] text-xl">Staying for more than one night? Select
+                            when you would like this.</p></summary>
+
+                    <ul class="flex flex-wrap mt-4">
+                        @php($i = 1)
+                        @foreach ($dateArray as $date)
+                            <li><label
+                                    class="border border-black bg-[#F7F7F7] rounded p-2 flex items-center mr-2 mb-2 basis-1/3 fancy-checkbox">
+                                    <input @if($i == 1) checked @endif style="width: 0; height: 0; opacity: 0"
+                                           name="dates[]" type="checkbox" value="{{ $date }}">
+                                    <span class="w-[29px] h-[29px] border border-darkGrey rounded mr-2 relative"></span>
+                                    <span class="font-bold">Day {{$i}}</span>
+                                    ({{ \Carbon\Carbon::parse($date)->format('jS M') }})</label></li>
+                            @php($i++)
+                        @endforeach
+                    </ul>
+                </details>
             </div>
 
             <x-primary-button class=" justify-center mt-4">Add to basket</x-primary-button>

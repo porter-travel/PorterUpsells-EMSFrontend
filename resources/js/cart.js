@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-function serialize (data) {
+function serialize(data) {
     let obj = {};
     for (let [key, value] of data) {
         if (obj[key] !== undefined) {
@@ -15,6 +15,7 @@ function serialize (data) {
     }
     return obj;
 }
+
 const form = document.getElementById('addToCart');
 
 if (form) {
@@ -42,7 +43,7 @@ if (form) {
 const removeFromCart = document.getElementsByClassName('remove-from-cart');
 // Iterate over the elements and add event listener
 
-if(removeFromCart) {
+if (removeFromCart) {
     Array.from(removeFromCart).forEach(element => {
         element.addEventListener('click', function (event) {
             // Prevent the default action of the link
@@ -70,7 +71,7 @@ if(removeFromCart) {
 
 const cartProductQuantity = document.getElementsByClassName('cart-product-quantity');
 
-if(cartProductQuantity){
+if (cartProductQuantity) {
     Array.from(cartProductQuantity).forEach(element => {
         element.addEventListener('change', function (event) {
             // Prevent the default action of the link
@@ -94,9 +95,28 @@ if(cartProductQuantity){
     });
 }
 
-function updateTotals(data){
-    document.getElementById('cartSubtotal').innerText = '£' + data.total.toFixed(2);
-    document.getElementById('cartTax').innerText = '£' + data.tax.toFixed(2);
-    document.getElementById('cartTotal').innerText = '£' + data.total_with_tax.toFixed(2);
+function updateTotals(data) {
+    const subtotal = document.getElementById('cartSubtotal');
+    const tax = document.getElementById('cartTax');
+    const total = document.getElementById('cartTotal');
+
+    if (subtotal) {
+        subtotal.innerText = '£' + data.total.toFixed(2);
+    }
+    if (tax) {
+        tax.innerText = '£' + data.tax.toFixed(2);
+    }
+    if (total) {
+        total.innerText = '£' + data.total_with_tax.toFixed(2);
+    }
+
+    for (let key in data) {
+        if (typeof data[key] === 'object') {
+            const price = data[key].price;
+            const quantity = data[key].quantity;
+            const subtotal = price * quantity;
+            document.getElementById('cartItem' + key).querySelector('.cart-product-subtotal').innerText = '£' + subtotal.toFixed(2);
+        }
+    }
 }
 

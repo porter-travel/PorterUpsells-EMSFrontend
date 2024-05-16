@@ -21,7 +21,8 @@ export default {
             'pink': '#F5D6E1',
             'lightBlue': '#C7EDF2',
             'mint': '#D4F6D1',
-          'purple': '#D3B2E7'
+          'purple': '#D3B2E7',
+            'darkGrey': '#5A5A5A'
         },
         extend: {
             fontFamily: {

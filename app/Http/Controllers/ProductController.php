@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
-    public function show($hotel_id, $item_id)
+    public function show($hotel_id, $item_id, Request $request)
     {
 
         $hotel = Hotel::find($hotel_id);
@@ -27,6 +27,16 @@ class ProductController extends Controller
             }
         }
 
+        $arrivalDate = $request->session()->get('arrival_date');
+
+        $date = new \DateTime($arrivalDate);
+        $dateArray = array();
+
+        for ($i = 0; $i < 7; $i++) {
+            $formattedDate = $date->format('Y-m-d');
+            $dateArray[] = $formattedDate;
+            $date->modify('+1 day');
+        }
 
         return view('hotel.item', [
             'hotel_id' => $hotel_id,
@@ -35,7 +45,8 @@ class ProductController extends Controller
             'product' => $product,
             'variations' => $variations,
             'cart' => $cart,
-            'cartCount' => $cartCount
+            'cartCount' => $cartCount,
+            'dateArray' => $dateArray
         ]);
     }
 

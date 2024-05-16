@@ -1,11 +1,15 @@
 {
+  "public/img/icons/check.svg": {
+    "file": "assets/check-lDc3YNOZ.svg",
+    "src": "public/img/icons/check.svg"
+  },
   "resources/css/app.css": {
-    "file": "assets/app-SH1BTQsn.css",
+    "file": "assets/app-DKHk8QzJ.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-C0aVhvbb.js",
+    "file": "assets/app-Rtn2qdzH.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true

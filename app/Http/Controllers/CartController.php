@@ -22,6 +22,13 @@ class CartController extends Controller
         $product_id = $items['product_id'];
         $hotel_id = $items['hotel_id'];
         $product_name = $items['product_name'];
+        $product_type = $items['product_type'];
+
+        if (!is_array($items['dates[]'])) {
+            $dates = array($items['dates[]']);
+        } else {
+            $dates = $items['dates[]'];
+        }
 
         $product = Variation::find($id);
 
@@ -33,17 +40,20 @@ class CartController extends Controller
         $cart = session()->get('cart');
         if (!$cart) {
 
-            $cart = [
-                $id => [
+            $cart = [];
+            foreach ($dates as $date) {
+                $cart[$date . '-' . $id] = [
                     'product_id' => $product_id,
                     'hotel_id' => $hotel_id,
                     'product_name' => $product_name,
                     "name" => $product->name,
                     "quantity" => $quantity,
                     "price" => $product->price,
-                    "image" => $product->image
-                ]
-            ];
+                    "image" => $product->image,
+                    "date" => $date,
+                    "product_type" => $product_type
+                ];
+            }
             $cart = $this->calculateCartTotals($cart);
             session()->put('cart', $cart);
 
@@ -51,24 +61,29 @@ class CartController extends Controller
         }
 
 //        dd($cart);
-
-        if (isset($cart[$id])) {
-            $cart[$id]['quantity'] += $quantity;
-            $cart = $this->calculateCartTotals($cart);
-            session()->put('cart', $cart);
-            return json_encode(['message' => 'Product added to cart successfully!', 'cart' => $cart]);
+        foreach ($dates as $date) {
+            if (isset($cart[$date . '-' . $id])) {
+                $cart[$date . '-' . $id]['quantity'] += $quantity;
+                $cart = $this->calculateCartTotals($cart);
+                session()->put('cart', $cart);
+                return json_encode(['message' => 'Product added to cart successfully!', 'cart' => $cart]);
+            }
         }
 
+        foreach ($dates as $date) {
+            $cart[$date . '-' . $id] = [
+                'product_id' => $product_id,
+                'hotel_id' => $hotel_id,
+                'product_name' => $product_name,
+                "name" => $product->name,
+                "quantity" => $quantity,
+                "price" => $product->price,
+                "image" => $product->image,
+                "date" => $date,
+                "product_type" => $product_type
 
-        $cart[$id] = [
-            'product_id' => $product_id,
-            'hotel_id' => $hotel_id,
-            'product_name' => $product_name,
-            "name" => $product->name,
-            "quantity" => $quantity,
-            "price" => $product->price,
-            "image" => $product->image
-        ];
+            ];
+        }
         $cart = $this->calculateCartTotals($cart);
 
         $cartCount = 0;
@@ -119,7 +134,7 @@ class CartController extends Controller
         $cartCount = 0;
         foreach ($cart as $item) {
             if (is_array($item)) {
-                $cartCount+= $item['quantity'];
+                $cartCount += $item['quantity'];
             }
         }
         $cart['cartCount'] = $cartCount;
