@@ -24,13 +24,9 @@
                         stroke="black"/>
                 </svg>
                 <span id="cartCount"
-                      class="bg-teal text-black rounded-full px-2 py-1 ml-2 absolute left-0 bottom-0 -translate-x-full translate-y-1/2 text-xs">
-                @if($cart && $cart['cartCount'] > 0)
-
+                      class="bg-teal text-black rounded-full px-2 py-1 ml-2 absolute left-0 bottom-0 -translate-x-full translate-y-1/2 text-xs">@if($cart && $cart['cartCount'] > 0)
                         {{$cart['cartCount']}}
-                    @endif
-
-                    </span>
+                    @endif</span>
             </a>
         </div>
     </div>

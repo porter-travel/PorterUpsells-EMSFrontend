@@ -20,7 +20,6 @@ class CheckoutController extends Controller
         $cart = session()->get('cart');
 
         $name = session()->get('name');
-        $booking_ref = session()->get('booking_ref');
         $arrival_date = session()->get('arrival_date');
         $email_address = session()->get('email_address');
 
@@ -30,7 +29,6 @@ class CheckoutController extends Controller
         $order->items = json_encode($cart);
         $order->name = $name;
         $order->email = $email_address;
-        $order->booking_ref = $booking_ref;
         $order->arrival_date = $arrival_date;
         $order->payment_status = 'pending';
         $order->subtotal = $cart['total'];
@@ -76,7 +74,6 @@ class CheckoutController extends Controller
             'metadata' => [
                 'order_id' => $order->id, // This is the order ID from your system
                 'name' => $name,
-                'booking_ref' => $booking_ref,
                 'arrival_date' => $arrival_date,
                 'hotel_id' => $hotel_id
             ]
@@ -152,11 +149,12 @@ class CheckoutController extends Controller
 
     public function checkoutComplete()
     {
-        $payload = '';
-        session()->forget('cart');
 
+        $cartItems = session()->get('cart');
+//        session()->forget('cart');
+//dd($cartItems);
 //        Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($payload)));
-        return view('checkout.complete');
+        return view('checkout.complete', ['cartItems' => $cartItems]);
 
     }
 

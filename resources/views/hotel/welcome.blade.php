@@ -1,5 +1,5 @@
 <x-guest-layout>
-    <div class="mt-28">
+    <div class="mt-28 mx-4">
         <div class="bg-pink px-8 pt-20 pb-12 max-w-[667px] mx-auto rounded-3xl relative">
             <div class="absolute -top-24 bg-yellow px-8 py-6 left-1/2 -translate-x-1/2 rounded-3xl">
                 <img style="width: 80px; height: 114px; object-fit: contain" src="/img/hank.png" alt="hotel"

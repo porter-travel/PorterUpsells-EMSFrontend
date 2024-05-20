@@ -46,3 +46,9 @@ details > summary::-webkit-details-marker {
 .narrow-container {
     max-width: 750px;
 }
+
+#cartCount:empty{
+    display: none;
+}
+
+
