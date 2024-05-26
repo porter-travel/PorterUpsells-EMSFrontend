@@ -17,6 +17,7 @@ class Order extends Model
         'name',
         'email',
         'arrival_date',
+        'departure_date',
         'stripe_id',
         'payment_status',
         'subtotal',
@@ -31,6 +32,7 @@ class Order extends Model
             'name' => $data['name'],
             'email' => $data['email'],
             'arrival_date' => $data['arrival_date'],
+            'departure_date' => $data['departure_date'],
             'subtotal' => $data['subtotal'],
             'total_tax' => $data['total_tax'],
             'total' => $data['total']
@@ -46,6 +48,7 @@ class Order extends Model
             'name' => $response->metadata->name,
             'email' => $response->customer_details->email,
             'arrival_date' => $response->metadata->arrival_date,
+            'departure_date' => $response->metadata->departure_date,
             'stripe_id' => $response->id,
             'payment_status' => $response->payment_status,
             'subtotal' => $response->amount_subtotal,

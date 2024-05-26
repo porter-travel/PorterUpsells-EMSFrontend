@@ -6,7 +6,7 @@
                      class=""/>
             </div>
 
-            <p class="text-black text-center grandstander text-2xl border-b border-darkGrey pb-6">
+            <p class="text-black text-center open-sans text-2xl border-b border-darkGrey pb-6">
                 Thank you for personalising your upcoming stay
             </p>
 
@@ -17,7 +17,7 @@
                     <div class="flex items-center justify-start mb-4">
                         <div class="w-[150px] mr-4">
                             <img src="{{$item['image']}}" alt="{{$item['name']}}"
-                                 class="w-full rounded">
+                                 class="w-full rounded md:w-[150px] w-[80px]">
                         </div>
                         <div>
                             <p><strong>{{$item['product_name']}}</strong></p>

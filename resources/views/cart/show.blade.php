@@ -35,9 +35,9 @@
                         @if(isset($item['image']))
                             <div class=" my-4 py-4 border-b border-darkGrey ">
                                 <div id="cartItem{{$key}}"
-                                     class="flex md:items-center items-start justify-between md:justify-start mb-4 relative">
+                                     class="flex  md:items-center items-start justify-between md:justify-start mb-4 relative">
                                     <div class="md:w-[40%]">
-                                        <div class="flex md:items-center items-start justify-start">
+                                        <div class="flex md:items-center items-start justify-start flex-col sm:flex-row">
                                             <div class="md:w-[150px] w-[80px] mr-4">
                                                 <img src="{{$item['image']}}" alt="{{$item['name']}}"
                                                      class="w-full rounded">

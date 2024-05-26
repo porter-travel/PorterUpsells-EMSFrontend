@@ -80,14 +80,14 @@
 
             <div class="mt-4">
 
-                <details>
-                    <summary><p class="cursor-pointer text-[#5a5a5a] text-xl">Staying for more than one night? Select
-                            when you would like this.</p></summary>
-
+{{--                <details>--}}
+{{--                    <summary><p class="cursor-pointer text-[#5a5a5a] text-xl font-bold">Select--}}
+{{--                            when you would like this.</p></summary>--}}
+                    <p class="text-[#5a5a5a] text-xl font-bold">Select when you would like this.</p>
                     <ul class="flex flex-wrap mt-4">
                         @php($i = 1)
                         @foreach ($dateArray as $date)
-                            <li><label
+                            <li class="basis-full sm:basis-1/2 md:basis-1/3"><label
                                     class="border border-black bg-[#F7F7F7] rounded p-2 flex items-center mr-2 mb-2 basis-1/3 fancy-checkbox">
                                     <input @if($i == 1) checked @endif style="width: 0; height: 0; opacity: 0"
                                            name="dates[]" type="checkbox" value="{{ $date }}">
@@ -97,10 +97,10 @@
                             @php($i++)
                         @endforeach
                     </ul>
-                </details>
+{{--                </details>--}}
             </div>
 
-            <x-primary-button class=" justify-center mt-4">Add to basket</x-primary-button>
+            <x-primary-button class=" justify-center mt-4 w-full md:w-1/2">Add to basket</x-primary-button>
 
             <span id="success"
                   class="hidden text-black bg-teal my-4 p-2 w-full block">Added to basket</span>

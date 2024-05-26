@@ -15,7 +15,7 @@
 
                 <input type="hidden" name="hotel_id" value="{{$hotel->id}}">
                 @csrf
-                <div class="mt-2 max-w-[300px] mx-auto">
+                <div class="mt-2 max-w-[600px] mx-auto">
                     <x-input-label class="text-black open-sans" for="name" :value="__('Name')"/>
                     <x-text-input id="name" class="block mt-1 w-full p-4" type="text" name="name"
                                   :value="$name ?: old('name')"
@@ -23,7 +23,8 @@
                     <x-input-error :messages="$errors->get('name')" class="mt-2"/>
                 </div>
 
-                <div class="mt-2 max-w-[300px] mx-auto">
+                <div class="flex flex-wrap sm:flex-nowrap items-center justify-between max-w-[600px] mx-auto">
+                <div class="mt-2  basis-full sm:basis-1/2 sm:pr-2">
                     <x-input-label class="text-black open-sans" for="arrival-date" :value="__('Arrival Date')"/>
                     <x-text-input id="arrival-date" class="block mt-1 w-full p-4" type="date" name="arrival_date"
                                   :value="$arrival_date ?: old('arrival_date')"
@@ -31,7 +32,17 @@
                     <x-input-error :messages="$errors->get('arrival_date')" class="mt-2"/>
                 </div>
 
-                <div class="mt-2 max-w-[300px] mx-auto">
+                <div class="mt-2  basis-full sm:basis-1/2 sm:pl-2">
+                    <x-input-label class="text-black open-sans" for="departure-date" :value="__('Departure Date')"/>
+                    <x-text-input id="departure-date" class="block mt-1 w-full p-4" type="date" name="departure_date"
+                                  :value="$departure_date ?: old('departure_date')"
+                                  required placeholder="Departure Date"/>
+                    <x-input-error :messages="$errors->get('departure_date')" class="mt-2"/>
+                </div>
+
+
+                </div>
+                <div class="mt-2 max-w-[600px] mx-auto ">
                     <x-input-label class="text-black open-sans" for="email-address" :value="__('Email Address')"/>
                     <x-text-input id="email-address" class="block mt-1 w-full p-4" type="email" name="email_address"
                                   :value="$email_address ?: old('email_address')"

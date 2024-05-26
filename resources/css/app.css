@@ -43,8 +43,13 @@ details > summary::-webkit-details-marker {
     font-family: 'Open Sans', sans-serif;
 }
 
+.container{
+    padding-left:  1rem;
+    padding-right:  1rem;
+}
 .narrow-container {
     max-width: 750px;
+    padding: 0 1rem;
 }
 
 #cartCount:empty{

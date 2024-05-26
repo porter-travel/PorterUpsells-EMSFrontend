@@ -28,15 +28,9 @@ class ProductController extends Controller
         }
 
         $arrivalDate = $request->session()->get('arrival_date');
+        $departureDate = $request->session()->get('departure_date');
 
-        $date = new \DateTime($arrivalDate);
-        $dateArray = array();
-
-        for ($i = 0; $i < 7; $i++) {
-            $formattedDate = $date->format('Y-m-d');
-            $dateArray[] = $formattedDate;
-            $date->modify('+1 day');
-        }
+$dateArray = $this->getDatesInRange($arrivalDate, $departureDate);
 
         return view('hotel.item', [
             'hotel_id' => $hotel_id,
@@ -191,5 +185,21 @@ class ProductController extends Controller
 
         return redirect()->route('product.edit', ['hotel_id' => $request->hotel_id, 'product_id' => $request->product_id]);
 
+    }
+
+    private function getDatesInRange($arrivalDate, $departureDate){
+        $start = new \DateTime($arrivalDate);
+        $end = new \DateTime($departureDate);
+        $end->modify('+1 day'); // Include the end date in the period
+
+        $dates = [];
+        $interval = new \DateInterval('P1D'); // 1 day interval
+        $period = new \DatePeriod($start, $interval, $end);
+
+        foreach ($period as $date) {
+            $dates[] = $date->format('Y-m-d');
+        }
+
+        return $dates;
     }
 }
