@@ -16,7 +16,7 @@
                             <table class="w-full rounded">
                                 <thead>
                                 <tr class="text-left bg-grey">
-                                    <th class="p-2">Arrival Date</th>
+                                    <th class="p-2">Date Requested</th>
                                     <th class="p-2">Name</th>
                                     {{--                                    <th class="p-2">Order Date</th>--}}
                                     <th class="p-2">Items</th>
