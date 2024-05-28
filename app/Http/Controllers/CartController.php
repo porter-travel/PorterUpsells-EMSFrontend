@@ -16,7 +16,7 @@ class CartController extends Controller
     function addToCart(Request $request)
     {
         $items = $request->all()['formObj'];
-
+//dd($items);
         $id = $items['variation_id'];
         $quantity = $items['quantity'];
         $product_id = $items['product_id'];
@@ -44,9 +44,10 @@ class CartController extends Controller
             foreach ($dates as $date) {
                 $cart[$date . '-' . $id] = [
                     'product_id' => $product_id,
+                    'variation_id' => $id,
                     'hotel_id' => $hotel_id,
                     'product_name' => $product_name,
-                    "name" => $product->name,
+                    "variation_name" => $product->name,
                     "quantity" => $quantity,
                     "price" => $product->price,
                     "image" => $product->image,
@@ -73,9 +74,10 @@ class CartController extends Controller
         foreach ($dates as $date) {
             $cart[$date . '-' . $id] = [
                 'product_id' => $product_id,
+                'variation_id' => $id,
                 'hotel_id' => $hotel_id,
                 'product_name' => $product_name,
-                "name" => $product->name,
+                "variation_name" => $product->name,
                 "quantity" => $quantity,
                 "price" => $product->price,
                 "image" => $product->image,

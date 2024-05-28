@@ -22,7 +22,7 @@
                         <div>
                             <p><strong>{{$item['product_name']}}</strong></p>
                             @if($item['product_type'] == 'variable')
-                                <p>Options: {{$item['name']}}</p>
+                                <p>Options: {{$item['variant_name']}}</p>
                             @endif
 
                             <p>Date: {{ \Carbon\Carbon::parse($item['date'])->format('jS M') }}</p>

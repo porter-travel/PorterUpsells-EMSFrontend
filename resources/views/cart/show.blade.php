@@ -30,6 +30,7 @@
             </div>
 
             <div class="basis-full">
+{{--                {{dd($data)}}--}}
                 @if(isset($data['cart']) && count($data['cart']) > 0)
                     @foreach($data['cart'] as $key => $item)
                         @if(isset($item['image']))
@@ -39,13 +40,13 @@
                                     <div class="md:w-[40%]">
                                         <div class="flex md:items-center items-start justify-start flex-col sm:flex-row">
                                             <div class="md:w-[150px] w-[80px] mr-4">
-                                                <img src="{{$item['image']}}" alt="{{$item['name']}}"
+                                                <img src="{{$item['image']}}" alt="{{$item['variation_name']}}"
                                                      class="w-full rounded">
                                             </div>
                                             <div>
                                                 <p><strong>{{$item['product_name']}}</strong></p>
                                                 @if($item['product_type'] == 'variable')
-                                                    <p>Options: {{$item['name']}}</p>
+                                                    <p>Options: {{$item['variation_name']}}</p>
                                                 @endif
 
                                                 <p>Date: {{ \Carbon\Carbon::parse($item['date'])->format('jS M') }}</p>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\ConfigTest;
 use App\Mail\OrderConfirmation;
 use App\Models\Order;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
@@ -18,6 +19,7 @@ class CheckoutController extends Controller
     {
 
         $cart = session()->get('cart');
+
 
         $name = session()->get('name');
         $arrival_date = session()->get('arrival_date');
@@ -41,12 +43,32 @@ class CheckoutController extends Controller
 //        dd($cart);
         foreach ($cart as $item) {
             if (is_array($item)) {
+
+                //This is the OrderItem model which we store in the database
+                $OrderItem = new OrderItem();
+
+                $OrderItem->order_id = $order->id;
+                $OrderItem->product_id = $item['product_id'];
+                $OrderItem->variation_id = $item['variation_id'];
+                $OrderItem->product_name = $item['product_name'];
+                $OrderItem->variation_name = $item['variation_name'];
+                $OrderItem->quantity = $item['quantity'];
+                $OrderItem->price = $item['price'];
+                $OrderItem->image = $item['image'];
+                $OrderItem->date = $item['date'];
+                $OrderItem->product_type = $item['product_type'];
+
+                $OrderItem->save();
+
+
+
+                //This $items array is the one we send to Stripe
                 $items[] = [
                     'price_data' => [
                         'currency' => 'gbp',
                         'product_data' => [
                             'name' => $item['product_name'],
-                            'description' => $item['name'],
+                            'description' => $item['variation_name'],
                             'images' => [$item['image']],
 
                         ],

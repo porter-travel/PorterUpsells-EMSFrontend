@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', (event) => {
     const arrivalDateInput = document.getElementById('arrival-date');
     const departureDateInput = document.getElementById('departure-date');
-
+    if(!arrivalDateInput || !departureDateInput) return;
     function validateDates() {
         const arrivalDate = new Date(arrivalDateInput.value);
         const departureDate = new Date(departureDateInput.value);
