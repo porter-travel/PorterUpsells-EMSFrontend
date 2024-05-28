@@ -22,7 +22,8 @@ export default {
             'lightBlue': '#C7EDF2',
             'mint': '#D4F6D1',
           'purple': '#D3B2E7',
-            'darkGrey': '#5A5A5A'
+            'darkGrey': '#5A5A5A',
+            'red': '#FF0000',
         },
         extend: {
             fontFamily: {

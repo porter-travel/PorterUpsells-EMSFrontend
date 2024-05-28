@@ -43,7 +43,9 @@ Route::middleware(['auth', 'verified'])->group(function(){
     Route::get('admin/hotel/{hotel_id}/product/{product_id}/edit', [\App\Http\Controllers\ProductController::class, 'edit'] )->name('product.edit');
 
     Route::get('admin/hotel/{hotel_id}/orders', [\App\Http\Controllers\OrderController::class, 'listOrdersByHotel'] )->name('orders.list');
+    Route::get('admin/hotel/{hotel_id}/order-pick-list', [\App\Http\Controllers\OrderController::class, 'listOrderItemsForPicking'] )->name('orders.listItemsForPicking');
 
+    Route::post('admin/order-item/{id}/update', [\App\Http\Controllers\OrderItemController::class, 'update'] )->name('orderItem.update');
     Route::post('admin/product/store', [\App\Http\Controllers\ProductController::class, 'store'] )->name('product.store');
     Route::post('admin/product/update', [\App\Http\Controllers\ProductController::class, 'update'] )->name('product.update');
 });

@@ -25,7 +25,7 @@
                                             </div>
                                     </a>
 
-                                    <a class="pl-4" href="admin/hotel/{{$hotel->id}}/orders">View Orders</a>
+                                    <a class="pl-4" href="{{route('orders.listItemsForPicking', $hotel->id)}}">View Orders</a>
                                 </div>
                             @endforeach
 

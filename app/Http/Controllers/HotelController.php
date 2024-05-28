@@ -121,7 +121,7 @@ class HotelController extends Controller
         if ($request->file('featured_image')) {
             $filePath = $request->file('featured_image')->store('hotel-logos', 's3');
             $url = Storage::disk('s3')->url($filePath);
-            $hotel->logo = $url;
+            $hotel->featured_image = $url;
         }
 
         $hotel->save();

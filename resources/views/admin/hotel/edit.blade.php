@@ -66,7 +66,7 @@
 
                     </form>
                     <form enctype="multipart/form-data" method="post" action="/admin/hotel/{{$hotel->id}}/update">
-
+@csrf
                         <div class="mt-4">
                             <x-input-label class="text-black font-sans" for="logo" :value="__('Logo')"/>
                             <input type="file" name="logo" id="logo" value="{{$hotel->logo}}">
@@ -76,7 +76,7 @@
                     </form>
 
                     <form enctype="multipart/form-data" method="post" action="/admin/hotel/{{$hotel->id}}/update">
-
+@csrf
                         <div class="mt-4">
                             <div class="mt-4">
                                 <x-input-label class="text-black font-sans" for="featured_image" :value="__('Featured Image')"/>

@@ -34,7 +34,7 @@
 
 <footer class="mt-auto pb-8">
     <div class="mx-auto text-center">
-        <img class="mx-auto mb-4" src="/img/logo.svg" alt="logo">
+        <img class="mx-auto my-4" src="/img/logo.svg" alt="logo">
         <p class="open-sans">Personalising your hotel experience</p>
     </div>
 </footer>

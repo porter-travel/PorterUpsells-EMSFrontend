@@ -13,35 +13,34 @@
                     @if(count($orders) > 0)
 
                         <div class="flex flex-wrap">
-                            <table class="w-full table-fixed">
+                            <table class="w-full rounded">
                                 <thead>
-                                <tr class="text-left">
-                                    <th class="p-2">Booking Ref</th>
-                                    <th>Name</th>
+                                <tr class="text-left bg-grey">
                                     <th class="p-2">Arrival Date</th>
-                                    <th class="p-2">Order Status</th>
+                                    <th class="p-2">Name</th>
 {{--                                    <th class="p-2">Order Date</th>--}}
-                                    <th class="p-2">Order Items</th>
+                                    <th class="p-2">Items</th>
+                                    <th class="p-2 ">Payment Status</th>
                                     <th class="p-2">Actions</th>
                                 </tr>
                                 </thead>
                                 @foreach($orders as $order)
 
+{{--                                    {{dd($order->order_items)}}--}}
+
                                     <tr class="border">
-                                        <td class="p-2">{{$order->booking_ref}}</td>
-                                        <td class="p-2">{{$order->name}}</td>
                                         <td class="p-2">{{$order->arrival_date}}</td>
-                                        <td class="p-2">{{$order->payment_status}}</td>
+                                        <td class="p-2">{{$order->name}}</td>
 {{--                                        <td class="p-2">{{$order->created_at}}</td>--}}
                                         <td class="p-2">
                                             <ul>
-                                                @foreach(json_decode($order->items) as $item)
-                                                    @if(is_object($item))
-                                                        <li>{{$item->product_name}} - £{{$item->price}}</li>
-                                                    @endif
+                                                @foreach($order->items as $item)
+                                                    <li>{{$item->product_name}} @if($item->product_type == 'variable') <br><span class="text-sm">{{$item->variation_name}}</span> @endif</li>
                                                 @endforeach
+                                                <li class="font-bold">£{{\App\Helpers\Money::format($order->total)}}</li>
                                             </ul>
                                         </td>
+                                        <td class="p-2 capitalize">{{$order->payment_status}}</td>
                                         <td class="p-2">
                                             <a href="/admin/order/{{$order->id}}/edit">Edit</a>
                                         </td>
@@ -49,6 +48,8 @@
 
                                 @endforeach
                             </table>
+
+                            {{$orders->links()}}
                         </div>
 
                     @endif

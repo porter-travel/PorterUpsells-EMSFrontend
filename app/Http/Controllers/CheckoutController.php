@@ -23,15 +23,16 @@ class CheckoutController extends Controller
 
         $name = session()->get('name');
         $arrival_date = session()->get('arrival_date');
+        $departure_date = session()->get('departure_date');
         $email_address = session()->get('email_address');
 
         $order = new Order();
 
         $order->hotel_id = $hotel_id;
-        $order->items = json_encode($cart);
         $order->name = $name;
         $order->email = $email_address;
         $order->arrival_date = $arrival_date;
+        $order->departure_date = $departure_date;
         $order->payment_status = 'pending';
         $order->subtotal = $cart['total'];
         $order->total_tax = $cart['tax'];
@@ -173,7 +174,7 @@ class CheckoutController extends Controller
     {
 
         $cartItems = session()->get('cart');
-//        session()->forget('cart');
+        session()->forget('cart');
 //dd($cartItems);
 //        Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($payload)));
         return view('checkout.complete', ['cartItems' => $cartItems]);

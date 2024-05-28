@@ -16,13 +16,13 @@
                 @if(isset($item['image']))
                     <div class="flex items-center justify-start mb-4">
                         <div class="w-[150px] mr-4">
-                            <img src="{{$item['image']}}" alt="{{$item['name']}}"
-                                 class="w-full rounded md:w-[150px] w-[80px]">
+                            <img src="{{$item['image']}}" alt="{{$item['variation_name']}}"
+                                 class="rounded md:w-[150px] w-[80px]">
                         </div>
                         <div>
                             <p><strong>{{$item['product_name']}}</strong></p>
                             @if($item['product_type'] == 'variable')
-                                <p>Options: {{$item['variant_name']}}</p>
+                                <p>Options: {{$item['variation_name']}}</p>
                             @endif
 
                             <p>Date: {{ \Carbon\Carbon::parse($item['date'])->format('jS M') }}</p>
