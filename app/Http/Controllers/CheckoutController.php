@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\ConfigTest;
 use App\Mail\OrderConfirmation;
+use App\Models\Hotel;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
@@ -173,11 +174,12 @@ class CheckoutController extends Controller
     public function checkoutComplete()
     {
 
+        $hotel = Hotel::find(session()->get('hotel_id'));
         $cartItems = session()->get('cart');
         session()->forget('cart');
 //dd($cartItems);
 //        Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($payload)));
-        return view('checkout.complete', ['cartItems' => $cartItems]);
+        return view('checkout.complete', ['cartItems' => $cartItems, 'hotel' => $hotel]);
 
     }
 

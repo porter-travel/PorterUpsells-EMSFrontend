@@ -112,6 +112,34 @@ class HotelController extends Controller
             $hotel->address = $request->address;
         }
 
+        if($request->page_background_color){
+            $hotel->page_background_color = $request->page_background_color;
+        }
+
+        if($request->main_box_color){
+            $hotel->main_box_color = $request->main_box_color;
+        }
+
+        if($request->main_box_text_color){
+            $hotel->main_box_text_color = $request->main_box_text_color;
+        }
+
+        if($request->button_color){
+            $hotel->button_color = $request->button_color;
+        }
+
+        if($request->accent_color){
+            $hotel->accent_color = $request->accent_color;
+        }
+
+        if($request->text_color){
+            $hotel->text_color = $request->text_color;
+        }
+
+        if($request->button_text_color){
+            $hotel->button_text_color = $request->button_text_color;
+        }
+
         if ($request->file('logo')) {
             $filePath = $request->file('logo')->store('hotel-logos', 's3');
             $url = Storage::disk('s3')->url($filePath);

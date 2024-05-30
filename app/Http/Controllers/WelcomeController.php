@@ -15,6 +15,7 @@ class WelcomeController extends Controller
         $request->session()->put('arrival_date', $request->input('arrival_date'));
         $request->session()->put('departure_date', $request->input('departure_date'));
         $request->session()->put('email_address', $request->input('email_address'));
+        $request->session()->put('hotel_id', $hotel_id);
 
         return redirect()->route('hotel.dashboard', ['id' => $hotel_id] );
     }

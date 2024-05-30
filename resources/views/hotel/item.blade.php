@@ -1,5 +1,24 @@
 <x-guest-layout>
+    @include('hotel.partials.css-overrides', ['hotel' => $hotel])
 
+    <style>
+        .fancy-checkbox{
+            position: relative;
+        }
+        .fancy-checkbox input:checked + span{
+            background-color: {{$hotel->accent_color ?? '#C7EDF2'}};
+            z-index: 10;
+        }
+        .fancy-checkbox input:checked + span + span{
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom:0;
+            left:0;
+            right:0;
+            background-color: {{substr_replace($hotel->accent_color, '80', 1, 0) ?? '#80C7EDF2'}};
+        }
+    </style>
 
     <div class="">
 
@@ -11,7 +30,7 @@
             </a>
 
             <div class="bg-yellow px-6 py-4 rounded-3xl">
-                <img src="/img/hank.png" alt="{{$hotel->name}}" class="w-[30px]"/>
+                <img src="{{$hotel->logo}}" alt="{{$hotel->name}}" class="w-[30px]"/>
             </div>
 
             <a href="/hotel/{{$hotel_id}}/cart" class="text-black text-sm relative">
@@ -24,7 +43,7 @@
                         stroke="black"/>
                 </svg>
                 <span id="cartCount"
-                      class="bg-teal text-black rounded-full px-2 py-1 ml-2 absolute left-0 bottom-0 -translate-x-full translate-y-1/2 text-xs">@if($cart && $cart['cartCount'] > 0)
+                      class="hotel-accent-color-50 text-black rounded-full px-2 py-1 ml-2 absolute left-0 bottom-0 -translate-x-full translate-y-1/2 text-xs">@if($cart && $cart['cartCount'] > 0)
                         {{$cart['cartCount']}}
                     @endif</span>
             </a>
@@ -38,8 +57,8 @@
                 </div>
                 <div class="lg:basis-1/2 basis-full lg:pl-4">
                     <div class="mt-4 lg:mt-0">
-                        <p class="open-sans text-3xl mb-2">{{$product->name}}</p>
-                        <p class="open-sans text-xl mb-6">£{{App\Helpers\Money::addTaxAndFormat($product->price)}}</p>
+                        <p class="open-sans text-3xl mb-2 hotel-text-color">{{$product->name}}</p>
+                        <p class="open-sans text-xl mb-6 hotel-text-color">£{{App\Helpers\Money::addTaxAndFormat($product->price)}}</p>
                         {{--                    <small>Tax Included</small>--}}
                     </div>
 
@@ -56,7 +75,7 @@
                             @else
                                 <input type="hidden" name="product_type" value="variable">
                             @endif
-                            <label class="block w-full" for="options">Options</label>
+                            <label class="block w-full hotel-text-color" for="options">Options</label>
                             <select id="options" name="variation_id">
                                 @foreach($variations as $variation)
                                     <option value="{{$variation->id}}">{{$variation->name}} -
@@ -65,7 +84,7 @@
                             </select>
                         </div>
                         <div class="mt-4">
-                            <x-input-label class="text-[#5a5a5a] text-xl" for="quantity" :value="__('Quantity')"/>
+                            <x-input-label class="hotel-text-color text-xl" for="quantity" :value="__('Quantity')"/>
                             <div class="w-[100px]">
                                 <x-number-input :key="'quantity'" :quantity="1"/>
                             </div>
@@ -83,7 +102,7 @@
 {{--                <details>--}}
 {{--                    <summary><p class="cursor-pointer text-[#5a5a5a] text-xl font-bold">Select--}}
 {{--                            when you would like this.</p></summary>--}}
-                    <p class="text-[#5a5a5a] text-xl font-bold">Select when you would like this.</p>
+                    <p class="hotel-text-color text-xl font-bold">Select when you would like this.</p>
                     <ul class="flex flex-wrap mt-4">
                         @php($i = 1)
                         @foreach ($dateArray as $date)
@@ -92,6 +111,7 @@
                                     <input @if($i == 1) checked @endif style="width: 0; height: 0; opacity: 0"
                                            name="dates[]" type="checkbox" value="{{ $date }}">
                                     <span class="w-[29px] h-[29px] border border-darkGrey rounded mr-2 relative"></span>
+                                    <span></span>
                                     <span class="font-bold">Day {{$i}}</span>
                                     ({{ \Carbon\Carbon::parse($date)->format('jS M') }})</label></li>
                             @php($i++)
@@ -100,12 +120,12 @@
 {{--                </details>--}}
             </div>
 
-            <x-primary-button class=" justify-center mt-4 w-full md:w-1/2">Add to basket</x-primary-button>
+            <x-primary-button class=" justify-center mt-4 w-full md:w-1/2 hotel-button-color hotel-button-text-color">Add to basket</x-primary-button>
 
             <span id="success"
-                  class="hidden text-black bg-teal my-4 p-2 w-full block">Added to basket</span>
+                  class="hidden text-black hotel-accent-color-50 my-4 p-2 w-full block">Added to basket</span>
 
-            <div class="mt-4">
+            <div class="mt-4 hotel-text-color">
                 {{$product->description}}
             </div>
         </form>

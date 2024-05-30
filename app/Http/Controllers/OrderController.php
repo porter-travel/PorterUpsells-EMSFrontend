@@ -55,6 +55,7 @@ class OrderController extends Controller
                 $result[] = [
                     'order_name' => $order->name,
                     'order_total' => $order->total,
+                    'booking_ref' => $order->booking_ref,
                     'item' => $item,
                 ];
             }

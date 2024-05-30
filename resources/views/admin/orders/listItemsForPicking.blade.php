@@ -16,6 +16,7 @@
                             <table class="w-full rounded">
                                 <thead>
                                 <tr class="text-left bg-grey">
+                                    <th class="p-2">Booking Ref</th>
                                     <th class="p-2">Date Requested</th>
                                     <th class="p-2">Name</th>
                                     {{--                                    <th class="p-2">Order Date</th>--}}
@@ -28,6 +29,7 @@
                                     {{--                                    {{dd($order->order_items)}}--}}
 
                                     <tr class="border">
+                                        <td class="p-2">{{$order['item']->booking_ref}}</td>
                                         <td class="p-2">{{date_create_from_format('Y-m-d', $order['item']->date)->format('d/m/Y')}}</td>
                                         <td class="p-2">{{$order['order_name']}}</td>
                                         {{--                                        <td class="p-2">{{$order->created_at}}</td>--}}

@@ -1,16 +1,20 @@
 <x-guest-layout>
+    @include('hotel.partials.css-overrides', ['hotel' => $hotel])
+
     <div class="mt-28 mx-4">
-        <div class="bg-pink px-8 pt-20 pb-12 max-w-[667px] mx-auto rounded-3xl relative">
+        <div class="hotel-main-box-color px-8 pt-20 pb-12 max-w-[667px] mx-auto rounded-3xl relative">
             <div class="absolute -top-24 bg-yellow px-8 py-6 left-1/2 -translate-x-1/2 rounded-3xl">
-                <img style="width: 80px; height: 114px; object-fit: contain" src="/img/hank.png" alt="hotel"
+                <img style="width: 80px; height: 114px; object-fit: contain" src="{{$hotel->logo}}" alt="hotel"
                      class=""/>
             </div>
 
-            <p class="text-black text-center open-sans text-2xl border-b border-darkGrey pb-6">
+            <p class="hotel-main-box-text-color text-center open-sans text-2xl border-b border-darkGrey pb-6">
                 Thank you for personalising your upcoming stay
             </p>
 
-            <p class="text-xl font-bold open-sans my-4">Your Order</p>
+            <p class="text-xl font-bold open-sans my-4 hotel-main-box-text-color">Your Order</p>
+
+            @if(isset($cartItems) && count($cartItems) > 0)
 
             @foreach($cartItems as $item)
                 @if(isset($item['image']))
@@ -19,7 +23,7 @@
                             <img src="{{$item['image']}}" alt="{{$item['variation_name']}}"
                                  class="rounded md:w-[150px] w-[80px]">
                         </div>
-                        <div>
+                        <div class="hotel-main-box-text-color">
                             <p><strong>{{$item['product_name']}}</strong></p>
                             @if($item['product_type'] == 'variable')
                                 <p>Options: {{$item['variation_name']}}</p>
@@ -33,6 +37,8 @@
                 @endif
 
             @endforeach
+
+                @endif
 
 
         </div>

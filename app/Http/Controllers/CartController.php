@@ -10,7 +10,8 @@ class CartController extends Controller
     function show($hotel_id)
     {
         $data['cart'] = session()->get('cart');
-        return view('cart.show', ['data' => $data])->with('hotel_id', $hotel_id);
+        $hotel = \App\Models\Hotel::find($hotel_id);
+        return view('cart.show', ['data' => $data, 'hotel' => $hotel])->with('hotel_id', $hotel_id);
     }
 
     function addToCart(Request $request)

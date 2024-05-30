@@ -23,13 +23,13 @@
 
                         @foreach($hotel->products as $product)
                             <div class="flex items-center justify-between mb-2 border-b border-b-black py-1">
-                                    <a class="flex items-center justify-start" href="/admin/hotel/{{$hotel->id}}/product/{{$product->id}}/edit">
-                                <img src="{{$product->image}}" alt="product" class="h-[70px] rounded-3xl mr-2"/>
-                                <p class="mr-2">{{$product->name}}</p>
-                                    </a>
+                                <a class="flex items-center justify-start"
+                                   href="/admin/hotel/{{$hotel->id}}/product/{{$product->id}}/edit">
+                                    <img src="{{$product->image}}" alt="product" class="h-[70px] rounded-3xl mr-2"/>
+                                    <p class="mr-2">{{$product->name}}</p>
+                                </a>
                                 <p class="mr-2">£{{$product->price}}</p>
                             </div>
-
 
                         @endforeach
 
@@ -66,7 +66,7 @@
 
                     </form>
                     <form enctype="multipart/form-data" method="post" action="/admin/hotel/{{$hotel->id}}/update">
-@csrf
+                        @csrf
                         <div class="mt-4">
                             <x-input-label class="text-black font-sans" for="logo" :value="__('Logo')"/>
                             <input type="file" name="logo" id="logo" value="{{$hotel->logo}}">
@@ -76,10 +76,11 @@
                     </form>
 
                     <form enctype="multipart/form-data" method="post" action="/admin/hotel/{{$hotel->id}}/update">
-@csrf
+                        @csrf
                         <div class="mt-4">
                             <div class="mt-4">
-                                <x-input-label class="text-black font-sans" for="featured_image" :value="__('Featured Image')"/>
+                                <x-input-label class="text-black font-sans" for="featured_image"
+                                               :value="__('Featured Image')"/>
                                 <input type="file" name="featured_image" id="featured_image">
                             </div>
                         </div>
@@ -87,6 +88,13 @@
                         <x-primary-button class="w-full justify-center mt-4">Update Featured Image</x-primary-button>
                     </form>
 
+                    <form method="post" action="/admin/hotel/{{$hotel->id}}/update">
+
+                        @include('admin.hotel.partials.colour-scheme', ['hotel' => $hotel])
+
+                        <x-primary-button class="w-full justify-center mt-4">Update Hotel Colour Scheme</x-primary-button>
+
+                    </form>
                 </div>
             </div>
         </div>

@@ -26,6 +26,8 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+
 </head>
 <body style="min-height: 100vh" class="font-sans antialiased flex flex-col ">
 <div class="container mx-auto">
