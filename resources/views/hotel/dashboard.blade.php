@@ -61,7 +61,7 @@
     </div>
 
     <div class="container mx-auto">
-        <div class="flex items-center flex-wrap px-8 -mx-4">
+        <div class="flex items-start flex-wrap px-8 -mx-4 mt-4">
             @foreach($products as $product)
                 <a href="/hotel/{{$hotel->id}}/item/{{$product->id}}"
                    class="flex items-start justify-between flex-col basis-1/2 md:basis-1/3 lg:basis-1/4 w-1/2 px-4 mb-4">
