@@ -7,6 +7,7 @@ use App\Mail\OrderConfirmation;
 use App\Models\Hotel;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
