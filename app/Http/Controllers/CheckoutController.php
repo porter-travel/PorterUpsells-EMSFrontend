@@ -151,7 +151,7 @@ class CheckoutController extends Controller
                     'expand' => ['line_items'],
                 ]);
 
-                Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($event)));
+//                Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($event)));
                 $line_items = $session->line_items;
 
 
@@ -168,7 +168,7 @@ class CheckoutController extends Controller
 
                 return response()->json(['success' => 'Order created successfully']);
             } else {
-                Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($event)));
+//                Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($event)));
 
                 $client_reference_id = $event->data->object->client_reference_id;
                 //Remove the string 'USER_' from the client_reference_id
