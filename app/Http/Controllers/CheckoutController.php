@@ -191,7 +191,7 @@ class CheckoutController extends Controller
 
         $hotel = Hotel::find(session()->get('hotel_id'));
         $cartItems = session()->get('cart');
-//        session()->forget('cart');
+        session()->forget('cart');
 //dd($cartItems);
 //        Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($payload)));
         return view('checkout.complete', ['cartItems' => $cartItems, 'hotel' => $hotel]);
