@@ -25,7 +25,10 @@
                             <div class="flex items-center justify-between mb-2 border-b border-b-black py-1">
                                 <a class="flex items-center justify-start"
                                    href="/admin/hotel/{{$hotel->id}}/product/{{$product->id}}/edit">
-                                    <img src="{{$product->image}}" alt="product" class="h-[70px] rounded-3xl mr-2"/>
+                                    <div class="max-w-[70px]">
+                                        @include ('hotel.partials.product-image', ['item' => $product])
+                                    </div>
+
                                     <p class="mr-2">{{$product->name}}</p>
                                 </a>
                                 <p class="mr-2">£{{$product->price}}</p>
@@ -92,7 +95,8 @@
 
                         @include('admin.hotel.partials.colour-scheme', ['hotel' => $hotel])
 
-                        <x-primary-button class="w-full justify-center mt-4">Update Hotel Colour Scheme</x-primary-button>
+                        <x-primary-button class="w-full justify-center mt-4">Update Hotel Colour Scheme
+                        </x-primary-button>
 
                     </form>
                 </div>

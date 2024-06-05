@@ -97,6 +97,9 @@ class HotelController extends Controller
     public function edit(Request $request, $id)
     {
         $hotel = \App\Models\Hotel::find($id);
+        if($hotel->user_id != auth()->user()->id){
+            return redirect()->route('dashboard');
+        }
         return view('admin.hotel.edit', ['hotel' => $hotel]);
     }
 

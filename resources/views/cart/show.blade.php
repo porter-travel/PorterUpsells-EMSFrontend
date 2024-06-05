@@ -1,4 +1,6 @@
 <x-guest-layout>
+    <x-slot:favicon>{{$hotel->logo}}</x-slot:favicon>
+
     @include('hotel.partials.css-overrides', ['hotel' => $hotel])
 
     <div class="mx-4">
@@ -42,8 +44,7 @@
                                     <div class="md:w-[40%]">
                                         <div class="flex md:items-center items-start justify-start flex-col sm:flex-row">
                                             <div class="md:w-[150px] w-[80px] mr-4">
-                                                <img src="{{$item['image']}}" alt="{{$item['variation_name']}}"
-                                                     class="w-full rounded">
+                                                @include ('hotel.partials.product-image', ['item' => $item])
                                             </div>
                                             <div>
                                                 <p><strong>{{$item['product_name']}}</strong></p>

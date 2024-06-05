@@ -40,4 +40,9 @@
             </div>
         </div>
     </div>
+
+    <script async src="https://js.stripe.com/v3/pricing-table.js"></script>
+    <stripe-pricing-table pricing-table-id="prctbl_1PM63SJQ5u1m2fEsuJzR9SHZ"
+                          publishable-key="pk_live_51JbMvaJQ5u1m2fEsBqIUIR8xy93kpla6UHAGH9xxPgoy8pHmyKWHxwR6WGq6nSHdwBT7xPJgRgJzy6I49Qpu4sEZ00BKCRdldz">
+    </stripe-pricing-table>
 </x-app-layout>

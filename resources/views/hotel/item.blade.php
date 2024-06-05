@@ -1,5 +1,12 @@
 <x-guest-layout>
-    @include('hotel.partials.css-overrides', ['hotel' => $hotel])
+
+    <x-slot:title>
+        {{$product->name}}
+        </x-slot>
+
+        <x-slot:favicon>{{$hotel->logo}}</x-slot:favicon>
+
+        @include('hotel.partials.css-overrides', ['hotel' => $hotel])
 
     <style>
         .fancy-checkbox{
@@ -29,9 +36,8 @@
                 </svg>
             </a>
 
-            <div class="bg-yellow px-6 py-4 rounded-3xl">
-                <img src="{{$hotel->logo}}" alt="{{$hotel->name}}" class="w-[30px]"/>
-            </div>
+            @include ('hotel.partials.hotel-logo', ['hotel' => $hotel])
+
 
             <a href="/hotel/{{$hotel_id}}/cart" class="text-black text-sm relative">
                 <svg width="14" height="16" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -53,8 +59,7 @@
         <form id="addToCart" action="/cart/add" method="post">
             <div class="flex flex-wrap items-end">
                 <div class="lg:basis-1/2 basis-full lg:pr-4">
-                    <img src="{{$product->image}}" alt="{{$product->name}}" class="w-full rounded">
-                </div>
+                    @include ('hotel.partials.product-image', ['item' => $product])                </div>
                 <div class="lg:basis-1/2 basis-full lg:pl-4">
                     <div class="mt-4 lg:mt-0">
                         <p class="open-sans text-3xl mb-2 hotel-text-color">{{$product->name}}</p>

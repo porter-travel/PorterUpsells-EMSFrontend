@@ -1,6 +1,12 @@
 <x-guest-layout>
 
-    @include('hotel.partials.css-overrides', ['hotel' => $hotel])
+    <x-slot:title>
+        Personalise your upcoming stay at {{$hotel->name}}
+        </x-slot>
+        <x-slot:favicon>{{$hotel->logo}}</x-slot:favicon>
+
+
+        @include('hotel.partials.css-overrides', ['hotel' => $hotel])
     <div class="px-4 pt-6">
         <div class="flex items-end justify-start mb-6 flex-wrap">
             <div
@@ -10,8 +16,7 @@
                     class="absolute inset-0 rounded"
                     style="background: linear-gradient(0deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%);"></div>
                 <div class="mt-auto relative z-10 flex items-end">
-                    <img style="width: 70px; height: 70px; object-fit: contain" src="{{$hotel->logo}}" alt="hotel"
-                         class="rounded"/>
+                    @include ('hotel.partials.hotel-logo', ['hotel' => $hotel])
                     <p class="text-2xl text-white font-bold ml-6">{{$hotel->name}}</p>
                 </div>
             </div>
@@ -48,7 +53,7 @@
                     <img src="/img/icons/cart.svg" alt="cart" class="w-4 h-4 ml-2">
                     @if($cart && $cart['cartCount'] > 0)
                         <span
-                            class="hotel-accent-color-50 text-black rounded-full px-2 py-1 ml-2 absolute right-0 top-0 translate-x-full -translate-y-1/2 text-xs">{{$cart['cartCount']}}</span>
+                            class="hotel-accent-color text-black rounded-full px-2 py-1 ml-2 absolute right-0 top-0 translate-x-full -translate-y-1/2 text-xs">{{$cart['cartCount']}}</span>
                     @endif
                 </a>
             </div>
@@ -61,8 +66,7 @@
                 <a href="/hotel/{{$hotel->id}}/item/{{$product->id}}"
                    class="flex items-start justify-between flex-col basis-1/2 md:basis-1/3 lg:basis-1/4 w-1/2 px-4 mb-4">
                     <div>
-                        <img src="{{$product->image}}" alt="{{$product->name}}" class="w-full rounded"/>
-                    </div>
+                        @include ('hotel.partials.product-image', ['item' => $product])                    </div>
                     <div>
                         <h3 class="hotel-text-color open-sans text-sm md:text-xl">{{$product->name}}</h3>
                         <p class="hotel-text-color open-sans text-sm md:text-xl font-semibold"><strong>£{{App\Helpers\Money::addTaxAndFormat($product->price)}}</strong></p>

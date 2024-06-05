@@ -24,26 +24,36 @@ class OrderController extends Controller
     }
 
 
-    function listOrderItemsForPicking($hotel_id)
+    function listOrderItemsForPicking($hotel_id, Request $request)
     {
 
         $hotel = Hotel::find($hotel_id);
+
+        $startDate = Carbon::now();
+
+        $endDate = Carbon::now()->addDays(7);
+
+        if($request->has('start_date') && $request->has('end_date')) {
+            $startDate = Carbon::createFromFormat('Y-m-d', $request->input('start_date'));
+            $endDate = Carbon::createFromFormat('Y-m-d', $request->input('end_date'));
+        }
+
 
 
 // Assuming you have the hotel ID
 
 // Fetch orders with future departure date and their items, ordered by soonest item date
         $orders = Order::where('hotel_id', $hotel_id)
-            ->where('departure_date', '>', Carbon::now())
-            ->where('departure_date', '<=', Carbon::now()->addDays(7))
-            ->whereHas('items', function($query) {
+            ->where('departure_date', '>', $startDate)
+            ->where('departure_date', '<=', $endDate)
+            ->whereHas('items', function ($query) {
                 $query->where('date', '>', Carbon::now());
             })
-            ->with(['items' => function($query) {
+            ->with(['items' => function ($query) {
                 $query->orderBy('date', 'asc');
             }])
             ->get()
-            ->sortBy(function($order) {
+            ->sortBy(function ($order) {
                 return $order->items->min('date');
             });
 
@@ -61,13 +71,12 @@ class OrderController extends Controller
             }
         }
 
-//        dd($result);
-
-//        dd($result);
-
-
-
-
-        return view('admin.orders.listItemsForPicking', ['orders' => $result, 'hotel' => $hotel]);
+        return view('admin.orders.listItemsForPicking',
+            [
+                'orders' => $result,
+                'hotel' => $hotel,
+                'startDate' => $startDate->format('Y-m-d'),
+                'endDate' => $endDate->format('Y-m-d')
+            ]);
     }
 }
