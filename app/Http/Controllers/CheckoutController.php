@@ -175,6 +175,7 @@ class CheckoutController extends Controller
                 $client_reference_id = substr($client_reference_id, 5);
                 $user = User::find($client_reference_id);
                 $user->account_status = 'active';
+                $user->save();
                 return response()->json(['success' => 'User account activated successfully']);
 
             }
