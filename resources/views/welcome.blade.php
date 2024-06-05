@@ -18,6 +18,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Enhance My Stay</title>
+    <link rel="icon" type="image/x-icon" href="{{$favicon ?? '/img/hank.png'}}">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
