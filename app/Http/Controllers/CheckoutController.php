@@ -96,6 +96,7 @@ class CheckoutController extends Controller
             'customer_email' => $email_address,
             'mode' => 'payment',
             'metadata' => [
+                'payment_type' => 'hotel_item_order',
                 'order_id' => $order->id, // This is the order ID from your system
                 'name' => $name,
                 'arrival_date' => $arrival_date,
@@ -143,27 +144,39 @@ class CheckoutController extends Controller
         http_response_code(200);
 
         if ($event->type == 'checkout.session.completed') {
-            $session = \Stripe\Checkout\Session::retrieve([
-                'id' => $event->data->object->id,
-                'expand' => ['line_items'],
-            ]);
+            if($event->data->object->metadata->payment_type === 'hotel_item_order') {
+                $session = \Stripe\Checkout\Session::retrieve([
+                    'id' => $event->data->object->id,
+                    'expand' => ['line_items'],
+                ]);
 
-            Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($session)));
-            $line_items = $session->line_items;
+                Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($event)));
+                $line_items = $session->line_items;
 
 
-            $order = Order::find($session->metadata->order_id);
+                $order = Order::find($session->metadata->order_id);
 
-            $order->stripe_id = $session->id;
-            $order->payment_status = $session->payment_status;
+                $order->stripe_id = $session->id;
+                $order->payment_status = $session->payment_status;
 
-            $order->save();
+                $order->save();
 
-            Mail::to($session->customer_details->email, $session->metadata->name)->send(new OrderConfirmation($order));
+                Mail::to($session->customer_details->email, $session->metadata->name)->send(new OrderConfirmation($order));
 
-            session()->forget('cart');
+                session()->forget('cart');
 
-            return response()->json(['success' => 'Order created successfully']);
+                return response()->json(['success' => 'Order created successfully']);
+            } else {
+                Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($event)));
+
+                $client_reference_id = $event->data->object->client_reference_id;
+                //Remove the string 'USER_' from the client_reference_id
+                $client_reference_id = substr($client_reference_id, 5);
+                $user = User::find($client_reference_id);
+                $user->account_status = 'active';
+                return response()->json(['success' => 'User account activated successfully']);
+
+            }
 
 
         }

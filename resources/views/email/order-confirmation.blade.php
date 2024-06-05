@@ -121,13 +121,13 @@
                                                     <table>
                                                         <tr>
                                                             <td style="width: 150px;">
-                                                                <img src="{{$item['image']}}" alt="{{$item['name']}}" class="w-full">
+                                                                <img src="{{$item['image']}}" alt="{{$item['variation_name']}}" class="w-full">
                                                             </td>
                                                             <td>
                                                                 <p><strong>{{$item['product_name']}}</strong></p>
                                                                 <p>£{{$item['price']}}</p>
-                                                                @if($item['name'])
-                                                                    <p>Options: {{$item['name']}}</p>
+                                                                @if($item['variation_name'])
+                                                                    <p>Options: {{$item['variation_name']}}</p>
                                                                 @endif
                                                             </td>
                                                         </tr>

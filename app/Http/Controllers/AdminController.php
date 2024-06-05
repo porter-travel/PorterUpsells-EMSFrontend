@@ -14,6 +14,10 @@ class AdminController extends Controller
 
         $hotels = Hotel::whereBelongsTo($user)->get();
 //        dd($hotels);
+
+        if($user->account_status === 'pending'){
+            return view('admin.pending-dashboard', ['user' => $user]);
+        }
         return view('admin.dashboard', ['hotels' => $hotels]);
     }
 }
