@@ -117,8 +117,9 @@
                                            name="dates[]" type="checkbox" value="{{ $date }}">
                                     <span class="w-[29px] h-[29px] border border-darkGrey rounded mr-2 relative"></span>
                                     <span></span>
+                                    <span class="relative">
                                     <span class="font-bold">Day {{$i}}</span>
-                                    ({{ \Carbon\Carbon::parse($date)->format('jS M') }})</label></li>
+                                    ({{ \Carbon\Carbon::parse($date)->format('jS M') }})</span></label></li>
                             @php($i++)
                         @endforeach
                     </ul>
