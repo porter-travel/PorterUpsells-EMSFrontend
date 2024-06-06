@@ -6,12 +6,12 @@
     <div class="mx-4">
         <div class="flex items-center justify-between p-4 border-b border-darkGrey">
             <a href="/hotel/{{$hotel_id}}/dashboard">
-                <svg width="17" height="28" viewBox="0 0 17 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M15 2L3 14L15 26" stroke="black" stroke-width="3" stroke-linecap="round"/>
+                <svg width="9" height="14" viewBox="0 0 9 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 1L2 7L8 13" stroke="black" stroke-width="2" stroke-linecap="round"/>
                 </svg>
             </a>
 
-            <p class="md:text-4xl text-2xl font-bold open-sans hotel-text-color">Your Cart</p>
+            <p class="md:text-4xl text-xl font-bold open-sans hotel-text-color">Your Cart</p>
 
             <div></div>
         </div>

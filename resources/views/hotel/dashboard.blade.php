@@ -7,7 +7,7 @@
 
 
         @include('hotel.partials.css-overrides', ['hotel' => $hotel])
-    <div class="px-4 pt-6">
+    <div class="px-4">
         <div class="flex items-end justify-start mb-6 flex-wrap">
             <div
                 class="md:basis-7/12 basis-full md:h-[250px] h-[165px] relative rounded p-4 flex flex-col mt-6 "
@@ -61,7 +61,7 @@
     </div>
 
     <div class="container mx-auto">
-        <div class="flex items-start flex-wrap px-8 -mx-4 mt-4">
+        <div class="flex items-start flex-wrap  -mx-4 mt-4">
             @foreach($products as $product)
                 <a href="/hotel/{{$hotel->id}}/item/{{$product->id}}"
                    class="flex items-start justify-between flex-col basis-1/2 md:basis-1/3 lg:basis-1/4 w-1/2 px-4 mb-4">
