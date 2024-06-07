@@ -21,6 +21,13 @@
 
             <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                 <div class="max-w-xl">
+                    <a href="https://billing.stripe.com/p/login/cN2aF2996gkpbGEdQQ">
+                        <x-primary-button>Manage Subscription</x-primary-button></a>
+                </div>
+            </div>
+
+            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+                <div class="max-w-xl">
                     @include('profile.partials.delete-user-form')
                 </div>
             </div>

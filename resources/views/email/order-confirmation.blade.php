@@ -5,7 +5,7 @@
 <head>
     <meta name="viewport" content="width=device-width"/>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <title>Alerts e.g. approaching your limit</title>
+    <title>Order Confirmation</title>
 
 
     <style type="text/css">
@@ -103,6 +103,7 @@
                         <td class="alert alert-warning"
                             style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 16px; vertical-align: top; color: #fff; font-weight: 500; text-align: center; border-radius: 3px 3px 0 0; background-color: #000; margin: 0; padding: 20px;"
                             align="center" bgcolor="#7FFFD4" valign="top">
+                            Thank you for personalising your upcoming stay<br>
                             Order Confirmation
                         </td>
                     </tr>
@@ -123,7 +124,7 @@
                                                             <td style="width: 150px;">
                                                                 <img src="{{$item['image']}}" alt="{{$item['variation_name']}}" class="w-full">
                                                             </td>
-                                                            <td>
+                                                            <td style="padding-left: 5px">
                                                                 <p><strong>{{$item['product_name']}}</strong></p>
                                                                 <p>£{{$item['price']}}</p>
                                                                 @if($item['variation_name'])
@@ -153,20 +154,20 @@
                         </td>
                     </tr>
                 </table>
-                <div class="footer"
-                     style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; width: 100%; clear: both; color: #999; margin: 0; padding: 20px;">
-                    <table width="100%"
-                           style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
-                        <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
-                            <td class="aligncenter content-block"
-                                style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 12px; vertical-align: top; color: #999; text-align: center; margin: 0; padding: 0 0 20px;"
-                                align="center" valign="top"><a href="http://www.mailgun.com"
-                                                               style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 12px; color: #999; text-decoration: underline; margin: 0;">Unsubscribe</a>
-                                from these alerts.
-                            </td>
-                        </tr>
-                    </table>
-                </div>
+{{--                <div class="footer"--}}
+{{--                     style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; width: 100%; clear: both; color: #999; margin: 0; padding: 20px;">--}}
+{{--                    <table width="100%"--}}
+{{--                           style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">--}}
+{{--                        <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">--}}
+{{--                            <td class="aligncenter content-block"--}}
+{{--                                style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 12px; vertical-align: top; color: #999; text-align: center; margin: 0; padding: 0 0 20px;"--}}
+{{--                                align="center" valign="top"><a href="http://www.mailgun.com"--}}
+{{--                                                               style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 12px; color: #999; text-decoration: underline; margin: 0;">Unsubscribe</a>--}}
+{{--                                from these alerts.--}}
+{{--                            </td>--}}
+{{--                        </tr>--}}
+{{--                    </table>--}}
+{{--                </div>--}}
             </div>
         </td>
         <td style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0;"

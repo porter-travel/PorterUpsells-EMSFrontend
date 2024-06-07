@@ -6,8 +6,8 @@
     @include('hotel.partials.css-overrides', ['hotel' => $hotel])
 
     <div class="mt-28 mx-4">
-        <div class="hotel-main-box-color box-shadow px-8 pt-12 pb-12 max-w-[667px] mx-auto rounded-3xl relative">
-            <div class="absolute -top-16 px-8 py-6 left-1/2 -translate-x-1/2 rounded-3xl">
+        <div class="hotel-main-box-color box-shadow px-8 pt-16 pb-12 max-w-[667px] mx-auto rounded-3xl relative">
+            <div class="absolute top-0 px-8 py-6 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-3xl">
                 @include ('hotel.partials.hotel-logo', ['hotel' => $hotel])
             </div>
 
@@ -19,6 +19,7 @@
             <form method="post" action="/createSession">
 
                 <input type="hidden" name="hotel_id" value="{{$hotel->id}}">
+                <input type="hidden" name="hotel_slug" value="{{$hotel->slug ?? $hotel->id}}">
                 @csrf
                 <div class="mt-2 max-w-[600px] mx-auto">
                     <x-input-label class="hotel-main-box-text-color open-sans" for="name" :value="__('Name')"/>

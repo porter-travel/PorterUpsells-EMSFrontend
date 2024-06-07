@@ -1,10 +1,18 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-start">
-            <img src="{{$hotel->logo}}" alt="hotel" class="h-[70px] rounded-3xl mr-2"/>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ $hotel->name }}
-            </h2>
+        <div class="flex items-center justify-between">
+            <div class="flex items-center justify-start">
+                <img src="{{$hotel->logo}}" alt="hotel" class="h-[70px] rounded-3xl mr-2"/>
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                    {{ $hotel->name }}
+                </h2>
+            </div>
+            <div>
+                <p id="confirmation-text">Your hotel link</p>
+            <input id="hotel-welcome-url" type="text" disabled
+                   value="{{env('APP_URL')}}/hotel/{{$hotel->slug}}/welcome">
+            <span class="copy-label cursor-pointer" onclick="copyToClipboard()">Copy</span>
+            </div>
         </div>
     </x-slot>
 
@@ -103,4 +111,35 @@
             </div>
         </div>
     </div>
+
+
+    <script>
+        function copyToClipboard() {
+            var copyText = document.getElementById("hotel-welcome-url");
+            var confirmationText = document.getElementById("confirmation-text");
+
+            // Create a temporary input to hold the text
+            var tempInput = document.createElement("input");
+            tempInput.value = copyText.value;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            tempInput.setSelectionRange(0, 99999); // For mobile devices
+
+            // Copy the text inside the temporary input
+            document.execCommand("copy");
+
+            // Remove the temporary input
+            document.body.removeChild(tempInput);
+
+            // Update the confirmation text
+            confirmationText.textContent = "Link copied to clipboard!";
+            confirmationText.classList.add("confirmation");
+
+            // Optionally, you can revert the confirmation text after a few seconds
+            setTimeout(function() {
+                confirmationText.textContent = "Your hotel link";
+                confirmationText.classList.remove("confirmation");
+            }, 3000);
+        }
+    </script>
 </x-app-layout>

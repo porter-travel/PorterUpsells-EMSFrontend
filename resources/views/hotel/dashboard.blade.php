@@ -47,7 +47,7 @@
 
         <div class="flex items-end justify-end py-3">
             <div class="bg-white border border-black rounded-lg px-3 py-1">
-                <a class="flex items-center justify-between relative" href="/hotel/{{$hotel->id}}/cart"
+                <a class="flex items-center justify-between relative" href="/hotel/{{$hotel->slug ?? $hotel->id}}/cart"
                    class="text-black">View
                     Cart
                     <img src="/img/icons/cart.svg" alt="cart" class="w-4 h-4 ml-2">
@@ -63,9 +63,9 @@
     <div class="container mx-auto">
         <div class="flex items-start flex-wrap  -mx-4 mt-4">
             @foreach($products as $product)
-                <a href="/hotel/{{$hotel->id}}/item/{{$product->id}}"
+                <a href="/hotel/{{$hotel->slug ?? $hotel->id}}/item/{{$product->id}}"
                    class="flex items-start justify-between flex-col basis-1/2 md:basis-1/3 lg:basis-1/4 w-1/2 px-4 mb-4">
-                    <div>
+                    <div class="w-full mb-2">
                         @include ('hotel.partials.product-image', ['item' => $product])                    </div>
                     <div>
                         <h3 class="hotel-text-color open-sans text-sm md:text-xl">{{$product->name}}</h3>

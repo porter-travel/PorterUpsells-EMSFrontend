@@ -29,8 +29,12 @@ class CheckoutController extends Controller
         $email_address = session()->get('email_address');
 
         $order = new Order();
-
-        $order->hotel_id = $hotel_id;
+        if (is_numeric($hotel_id)) {
+            $order->hotel_id = $hotel_id;
+        } else {
+            $hotel = Hotel::where('slug', $hotel_id)->first();
+            $order->hotel_id = $hotel->id;
+        }
         $order->name = $name;
         $order->email = $email_address;
         $order->arrival_date = $arrival_date;
@@ -62,7 +66,6 @@ class CheckoutController extends Controller
                 $OrderItem->product_type = $item['product_type'];
 
                 $OrderItem->save();
-
 
 
                 //This $items array is the one we send to Stripe
@@ -145,7 +148,7 @@ class CheckoutController extends Controller
         http_response_code(200);
 
         if ($event->type == 'checkout.session.completed') {
-            if($event->data->object->metadata->payment_type === 'hotel_item_order') {
+            if ($event->data->object->metadata->payment_type === 'hotel_item_order') {
                 $session = \Stripe\Checkout\Session::retrieve([
                     'id' => $event->data->object->id,
                     'expand' => ['line_items'],

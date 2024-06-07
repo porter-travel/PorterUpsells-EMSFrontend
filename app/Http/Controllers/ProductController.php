@@ -12,7 +12,13 @@ class ProductController extends Controller
     public function show($hotel_id, $item_id, Request $request)
     {
 
-        $hotel = Hotel::find($hotel_id);
+        if (is_numeric($hotel_id)) {
+            $hotel = Hotel::find($hotel_id);
+        } else {
+            $hotel = Hotel::where('slug', $hotel_id)->first();
+        }
+
+
         $product = Product::find($item_id);
         $variations = $product->variations;
 

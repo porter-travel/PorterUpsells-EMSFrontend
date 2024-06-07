@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Hotel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -11,7 +12,12 @@ class HotelController extends Controller
     function welcome(Request $request, $id)
     {
 
-        $hotel = \App\Models\Hotel::find($id);
+        if (is_numeric($id)) {
+            $hotel = Hotel::find($id);
+        } else {
+            $hotel = Hotel::where('slug', $id)->first();
+        }
+
         $name = '';
         $booking_ref = '';
         $arrival_date = '';
@@ -47,7 +53,11 @@ class HotelController extends Controller
 
         $cart = session()->get('cart');
 
-        $hotel = \App\Models\Hotel::find($id);
+        if (is_numeric($id)) {
+            $hotel = Hotel::find($id);
+        } else {
+            $hotel = Hotel::where('slug', $id)->first();
+        }
 
         $products = $hotel->products;
 
@@ -97,7 +107,7 @@ class HotelController extends Controller
     public function edit(Request $request, $id)
     {
         $hotel = \App\Models\Hotel::find($id);
-        if($hotel->user_id != auth()->user()->id){
+        if ($hotel->user_id != auth()->user()->id) {
             return redirect()->route('dashboard');
         }
         return view('admin.hotel.edit', ['hotel' => $hotel]);
@@ -115,31 +125,31 @@ class HotelController extends Controller
             $hotel->address = $request->address;
         }
 
-        if($request->page_background_color){
+        if ($request->page_background_color) {
             $hotel->page_background_color = $request->page_background_color;
         }
 
-        if($request->main_box_color){
+        if ($request->main_box_color) {
             $hotel->main_box_color = $request->main_box_color;
         }
 
-        if($request->main_box_text_color){
+        if ($request->main_box_text_color) {
             $hotel->main_box_text_color = $request->main_box_text_color;
         }
 
-        if($request->button_color){
+        if ($request->button_color) {
             $hotel->button_color = $request->button_color;
         }
 
-        if($request->accent_color){
+        if ($request->accent_color) {
             $hotel->accent_color = $request->accent_color;
         }
 
-        if($request->text_color){
+        if ($request->text_color) {
             $hotel->text_color = $request->text_color;
         }
 
-        if($request->button_text_color){
+        if ($request->button_text_color) {
             $hotel->button_text_color = $request->button_text_color;
         }
 

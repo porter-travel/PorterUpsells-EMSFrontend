@@ -9,6 +9,7 @@ class WelcomeController extends Controller
     public function createSession(Request $request){
 
         $hotel_id = $request->input('hotel_id');
+        $hotel_slug = $request->input('hotel_slug');
 
         $request->session()->put('name', $request->input('name'));
         $request->session()->put('booking_ref', $request->input('booking_ref'));
@@ -17,6 +18,6 @@ class WelcomeController extends Controller
         $request->session()->put('email_address', $request->input('email_address'));
         $request->session()->put('hotel_id', $hotel_id);
 
-        return redirect()->route('hotel.dashboard', ['id' => $hotel_id] );
+        return redirect()->route('hotel.dashboard', ['id' => $hotel_slug] );
     }
 }

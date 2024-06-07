@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Hotel;
 use App\Models\Variation;
 use Illuminate\Http\Request;
 
@@ -10,7 +11,11 @@ class CartController extends Controller
     function show($hotel_id)
     {
         $data['cart'] = session()->get('cart');
-        $hotel = \App\Models\Hotel::find($hotel_id);
+        if (is_numeric($hotel_id)) {
+            $hotel = Hotel::find($hotel_id);
+        } else {
+            $hotel = Hotel::where('slug', $hotel_id)->first();
+        }
         return view('cart.show', ['data' => $data, 'hotel' => $hotel])->with('hotel_id', $hotel_id);
     }
 

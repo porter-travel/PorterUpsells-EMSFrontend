@@ -6,12 +6,12 @@
     @include('hotel.partials.css-overrides', ['hotel' => $hotel])
 
     <div class="mt-28 ">
-        <div class="hotel-main-box-color box-shadow px-8 pt-12 pb-12 max-w-[667px] mx-auto rounded-3xl relative">
-            <div class="absolute -top-16 px-8 py-6 left-1/2 -translate-x-1/2 rounded-3xl">
+        <div class="hotel-main-box-color box-shadow px-8 pt-16 pb-12 max-w-[667px] mx-auto rounded-3xl relative">
+            <div class="absolute top-0 px-8 py-6 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-3xl">
                 @include ('hotel.partials.hotel-logo', ['hotel' => $hotel])
             </div>
 
-            <p class="hotel-main-box-text-color text-center open-sans text-2xl border-b border-darkGrey pb-6">
+            <p class="hotel-main-box-text-color text-center font-bold open-sans text-2xl border-b border-darkGrey pb-6">
                 Thank you for personalising your upcoming stay
             </p>
 
