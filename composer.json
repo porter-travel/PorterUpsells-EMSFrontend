@@ -73,7 +73,8 @@
         "allow-plugins": {
             "pestphp/pest-plugin": true,
             "php-http/discovery": true
-        }
+        },
+        "bin-dir": "bin"
     },
     "minimum-stability": "stable",
     "prefer-stable": true
