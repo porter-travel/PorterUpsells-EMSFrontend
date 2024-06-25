@@ -20,16 +20,12 @@ class AuthoriseTest extends TestCase
             "apiKey" => "3f3WkVeHuF1iwxTxeC8vn7oZYm00U3gu7d9jx6TQ",
             "host" => "https://api.stage.dev.high-level-software.com",
             //"host" => "https://api.high-level-software.com"
-        ];
-
-        $params =
-        [
             "token" => "e57ab82f1d2c9c43",
             "secret" => "6453fd736fea0b6190e27331a318a8f39da15d41013474417a78cf96858d8a2b"
         ];
         $Authorise = new Authorise($config);
-        $responseObject = $Authorise->call($params);
-        print_r($responseObject);
+        $this->assertCount(3,$Authorise->authParams);
 
     }
+
 }
