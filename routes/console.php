@@ -14,7 +14,4 @@ Schedule::command('orders:send-hotel-email-summary')
 //    ->dailyAt('20:00')
         ->everyMinute()
     ->timezone('Europe/London')
-    ->withoutOverlapping()
-    ->onOneServer()
-    ->runInBackground()
     ->description('Send the hotel email summary for the day.');
