@@ -11,7 +11,8 @@ Artisan::command('inspire', function () {
 
 
 Schedule::command('orders:send-hotel-email-summary')
-    ->dailyAt('20:00')
+//    ->dailyAt('20:00')
+        ->everyMinute()
     ->timezone('Europe/London')
     ->withoutOverlapping()
     ->onOneServer()
