@@ -67,12 +67,30 @@
                             <x-input-error :messages="$errors->get('name')" class="mt-2"/>
                         </div>
                         <div class="mt-4">
-                            <x-input-label class="text-black font-sans" for="name" :value="__('Address')"/>
+                            <x-input-label class="text-black font-sans" for="address" :value="__('Address')"/>
                             <x-text-input id="address" class="block mt-1 w-full p-4" type="text" name="address"
                                           :value="$hotel->address"
                                           required placeholder="Address"/>
                             <x-input-error :messages="$errors->get('address')" class="mt-2"/>
                         </div>
+
+                        <div class="mt-4">
+                            <x-input-label class="text-black font-sans" for="email_address" :value="__('Email Address')"/>
+                            <x-text-input id="email_address" class="block mt-1 w-full p-4" type="text" name="email_address"
+                                          :value="$hotel->email_address"
+                                          required placeholder="Email Address"/>
+                            <x-input-error :messages="$errors->get('email_address')" class="mt-2"/>
+                        </div>
+
+                        <div class="mt-4">
+                            <x-input-label class="text-black font-sans" for="email_address" :value="__('Hotel ID Within Integration Partner')"/>
+                            <x-text-input id="email_address" class="block mt-1 w-full p-4" type="text" name="id_for_integration"
+                                          :value="$hotel->id_for_integration"
+                                          required placeholder="Integration Partner ID"/>
+                            <x-input-error :messages="$errors->get('id_for_integration')" class="mt-2"/>
+                        </div>
+
+
                         <x-primary-button class="w-full justify-center mt-4">Update</x-primary-button>
 
                     </form>

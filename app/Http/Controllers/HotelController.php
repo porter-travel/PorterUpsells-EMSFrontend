@@ -125,6 +125,14 @@ class HotelController extends Controller
             $hotel->address = $request->address;
         }
 
+        if ($request->email_address) {
+            $hotel->email_address = $request->email_address;
+        }
+
+        if ($request->id_for_integration) {
+            $hotel->id_for_integration = $request->id_for_integration;
+        }
+
         if ($request->page_background_color) {
             $hotel->page_background_color = $request->page_background_color;
         }
