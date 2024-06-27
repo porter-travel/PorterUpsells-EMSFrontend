@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ConfigTest;
 use App\Models\Hotel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class HotelController extends Controller
@@ -46,6 +48,8 @@ class HotelController extends Controller
 
     function dashboard(Request $request, $id)
     {
+
+//        Mail::to('alex@gluestudio.co.uk')->send(new ConfigTest(json_encode([])));
 
         $data['name'] = $request->session()->get('name');
         $data['booking_ref'] = $request->session()->get('booking_ref');

@@ -22,10 +22,10 @@
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <div class="mb-6 flex items-end justify-start">
+                    <div class="mb-6 flex items-center justify-between">
                         <h2 class="text-2xl font-bold mr-2">Products</h2>
                         <a href="/admin/hotel/{{$hotel->id}}/product/create"
-                           class="text-black font-bold">Add Product</a>
+                           class="text-black font-bold border rounded-xl p-4 hover:bg-mint">Add Product + </a>
                     </div>
                     @if(count($hotel->products) > 0)
 
@@ -33,7 +33,7 @@
                             <div class="flex items-center justify-between mb-2 border-b border-b-black py-1">
                                 <a class="flex items-center justify-start"
                                    href="/admin/hotel/{{$hotel->id}}/product/{{$product->id}}/edit">
-                                    <div class="max-w-[70px]">
+                                    <div class="max-w-[70px] mr-4">
                                         @include ('hotel.partials.product-image', ['item' => $product])
                                     </div>
 
