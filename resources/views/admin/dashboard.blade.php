@@ -25,7 +25,8 @@
                                             </div>
                                     </a>
 
-                                    <a class="pl-4" href="{{route('orders.listItemsForPicking', $hotel->id)}}">View Orders</a>
+                                    <a class="pl-4" href="{{route('orders.listItemsForPicking', $hotel->id)}}">View Orders</a><br>
+                                    <a class="pl-4" href="{{route('bookings.list', $hotel->id)}}">View Guests</a>
                                 </div>
                             @endforeach
 
