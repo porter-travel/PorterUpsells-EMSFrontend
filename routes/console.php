@@ -15,3 +15,7 @@ Schedule::command('orders:send-hotel-email-summary')
 //        ->everyMinute()
     ->timezone('Europe/London')
     ->description('Send the hotel email summary for the day.');
+
+Schedule::command('emails:send-scheduled')
+    ->everyMinute()
+    ->description('Send scheduled emails.');

@@ -16,6 +16,8 @@ class CustomerEmail extends Mailable
 
     public $subject = '';
 
+    public $days = '';
+
     /**
      * Create a new message instance.
      */
@@ -24,12 +26,9 @@ class CustomerEmail extends Mailable
         //Calculate the number of days between now and the arrival date
 
         $arrivalDate = new \DateTime($content['arrival_date']);
-        $now = new \DateTime();
-        $interval = $now->diff($arrivalDate);
-        $days = $interval->format('%a');
-//        dd($days);
-        $days = $days == 1 ? ' 1 day' : ' ' . $days . ' days';
-        $this->subject = $content['guest_name'] . ', there’s just ' .  $days . ' left to personalise your upcoming stay at ' . $hotel->name;
+        $days = (strtotime($content['arrival_date']) - strtotime(date('Y-m-d'))) / (60 * 60 * 24);
+        $days == 1 ? $this->days = '1 day' : $this->days = $days . ' days';
+        $this->subject = $content['guest_name'] . ', there’s just ' .  $this->days . ' left to personalise your upcoming stay at ' . $hotel->name;
     }
 
     /**
@@ -49,7 +48,7 @@ class CustomerEmail extends Mailable
     {
         return new Content(
             view: 'email.customer-email',
-            with: ['hotel' => $this->hotel, 'content' => $this->content]
+            with: ['hotel' => $this->hotel, 'content' => $this->content, 'days' => $this->days]
         );
     }
 

@@ -146,7 +146,7 @@
                     <tr>
                         <td style="padding: 16px">
                             <p style="font-weight: 700">Hi {{$content['guest_name']}},</p>
-                            <p>We can’t wait to welcome you to {{$hotel->name}} in just 12 days.</p>
+                            <p>We can’t wait to welcome you to {{$hotel->name}} in just {{$days}}.</p>
 
                             <p>To make sure you have the best experience possible, we’ve partnered with Enhance My Stay
                                 to give you the opportunity to personalise your hotel experience with us. </p>
