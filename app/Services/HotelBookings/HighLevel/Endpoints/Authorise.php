@@ -28,8 +28,6 @@ class Authorise extends HighlevelEndpoint
      function call(array $params) : void
      {
          $endpoint = "/api/v1/authentication/login";
-
-
          $response = $this->client->request('POST', $endpoint,['json' => $params]);
          $responseString = $response->getBody();
          $responseObject = json_decode($responseString);
