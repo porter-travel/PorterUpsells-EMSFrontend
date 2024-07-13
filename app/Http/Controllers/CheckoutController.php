@@ -166,8 +166,18 @@ class CheckoutController extends Controller
                 $order->save();
 
                 Mail::to($session->customer_details->email, $session->metadata->name)->send(new OrderConfirmation($order));
+//                Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($payload)));
+
+
+                //Cancel any Scheduled Emails for the customer
+
+                $controller = new CustomerEmailController();
+                $controller->cancelScheduledEmails($order);
+
+
 
                 session()->forget('cart');
+
 
                 return response()->json(['success' => 'Order created successfully']);
             } else {

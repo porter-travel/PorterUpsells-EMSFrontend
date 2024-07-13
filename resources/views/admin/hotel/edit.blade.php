@@ -22,10 +22,10 @@
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <div class="mb-6 flex items-end justify-start">
+                    <div class="mb-6 flex items-center justify-between">
                         <h2 class="text-2xl font-bold mr-2">Products</h2>
                         <a href="/admin/hotel/{{$hotel->id}}/product/create"
-                           class="text-black font-bold">Add Product</a>
+                           class="text-black font-bold border rounded-xl p-4 hover:bg-mint">Add Product + </a>
                     </div>
                     @if(count($hotel->products) > 0)
 
@@ -33,7 +33,7 @@
                             <div class="flex items-center justify-between mb-2 border-b border-b-black py-1">
                                 <a class="flex items-center justify-start"
                                    href="/admin/hotel/{{$hotel->id}}/product/{{$product->id}}/edit">
-                                    <div class="max-w-[70px]">
+                                    <div class="max-w-[70px] mr-4">
                                         @include ('hotel.partials.product-image', ['item' => $product])
                                     </div>
 
@@ -67,12 +67,30 @@
                             <x-input-error :messages="$errors->get('name')" class="mt-2"/>
                         </div>
                         <div class="mt-4">
-                            <x-input-label class="text-black font-sans" for="name" :value="__('Address')"/>
+                            <x-input-label class="text-black font-sans" for="address" :value="__('Address')"/>
                             <x-text-input id="address" class="block mt-1 w-full p-4" type="text" name="address"
                                           :value="$hotel->address"
                                           required placeholder="Address"/>
                             <x-input-error :messages="$errors->get('address')" class="mt-2"/>
                         </div>
+
+                        <div class="mt-4">
+                            <x-input-label class="text-black font-sans" for="email_address" :value="__('Email Address')"/>
+                            <x-text-input id="email_address" class="block mt-1 w-full p-4" type="text" name="email_address"
+                                          :value="$hotel->email_address"
+                                          required placeholder="Email Address"/>
+                            <x-input-error :messages="$errors->get('email_address')" class="mt-2"/>
+                        </div>
+
+                        <div class="mt-4">
+                            <x-input-label class="text-black font-sans" for="email_address" :value="__('Hotel ID Within Integration Partner')"/>
+                            <x-text-input id="email_address" class="block mt-1 w-full p-4" type="text" name="id_for_integration"
+                                          :value="$hotel->id_for_integration"
+                                          required placeholder="Integration Partner ID"/>
+                            <x-input-error :messages="$errors->get('id_for_integration')" class="mt-2"/>
+                        </div>
+
+
                         <x-primary-button class="w-full justify-center mt-4">Update</x-primary-button>
 
                     </form>

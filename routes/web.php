@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WelcomeController;
+use App\Models\Hotel;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -30,6 +31,12 @@ Route::post('/checkout/stripe/checkoutSessionWebhook', [\App\Http\Controllers\Ch
 
 Route::get('/dashboard', [\App\Http\Controllers\AdminController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 
+
+Route::get('/view-customer-email', function(){
+    $hotel = Hotel::find(1);
+//    dd($hotel);
+    return view('email.customer-email', ['hotel' => $hotel]);
+});
 Route::middleware(['auth', 'verified'])->group(function(){
     Route::get('/dashboard', [\App\Http\Controllers\AdminController::class, 'dashboard'])->name('dashboard');
 
@@ -48,6 +55,14 @@ Route::middleware(['auth', 'verified'])->group(function(){
     Route::post('admin/order-item/{id}/update', [\App\Http\Controllers\OrderItemController::class, 'update'] )->name('orderItem.update');
     Route::post('admin/product/store', [\App\Http\Controllers\ProductController::class, 'store'] )->name('product.store');
     Route::post('admin/product/update', [\App\Http\Controllers\ProductController::class, 'update'] )->name('product.update');
+
+    Route::get('admin/hotel/{id}/create-booking', [\App\Http\Controllers\BookingController::class, 'create'] )->name('booking.create');
+    Route::post('admin/hotel/{id}/store-booking', [\App\Http\Controllers\BookingController::class, 'store'] )->name('booking.store');
+    Route::get('admin/hotel/{id}/list-bookings', [\App\Http\Controllers\BookingController::class, 'list'] )->name('bookings.list');
+
+
+
+    Route::post('/admin/hotel/{id}/email/send-customer-email', [\App\Http\Controllers\CustomerEmailController::class, 'send'] )->name('email.send');
 });
 
 Route::middleware('auth')->group(function () {

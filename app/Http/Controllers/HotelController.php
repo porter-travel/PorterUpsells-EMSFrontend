@@ -2,50 +2,63 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ConfigTest;
 use App\Models\Hotel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\WelcomeController;
 
 class HotelController extends Controller
 {
 
-    function welcome(Request $request, $id)
+    public function welcome(Request $request, $id)
     {
-
         if (is_numeric($id)) {
             $hotel = Hotel::find($id);
         } else {
             $hotel = Hotel::where('slug', $id)->first();
         }
 
-        $name = '';
-        $booking_ref = '';
-        $arrival_date = '';
-        $departure_date = '';
-        $email_address = '';
+        $name = $request->input('name', '');
+        $booking_ref = $request->input('booking_ref', '');
+        $arrival_date = $request->input('arrival_date', '');
+        $departure_date = $request->input('departure_date', '');
+        $email_address = $request->input('email_address', '');
 
-        if ($request->has('name')) {
-            $name = $request->input('name');
+        // Check if all required pieces of information are present
+        if ($name && $arrival_date && $departure_date && $email_address) {
+            // Create a new request with the needed data
+            $newRequest = $request->duplicate([
+                'hotel_id' => $hotel->id ?? null,
+                'hotel_slug' => $hotel->slug ?? null,
+                'name' => $name,
+                'booking_ref' => $booking_ref,
+                'arrival_date' => $arrival_date,
+                'departure_date' => $departure_date,
+                'email_address' => $email_address,
+            ]);
+
+            // Call the createSession method from AnotherController
+            return app(WelcomeController::class)->createSession($newRequest);
         }
 
-        if ($request->has('arrival_date')) {
-            $arrival_date = $request->input('arrival_date');
-        }
-
-        if ($request->has('departure_date')) {
-            $departure_date = $request->input('departure_date');
-        }
-
-        if ($request->has('email_address')) {
-            $email_address = $request->input('email_address');
-        }
-
-        return view('hotel.welcome')->with(['hotel' => $hotel, 'name' => $name, 'booking_ref' => $booking_ref, 'arrival_date' => $arrival_date, 'email_address' => $email_address, 'departure_date' => $departure_date]);
+        return view('hotel.welcome')->with([
+            'hotel' => $hotel,
+            'name' => $name,
+            'booking_ref' => $booking_ref,
+            'arrival_date' => $arrival_date,
+            'email_address' => $email_address,
+            'departure_date' => $departure_date
+        ]);
     }
+
 
 
     function dashboard(Request $request, $id)
     {
+
+//        Mail::to('alex@gluestudio.co.uk')->send(new ConfigTest(json_encode([])));
 
         $data['name'] = $request->session()->get('name');
         $data['booking_ref'] = $request->session()->get('booking_ref');
@@ -123,6 +136,14 @@ class HotelController extends Controller
 
         if ($request->address) {
             $hotel->address = $request->address;
+        }
+
+        if ($request->email_address) {
+            $hotel->email_address = $request->email_address;
+        }
+
+        if ($request->id_for_integration) {
+            $hotel->id_for_integration = $request->id_for_integration;
         }
 
         if ($request->page_background_color) {
