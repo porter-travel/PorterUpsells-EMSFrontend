@@ -18,6 +18,6 @@ class AdminController extends Controller
         if($user->account_status === 'pending'){
             return view('admin.pending-dashboard', ['user' => $user]);
         }
-        return view('admin.dashboard', ['hotels' => $hotels]);
+        return view('admin.dashboard', ['hotels' => $hotels, 'user' => $user]);
     }
 }
