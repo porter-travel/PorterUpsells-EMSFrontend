@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\CustomerEmail;
+use App\Models\Booking;
 use App\Models\Hotel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -25,49 +26,36 @@ class CustomerEmailController extends Controller
         $email_address = $request->email_address;
         $booking_ref = $request->booking_ref;
 
-        $content = compact( 'guest_name', 'arrival_date', 'departure_date', 'booking_ref', 'email_address');
-
+        $content = compact('guest_name', 'arrival_date', 'departure_date', 'booking_ref', 'email_address');
 
 
         // Send email
-         Mail::to($email_address)->send(new CustomerEmail($hotel, $content));
+        Mail::to($email_address)->send(new CustomerEmail($hotel, $content));
 
         return redirect()->back()->with('success', 'Email sent successfully');
     }
 
     public function cancelScheduledEmails($order)
     {
-        // First, try to find emails by booking_ref
-        $emails = CustomerEmail::whereHas('booking', function ($query) use ($order) {
-            $query->where('booking_ref', $order->booking_ref);
-        })
-            ->whereNull('sent_at')
-            ->get();
+        if ($order->booking_ref)
+            $booking = Booking::where('booking_ref', $order->booking_ref)->first();
 
-        // If no emails found, try to find by arrival_date and email
-        if ($emails->isEmpty()) {
-            $emails = CustomerEmail::whereHas('booking', function ($query) use ($order) {
-                $query->where('arrival_date', $order->arrival_date)
-                    ->where('email_address', $order->email);
-            })
-                ->whereNull('sent_at')
-                ->get();
-        }
+        if (!$booking)
+            $booking = Booking::where('arrival_date', $order->arrival_date)->first();
 
-        // If still no emails found, try to find by departure_date and email
-        if ($emails->isEmpty()) {
-            $emails = CustomerEmail::whereHas('booking', function ($query) use ($order) {
-                $query->where('departure_date', $order->departure_date)
-                    ->where('email_address', $order->email);
-            })
-                ->whereNull('sent_at')
-                ->get();
-        }
+        if (!$booking)
+            $booking = Booking::where('departure_date', $order->departure_date)->first();
 
-        // Delete any found emails
-        if (!$emails->isEmpty()) {
-            CustomerEmail::destroy($emails->pluck('id'));
+        if (!$booking)
+            $booking = Booking::where('email_address', $order->email)->first();
+
+        if(!$booking)
+            return;
+
+        $unsentEmails = $booking->unsentCustomerEmails();
+
+        foreach ($unsentEmails as $email) {
+            $email->delete();
         }
     }
-
 }

@@ -20,4 +20,9 @@ class Booking extends Model
     {
         return $this->hasMany(CustomerEmail::class);
     }
+
+    public function unsentCustomerEmails()
+    {
+        return $this->customerEmails()->whereNull('sent_at')->get();
+    }
 }
