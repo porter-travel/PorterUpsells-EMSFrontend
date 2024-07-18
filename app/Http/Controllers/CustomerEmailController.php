@@ -37,6 +37,9 @@ class CustomerEmailController extends Controller
 
     public function cancelScheduledEmails($order)
     {
+
+        $booking = null;
+
         if ($order->booking_ref)
             $booking = Booking::where('booking_ref', $order->booking_ref)->first();
 
