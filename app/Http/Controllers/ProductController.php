@@ -107,7 +107,7 @@ $dateArray = $this->getDatesInRange($arrivalDate, $departureDate);
             ]);
         }
 
-        return redirect()->route('hotel.dashboard', ['id' => $request->hotel_id]);
+        return redirect()->route('hotel.edit', ['id' => $request->hotel_id]);
     }
 
     public function update(Request $request)

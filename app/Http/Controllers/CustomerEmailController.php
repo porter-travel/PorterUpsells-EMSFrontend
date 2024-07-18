@@ -37,13 +37,13 @@ class CustomerEmailController extends Controller
 
     public function cancelScheduledEmails($order)
     {
-        if($order->booking_ref) {
+//        if($order->booking_ref) {
             // First, try to find emails by booking_ref
             $emails = DB::table('customer_emails')
                 ->where('booking_ref', $order->booking_ref)
                 ->whereNull('sent_at')
                 ->get();
-        }
+//        }
 
         // If no emails found, try to find by arrival_date and email
         if ($emails->isEmpty()) {

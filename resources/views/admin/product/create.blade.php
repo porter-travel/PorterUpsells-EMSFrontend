@@ -35,7 +35,7 @@
 
                         <div class="mt-4">
                             <x-input-label class="text-black font-sans" for="image" :value="__('Image')"/>
-                            <input type="file" name="image" id="image">
+                            <input type="file" required name="image" id="image">
                         </div>
 
 
