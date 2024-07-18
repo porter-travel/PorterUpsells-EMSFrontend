@@ -34,7 +34,9 @@
 
                                 <p>Date: {{ \Carbon\Carbon::parse($item['date'])->format('jS M') }}</p>
                                 <p class="cart-product-subtotal text-xl font-bold">
-                                    £{{$item['price'] * $item['quantity']}}</p>
+                                    <x-money-display :amount="$item['price'] * $item['quantity']"
+                                                     :currency="$hotel->user->currency"></x-money-display>
+                                   </p>
 
                             </div>
                         </div>

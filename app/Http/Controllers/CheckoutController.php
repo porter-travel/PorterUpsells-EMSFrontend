@@ -71,7 +71,7 @@ class CheckoutController extends Controller
                 //This $items array is the one we send to Stripe
                 $items[] = [
                     'price_data' => [
-                        'currency' => 'gbp',
+                        'currency' => $hotel->user->currency,
                         'product_data' => [
                             'name' => $item['product_name'],
                             'description' => $item['variation_name'],

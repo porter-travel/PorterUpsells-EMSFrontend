@@ -17,4 +17,14 @@ class Money{
         return self::format(self::addTax($price));
     }
 
+    static function lookupCurrencySymbol($code){
+        $symbols = [
+            'gbp' => '£',
+            'usd' => '$',
+            'eur' => '€'
+        ];
+
+        return $symbols[$code];
+    }
+
 }

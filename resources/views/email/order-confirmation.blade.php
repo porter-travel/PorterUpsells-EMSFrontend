@@ -126,7 +126,11 @@
                                                             </td>
                                                             <td style="padding-left: 5px">
                                                                 <p><strong>{{$item['product_name']}}</strong></p>
-                                                                <p>£{{$item['price']}}</p>
+                                                                <p>
+                                                                    <x-money-display :amount="$item['price']"
+                                                                                     :currency="$order->hotel->user->currency"></x-money-display>
+
+                                                                </p>
                                                                 @if($item['variation_name'])
                                                                     <p>Options: {{$item['variation_name']}}</p>
                                                                 @endif
