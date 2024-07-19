@@ -99,7 +99,7 @@ class CheckoutController extends Controller
             ],
             'payment_intent_data' => [
                 //Take 0.4% of the order total for the application fee
-                'application_fee_amount' => round(($order->total * 0.004) * 100, 0),
+                'application_fee_amount' => round(($order->total * 0.035) * 100, 0),
                 'transfer_data' => ['destination' => $hotel->user->stripe_account_number],
             ],
             'customer_email' => $email_address,
