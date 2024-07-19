@@ -139,21 +139,21 @@ class CheckoutController extends Controller
                 $payload, $sig_header, $endpoint_secret
             );
         }
-//        catch (\UnexpectedValueException $e) {
-//            // Invalid payload
-//            Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($e)));
-//            http_response_code(400);
-//            exit();
-//        } catch (\Stripe\Exception\SignatureVerificationException $e) {
-//            // Invalid signature
-//            Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($e)));
-//            http_response_code(400);
-//            exit();
-//        }
+        catch (\UnexpectedValueException $e) {
+            // Invalid payload
+            Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($e)));
+            http_response_code(400);
+            exit();
+        } catch (\Stripe\Exception\SignatureVerificationException $e) {
+            // Invalid signature
+            Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($e)));
+            http_response_code(400);
+            exit();
+        }
         catch (\Exception $e) {
 
-            Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($stripe_secret_key)));
-            Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($endpoint_secret)));
+//            Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($stripe_secret_key)));
+//            Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($endpoint_secret)));
             Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($e)));
             Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($event)));
             http_response_code(400);
