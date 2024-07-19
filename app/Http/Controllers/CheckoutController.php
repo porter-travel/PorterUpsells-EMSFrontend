@@ -127,7 +127,8 @@ class CheckoutController extends Controller
     {
 
         $endpoint_secret = env('STRIPE_WEBHOOK_SECRET');
-        \Stripe\Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
+        $stripe_secret_key = env('STRIPE_SECRET_KEY');
+        \Stripe\Stripe::setApiKey($stripe_secret_key);
 
         $payload = @file_get_contents('php://input');
         $sig_header = $_SERVER['HTTP_STRIPE_SIGNATURE'];
@@ -150,6 +151,9 @@ class CheckoutController extends Controller
 //            exit();
 //        }
         catch (\Exception $e) {
+
+            Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($stripe_secret_key)));
+            Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($endpoint_secret)));
             Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($e)));
             Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($event)));
             http_response_code(400);
