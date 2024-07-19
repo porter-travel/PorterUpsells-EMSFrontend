@@ -137,14 +137,21 @@ class CheckoutController extends Controller
             $event = \Stripe\Webhook::constructEvent(
                 $payload, $sig_header, $endpoint_secret
             );
-        } catch (\UnexpectedValueException $e) {
-            // Invalid payload
+        }
+//        catch (\UnexpectedValueException $e) {
+//            // Invalid payload
+//            Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($e)));
+//            http_response_code(400);
+//            exit();
+//        } catch (\Stripe\Exception\SignatureVerificationException $e) {
+//            // Invalid signature
+//            Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($e)));
+//            http_response_code(400);
+//            exit();
+//        }
+        catch (\Exception $e) {
             Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($e)));
-            http_response_code(400);
-            exit();
-        } catch (\Stripe\Exception\SignatureVerificationException $e) {
-            // Invalid signature
-            Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($e)));
+            Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($event)));
             http_response_code(400);
             exit();
         }
