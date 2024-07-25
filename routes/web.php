@@ -60,9 +60,11 @@ Route::middleware(['auth', 'verified'])->group(function(){
     Route::post('admin/hotel/{id}/store-booking', [\App\Http\Controllers\BookingController::class, 'store'] )->name('booking.store');
     Route::get('admin/hotel/{id}/list-bookings', [\App\Http\Controllers\BookingController::class, 'list'] )->name('bookings.list');
 
-
-
     Route::post('/admin/hotel/{id}/email/send-customer-email', [\App\Http\Controllers\CustomerEmailController::class, 'send'] )->name('email.send');
+
+    Route::post('/admin/create-connected-account', [\App\Http\Controllers\StripeController::class, 'create_connected_account'])->name('connected-account.create');
+    Route::get('/admin/create-connected-account/return', [\App\Http\Controllers\StripeController::class, 'return_connected_account'])->name('connected-account.return');
+    Route::get('/admin/create-connected-account/refresh', [\App\Http\Controllers\StripeController::class, 'refresh_connected_account'])->name('connected-account.refresh');
 });
 
 Route::middleware('auth')->group(function () {

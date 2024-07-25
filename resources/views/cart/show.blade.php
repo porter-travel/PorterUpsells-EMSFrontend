@@ -53,12 +53,17 @@
                                                 @endif
 
                                                 <p>Date: {{ \Carbon\Carbon::parse($item['date'])->format('jS M') }}</p>
-                                                <p class=" md:hidden">£{{$item['price']}}</p>
+                                                <p class=" md:hidden">
+                                                    <x-money-display :amount="$item['price']"
+                                                                                       :currency="$hotel->user->currency"></x-money-display>
+                                                </p>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="hidden md:block md:w-[20%]">
-                                        <p class="text-xl">£{{$item['price']}}</p>
+                                        <p class="text-xl">
+                                            <x-money-display :amount="$item['price']"
+                                                             :currency="$hotel->user->currency"></x-money-display></p>
                                     </div>
                                     <div class="md:w-[20%]">
                                         <div class="w-[100px] text-black">
@@ -71,7 +76,10 @@
                                     </div>
                                     <div class="md:w-[20%] hidden md:block">
                                         <p class=" cart-product-subtotal text-xl font-bold">
-                                            £{{$item['price'] * $item['quantity']}}</p>
+
+                                            <x-money-display :amount="$item['price'] * $item['quantity']"
+                                                             :currency="$hotel->user->currency"></x-money-display>
+                                        </p>
 
                                         <div class="flex items-center">
                                             <a class="remove-from-cart ml-4 absolute bottom-0" data-key="{{$key}}"
@@ -101,7 +109,9 @@
                     <tr class=" hotel-text-color">
                         <td class="p-2 md:text-3xl">Total</td>
                         <td class="p-2 md:text-3xl font-bold text-right" id="cartTotal">
-                            £{{App\Helpers\Money::format($data['cart']['total'])}}</td>
+                            <x-money-display :amount="$data['cart']['total']"
+                                             :currency="$hotel->user->currency"></x-money-display>
+                            </td>
                     </tr>
                     </tbody>
                 </table>

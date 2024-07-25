@@ -15,27 +15,31 @@
                         <input type="hidden" name="hotel_id" value="{{$hotel->id}}">
                         <div class="mt-4">
                             <x-input-label class="text-black font-sans" for="name" :value="__('Name')"/>
-                            <x-text-input id="name" class="block mt-1 w-full p-4" type="text" name="name" :value="old('name')"
+                            <x-text-input id="name" class="block mt-1 w-full p-4" type="text" name="name"
+                                          :value="old('name')"
                                           required placeholder="Name"/>
                             <x-input-error :messages="$errors->get('name')" class="mt-2"/>
                         </div>
 
                         <div class="mt-4">
-                            <x-input-label class="text-black font-sans" for="price" :value="__('Price')"/>
-                            <x-text-input id="price" class="block mt-1 w-full p-4" type="number" name="price" :value="old('price')"
+                            <x-input-label class="text-black font-sans" for="price"
+                                           :value="__('Price (' . \App\Helpers\Money::lookupCurrencySymbol(auth()->user()->currency) . ')')"/>
+                            <x-text-input id="price" class="block mt-1 w-full p-4" type="number" name="price"
+                                          :value="old('price')"
                                           required step=".01" placeholder="12.34"/>
                             <x-input-error :messages="$errors->get('price')" class="mt-2"/>
                         </div>
                         <div class="mt-4">
                             <x-input-label class="text-black font-sans" for="name" :value="__('Description')"/>
-                            <textarea id="description" class="block mt-1 w-full p-4 rounded-md" type="text" name="description" value="{{old('description')}}"
-                                          required></textarea>
+                            <textarea id="description" class="block mt-1 w-full p-4 rounded-md" type="text"
+                                      name="description" value="{{old('description')}}"
+                                      required></textarea>
                             <x-input-error :messages="$errors->get('description')" class="mt-2"/>
                         </div>
 
                         <div class="mt-4">
                             <x-input-label class="text-black font-sans" for="image" :value="__('Image')"/>
-                            <input type="file" name="image" id="image">
+                            <input type="file" required name="image" id="image">
                         </div>
 
 

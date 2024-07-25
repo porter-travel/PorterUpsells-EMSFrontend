@@ -7,6 +7,16 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+
+            @if(!$user->stripe_account_active)
+                <div class="p-4 sm:p-8 bg-pink shadow sm:rounded-lg">
+                    <div class="max-w-xl">
+                        @include('profile.partials.create-connected-account-form')
+
+                    </div>
+                </div>
+            @endif
+
             <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                 <div class="max-w-xl">
                     @include('profile.partials.update-profile-information-form')
@@ -22,7 +32,8 @@
             <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                 <div class="max-w-xl">
                     <a href="https://billing.stripe.com/p/login/cN2aF2996gkpbGEdQQ">
-                        <x-primary-button>Manage Subscription</x-primary-button></a>
+                        <x-primary-button>Manage Subscription</x-primary-button>
+                    </a>
                 </div>
             </div>
 

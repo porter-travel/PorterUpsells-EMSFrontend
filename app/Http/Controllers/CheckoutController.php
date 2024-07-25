@@ -71,7 +71,7 @@ class CheckoutController extends Controller
                 //This $items array is the one we send to Stripe
                 $items[] = [
                     'price_data' => [
-                        'currency' => 'gbp',
+                        'currency' => $hotel->user->currency,
                         'product_data' => [
                             'name' => $item['product_name'],
                             'description' => $item['variation_name'],
@@ -96,6 +96,11 @@ class CheckoutController extends Controller
             'payment_method_types' => ['card'],
             'line_items' => [
                 $items
+            ],
+            'payment_intent_data' => [
+                //Take 0.4% of the order total for the application fee
+                'application_fee_amount' => round(($order->total * 0.035) * 100, 0),
+                'transfer_data' => ['destination' => $hotel->user->stripe_account_number],
             ],
             'customer_email' => $email_address,
             'mode' => 'payment',
@@ -122,7 +127,8 @@ class CheckoutController extends Controller
     {
 
         $endpoint_secret = env('STRIPE_WEBHOOK_SECRET');
-        \Stripe\Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
+        $stripe_secret_key = env('STRIPE_SECRET_KEY');
+        \Stripe\Stripe::setApiKey($stripe_secret_key);
 
         $payload = @file_get_contents('php://input');
         $sig_header = $_SERVER['HTTP_STRIPE_SIGNATURE'];
@@ -132,7 +138,8 @@ class CheckoutController extends Controller
             $event = \Stripe\Webhook::constructEvent(
                 $payload, $sig_header, $endpoint_secret
             );
-        } catch (\UnexpectedValueException $e) {
+        }
+        catch (\UnexpectedValueException $e) {
             // Invalid payload
             Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($e)));
             http_response_code(400);
@@ -140,6 +147,15 @@ class CheckoutController extends Controller
         } catch (\Stripe\Exception\SignatureVerificationException $e) {
             // Invalid signature
             Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($e)));
+            http_response_code(400);
+            exit();
+        }
+        catch (\Exception $e) {
+
+//            Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($stripe_secret_key)));
+//            Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($endpoint_secret)));
+            Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($e)));
+            Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($event)));
             http_response_code(400);
             exit();
         }

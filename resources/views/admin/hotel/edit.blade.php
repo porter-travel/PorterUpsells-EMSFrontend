@@ -9,9 +9,9 @@
             </div>
             <div>
                 <p id="confirmation-text">Your hotel link</p>
-            <input id="hotel-welcome-url" type="text" disabled
-                   value="{{env('APP_URL')}}/hotel/{{$hotel->slug}}/welcome">
-            <span class="copy-label cursor-pointer" onclick="copyToClipboard()">Copy</span>
+                <input id="hotel-welcome-url" type="text" disabled
+                       value="{{env('APP_URL')}}/hotel/{{$hotel->slug}}/welcome">
+                <span class="copy-label cursor-pointer" onclick="copyToClipboard()">Copy</span>
             </div>
         </div>
     </x-slot>
@@ -39,7 +39,10 @@
 
                                     <p class="mr-2">{{$product->name}}</p>
                                 </a>
-                                <p class="mr-2">£{{$product->price}}</p>
+
+                                <p class="mr-2">
+                                    <x-money-display :amount="$product->price" :currency="auth()->user()->currency"/>
+                                </p>
                             </div>
 
                         @endforeach
@@ -75,16 +78,20 @@
                         </div>
 
                         <div class="mt-4">
-                            <x-input-label class="text-black font-sans" for="email_address" :value="__('Email Address')"/>
-                            <x-text-input id="email_address" class="block mt-1 w-full p-4" type="text" name="email_address"
+                            <x-input-label class="text-black font-sans" for="email_address"
+                                           :value="__('Email Address')"/>
+                            <x-text-input id="email_address" class="block mt-1 w-full p-4" type="text"
+                                          name="email_address"
                                           :value="$hotel->email_address"
                                           required placeholder="Email Address"/>
                             <x-input-error :messages="$errors->get('email_address')" class="mt-2"/>
                         </div>
 
                         <div class="mt-4">
-                            <x-input-label class="text-black font-sans" for="email_address" :value="__('Hotel ID Within Integration Partner')"/>
-                            <x-text-input id="email_address" class="block mt-1 w-full p-4" type="text" name="id_for_integration"
+                            <x-input-label class="text-black font-sans" for="email_address"
+                                           :value="__('Hotel ID Within Integration Partner')"/>
+                            <x-text-input id="email_address" class="block mt-1 w-full p-4" type="text"
+                                          name="id_for_integration"
                                           :value="$hotel->id_for_integration"
                                           required placeholder="Integration Partner ID"/>
                             <x-input-error :messages="$errors->get('id_for_integration')" class="mt-2"/>
@@ -154,7 +161,7 @@
             confirmationText.classList.add("confirmation");
 
             // Optionally, you can revert the confirmation text after a few seconds
-            setTimeout(function() {
+            setTimeout(function () {
                 confirmationText.textContent = "Your hotel link";
                 confirmationText.classList.remove("confirmation");
             }, 3000);
