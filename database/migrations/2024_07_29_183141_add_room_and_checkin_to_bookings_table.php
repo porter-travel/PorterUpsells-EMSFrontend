@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('bookings', function (Blueprint $table) {
             $table->string('room')->nullable();
-            $table->time('checkin')->nullable();
+            $table->dateTime('checkin')->nullable();
         });
     }
 
