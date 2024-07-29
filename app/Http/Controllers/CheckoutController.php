@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\ConfigTest;
 use App\Mail\OrderConfirmation;
+use App\Models\Booking;
 use App\Models\Hotel;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -20,21 +21,52 @@ class CheckoutController extends Controller
     public function initiateCheckout($hotel_id)
     {
 
+        if (is_numeric($hotel_id)) {
+            $the_hotel_id = $hotel_id;
+        } else {
+            $hotel = Hotel::where('slug', $hotel_id)->first();
+            $the_hotel_id = $hotel->id;
+        }
+
+
         $cart = session()->get('cart');
+
 
 
         $name = session()->get('name');
         $arrival_date = session()->get('arrival_date');
         $departure_date = session()->get('departure_date');
         $email_address = session()->get('email_address');
+        $booking_ref = session()->get('booking_ref');
+
+        $booking = Booking::where('hotel_id', $the_hotel_id)->where('booking_ref', $booking_ref)->first();
+
+        if(!$booking){
+            $booking = Booking::where('hotel_id', $the_hotel_id)->where('email_address', $email_address)->where('arrival_date', $arrival_date)->first();
+        }
+
+        if(!$booking){
+            $booking = Booking::where('hotel_id', $the_hotel_id)->where('email_address', $email_address)->where('departure_date', $departure_date)->first();
+        }
+
+        if(!$booking){
+            $booking = new Booking([
+                'hotel_id' => $the_hotel_id,
+                'name' => $name,
+                'email_address' => $email_address,
+                'arrival_date' => $arrival_date,
+                'departure_date' => $departure_date,
+                'booking_ref' => $booking_ref
+            ]);
+            $booking->save();
+        }
+
+
+
 
         $order = new Order();
-        if (is_numeric($hotel_id)) {
-            $order->hotel_id = $hotel_id;
-        } else {
-            $hotel = Hotel::where('slug', $hotel_id)->first();
-            $order->hotel_id = $hotel->id;
-        }
+        $order->hotel_id = $the_hotel_id;
+        $order->booking_id = $booking->id;
         $order->name = $name;
         $order->email = $email_address;
         $order->arrival_date = $arrival_date;

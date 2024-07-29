@@ -25,4 +25,9 @@ class Booking extends Model
     {
         return $this->customerEmails()->whereNull('sent_at')->get();
     }
+
+    public function order()
+    {
+        return $this->hasMany(Order::class);
+    }
 }
