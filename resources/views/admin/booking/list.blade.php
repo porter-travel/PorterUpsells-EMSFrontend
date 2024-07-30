@@ -55,7 +55,7 @@
                                         <td class="p-2">{{$booking->email_address}}</td>
                                         <td>
                                         <input class="booking-link" type="text" disabled
-                                               value="{{env('APP_URL')}}/hotel/{{$hotel->slug}}/welcome?name={{$booking->guest_name}}&arrival_date={{$booking->arrival_date}}&departure_date={{$booking->departure_date}}&email_address={{$booking->email_address}}&booking_ref={{$booking->booking_ref}}">
+                                               value="{{env('APP_URL')}}/hotel/{{$hotel->slug}}/welcome?name={{$booking->name}}&arrival_date={{$booking->arrival_date}}&departure_date={{$booking->departure_date}}&email_address={{$booking->email_address}}&booking_ref={{$booking->booking_ref}}">
                                             <span class="copy-label cursor-pointer" onclick="copyToClipboard(this)">Copy</span>
 
                                         </td>
