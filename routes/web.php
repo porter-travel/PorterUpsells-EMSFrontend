@@ -31,6 +31,8 @@ Route::post('/checkout/stripe/checkoutSessionWebhook', [\App\Http\Controllers\Ch
 
 Route::get('/dashboard', [\App\Http\Controllers\AdminController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/fulfilment/{key}', [\App\Http\Controllers\FulfilmentController::class, 'fulfilment'])->name('fulfilment');
+
 
 Route::get('/view-customer-email', function(){
     $hotel = Hotel::find(1);
@@ -65,6 +67,14 @@ Route::middleware(['auth', 'verified'])->group(function(){
     Route::post('/admin/create-connected-account', [\App\Http\Controllers\StripeController::class, 'create_connected_account'])->name('connected-account.create');
     Route::get('/admin/create-connected-account/return', [\App\Http\Controllers\StripeController::class, 'return_connected_account'])->name('connected-account.return');
     Route::get('/admin/create-connected-account/refresh', [\App\Http\Controllers\StripeController::class, 'refresh_connected_account'])->name('connected-account.refresh');
+
+    Route::get('/admin/fulfilment-keys/list', [\App\Http\Controllers\FulfilmentKeyController::class, 'list'])->name('fulfilment-keys.list');
+    Route::get('/admin/fulfilment-keys/create', [\App\Http\Controllers\FulfilmentKeyController::class, 'create'])->name('fulfilment-keys.create');
+    Route::post('/admin/fulfilment-keys/store', [\App\Http\Controllers\FulfilmentKeyController::class, 'store'])->name('fulfilment-keys.store');
+    Route::get('/admin/fulfilment-keys/{id}/edit', [\App\Http\Controllers\FulfilmentKeyController::class, 'edit'])->name('fulfilment-keys.edit');
+    Route::post('/admin/fulfilment-keys/{id}/update', [\App\Http\Controllers\FulfilmentKeyController::class, 'update'])->name('fulfilment-keys.update');
+    Route::delete('/admin/fulfilment-keys/{key}/delete', [\App\Http\Controllers\FulfilmentKeyController::class, 'delete'])->name('fulfilment-keys.delete');
+
 });
 
 Route::middleware('auth')->group(function () {

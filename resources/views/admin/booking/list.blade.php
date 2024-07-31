@@ -40,7 +40,7 @@
                                     <th class="p-2">Arrival Date</th>
                                     <th class="p-2">Departure Date</th>
                                     <th class="p-2 ">Email Address</th>
-                                    <th></th>
+                                    <th class="p-2">Quick Link</th>
                                 </tr>
                                 </thead>
                                 @foreach($bookings as $booking)
@@ -53,7 +53,14 @@
                                         <td class="p-2">{{$booking->arrival_date}}</td>
                                         <td class="p-2">{{$booking->departure_date}}</td>
                                         <td class="p-2">{{$booking->email_address}}</td>
-                                        <td></td>
+                                        <td>
+                                        <input class="booking-link" type="text" disabled
+                                               value="{{env('APP_URL')}}/hotel/{{$hotel->slug}}/welcome?name={{$booking->name}}&arrival_date={{$booking->arrival_date}}&departure_date={{$booking->departure_date}}&email_address={{$booking->email_address}}&booking_ref={{$booking->booking_ref}}">
+                                            <span class="copy-label cursor-pointer" onclick="copyToClipboard(this)">Copy</span>
+
+                                        </td>
+
+
                                     </tr>
 
                                 @endforeach
@@ -71,4 +78,27 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function copyToClipboard(element) {
+            const input = element.previousElementSibling;
+            if (input && input.value) {
+                // Create a temporary textarea element to hold the input value
+                const tempTextArea = document.createElement('textarea');
+                tempTextArea.value = input.value;
+                document.body.appendChild(tempTextArea);
+                tempTextArea.select();
+                try {
+                    document.execCommand('copy');
+                    element.innerText = 'Copied';
+                    setTimeout(() => {
+                        element.innerText = 'Copy';
+                    }, 2000);
+                } catch (err) {
+                    console.error('Unable to copy', err);
+                }
+                document.body.removeChild(tempTextArea);
+            }
+        }
+    </script>
 </x-app-layout>

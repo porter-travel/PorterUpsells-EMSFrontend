@@ -44,4 +44,9 @@ class Hotel extends Model
     {
         return $this->hasMany(Booking::class);
     }
+
+    public function fulfilmentKeys()
+    {
+        return $this->hasMany(FulfilmentKey::class);
+    }
 }
