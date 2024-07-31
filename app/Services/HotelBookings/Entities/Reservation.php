@@ -6,6 +6,9 @@ use App\Services\HotelBookings\ValueObjects\HotelDates;
 
 class Reservation
 {
+    /** @var string $externalBookingId */
+    var $externalBookingId;
+
     /** @var string $name */
     var $name;
 
@@ -14,6 +17,9 @@ class Reservation
 
     /** @var HotelDates $HotelDates */
     var $HotelDates;
+
+    /** @var string $roomNumber */
+    var $roomNumber;
 
     function __construct(HotelDates $HotelDates)
     {

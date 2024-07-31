@@ -14,25 +14,34 @@ class HighlevelEndpoint
      /** @var LoggerInterface $Logger */
      var $Logger;
  
+     /** @var array<string> $authParams */
+     var $authParams;
+
      /**
       * @param array<mixed> $config
       * @param Client $Client
       */
-     function __construct(array $config=[], Client $Client=null, LoggerInterface $Logger=null)
+     function __construct(array $config=[], array $authParams=[], Client $Client=null, LoggerInterface $Logger=null)
      {
+        $headers = [
+            "X-API-Key" => $config["apiKey"]
+        ];
+        if(isset($authParams['responseObject']))
+            $headers['Authorization'] = "Bearer ".$authParams['responseObject']->access_token;
+
          if($Client==null)
          {
              $Client = new Client([
                  'base_uri'        => $config["host"],
                  'timeout'         => 180,
-                 'headers' => 
-                 [
-                     "X-API-Key" => $config["apiKey"]
-                 ],
+                 'headers' => $headers,
+                 
                  'http_errors' => false
              ]);
          }
- 
+         
+         $this->authParams = $authParams;
+
          $this->client = $Client;
          $this->Logger = $Logger;
      }

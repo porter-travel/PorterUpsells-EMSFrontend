@@ -8,26 +8,26 @@ use App\Services\HotelBookings\Highlevel\ReservationMapper;
 class Reservations extends HighlevelEndpoint
 {
 
+  // e48fe378-fd81-11ee-9d39-0a593bc257b1
    /**
     * @return array<Reservation>
     */
     public function get() : array
     {  
         $endpoint = "/api/v1/reservations/search";
-        $searchParams = (array) '{
-  "status": {
-    "type": "equal",
-    "value": "active"
-  },
- "booked": {
-    "type": "between",
-    "from": "2024-06-01",
-    "to": "2024-06-23"
-  }
-}';
+
+        $searchParams =
+        [
+          "booked" =>
+          [
+            "type" => "between",
+            "from" => "2024-07-01",
+            "to" => "2024-07-31"
+          ]
+        ];
+        $searchParams += $this->authParams;
 
         
-
         $response = $this->client->request('POST', $endpoint,['json' => $searchParams]);
         $responseString = $response->getBody();
         $responseObject = json_decode($responseString);

@@ -59,7 +59,8 @@
         ],
         "test": [
             "vendor/phpunit/phpunit/phpunit"
-        ]
+        ],
+        "start": "php -S 0.0.0.0:8081 -t public"
     },
     "extra": {
         "laravel": {

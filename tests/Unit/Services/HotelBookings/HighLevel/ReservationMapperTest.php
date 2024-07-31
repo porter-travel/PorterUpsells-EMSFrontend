@@ -181,6 +181,8 @@ class ReservationMapperTest extends TestCase
         $this->assertEquals("john.doe@example.com",$Reservations[0]->email);
         $this->assertEquals("2019-02-14T00:00:00+00:00",$Reservations[0]->HotelDates->checkinString);
         $this->assertEquals(1550102400,$Reservations[0]->HotelDates->checkin);
+        $this->assertEquals("2",$Reservations[0]->roomNumber);
+        $this->assertEquals("1602232867",$Reservations[0]->externalBookingId);
 
     }
 }

@@ -3,9 +3,10 @@
 namespace Tests\Unit\Services\HotelBookings\HighLevel\Endpoints;
 
 use App\Services\HotelBookings\HighLevel\Endpoints\Authorise;
+use App\Services\HotelBookings\Highlevel\HotelBookingsHighlevel;
 use PHPUnit\Framework\TestCase;
 
-class AuthoriseTest extends TestCase
+class GetReservationsIntegrationTest extends TestCase
 {
     function test_sanity()
     {
@@ -13,7 +14,7 @@ class AuthoriseTest extends TestCase
     }
 
     /** Disabled so as not to spam the API in the test pipeline
-    function test_authorises()
+    function test_gets_reservations()
     {
         $config = 
         [
@@ -23,9 +24,11 @@ class AuthoriseTest extends TestCase
             "token" => "e57ab82f1d2c9c43",
             "secret" => "6453fd736fea0b6190e27331a318a8f39da15d41013474417a78cf96858d8a2b"
         ];
-        $Authorise = new Authorise($config);
-        $this->assertCount(3,$Authorise->authParams);
-
+        $HotelBookingsHighlevel = new HotelBookingsHighlevel($config);
+        $bookings = $HotelBookingsHighlevel->getYesterdaysReservations();
+        $this->assertIsArray($bookings);
+        
+        
     }
     */
 }

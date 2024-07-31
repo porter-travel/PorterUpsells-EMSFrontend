@@ -45,7 +45,7 @@ class Authorise extends HighlevelEndpoint
         $responseArray['access_token'] = $authResponseObject->data->access_token;
         $responseArray['refresh_token'] = $authResponseObject->data->refresh_token;
         $responseArray['session_expires'] = $authResponseObject->data->session_expires;
-
+        $responseArray['responseObject'] = $authResponseObject->data; 
         return $responseArray;
     }
 }
