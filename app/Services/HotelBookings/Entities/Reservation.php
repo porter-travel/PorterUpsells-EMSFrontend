@@ -9,6 +9,9 @@ class Reservation
     /** @var string $externalBookingId */
     var $externalBookingId;
 
+    /** @var string $hotelId */
+    var $hotelId;
+
     /** @var string $name */
     var $name;
 
