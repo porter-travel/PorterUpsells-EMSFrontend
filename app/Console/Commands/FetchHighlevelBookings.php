@@ -38,7 +38,8 @@ class FetchHighlevelBookings extends Command
             // Find hotel id
             $hotelExternalId = $Reservation->hotelId;
             $Hotel = Hotel::where("id_for_integration", $hotelExternalId)->first();
-
+            if($Hotel==null)
+                continue(1);
             // Check have we already got it
             $Booking = Booking::where("booking_ref", $Reservation->externalBookingId)->first();
             if ($Booking == null) {
