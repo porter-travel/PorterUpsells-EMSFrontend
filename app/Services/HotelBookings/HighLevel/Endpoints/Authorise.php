@@ -29,7 +29,13 @@ class Authorise extends HighlevelEndpoint
      {
          $endpoint = "/api/v1/authentication/login";
          $response = $this->client->request('POST', $endpoint,['json' => $params]);
-         $responseString = $response->getBody();
+         $responseString = (string) $response->getBody();
+         
+         if($response->getStatusCode()==500)
+            throw new \Exception("Highlevel endpoint server error");
+
+         
+
          $responseObject = json_decode($responseString);
         
          $responseArray = self::parseAuthResponse($responseObject);

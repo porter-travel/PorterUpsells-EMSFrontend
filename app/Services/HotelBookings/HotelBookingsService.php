@@ -28,7 +28,7 @@ class HotelBookingsService
     function fetchReservations() : array 
     {
         $HotelBookingsHighlevel = new HotelBookingsHighlevel($this->config);
-        $ReservationsArray = $HotelBookingsHighlevel->getYesterdaysReservations();
+        $ReservationsArray = $HotelBookingsHighlevel->getCloseReservations();
         return $ReservationsArray;
     }
    

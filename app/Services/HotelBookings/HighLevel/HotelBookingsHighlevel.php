@@ -28,7 +28,7 @@ class HotelBookingsHighlevel
      * 
      * @return array<Reservation>
      */
-    function getYesterdaysReservations() : array
+    function getCloseReservations() : array
     {
         $ReservationsEndpoint = new Reservations($this->config,$this->authParams);
         $reservationsArray = $ReservationsEndpoint->get();
