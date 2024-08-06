@@ -9,10 +9,7 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote')->hourly();
 
-Artisan::command('bookings', function() {
-    $ListBookings = new ListBookings();
-    $this->comment($ListBookings->handle());
-});
+
 
 Schedule::command('orders:send-hotel-email-summary')
     ->dailyAt('21:00')
@@ -23,3 +20,7 @@ Schedule::command('orders:send-hotel-email-summary')
 Schedule::command('emails:send-scheduled')
     ->everyMinute()
     ->description('Send scheduled emails.');
+
+Schedule::command('bookings:fetch')
+    ->dailyAt('20:00')
+    ->description('Check for new bookings.');
