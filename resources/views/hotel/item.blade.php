@@ -1,5 +1,6 @@
 <x-guest-layout>
 
+
     <x-slot:title>
         {{$product->name}}
         </x-slot>
@@ -58,93 +59,88 @@
             </div>
         </div>
         <div class="narrow-container mx-auto p-4 mt-4">
-            <form id="addToCart" action="/cart/add" method="post">
-                <div class="flex flex-wrap items-end">
-                    <div class="lg:basis-1/2 basis-full lg:pr-4">
-                        @include ('hotel.partials.product-image', ['item' => $product])                </div>
-                    <div class="lg:basis-1/2 basis-full lg:pl-4">
-                        <div class="mt-4 lg:mt-0">
-                            <p class="open-sans text-3xl mb-2 hotel-text-color">{{$product->name}}</p>
-                            <p class="open-sans text-xl mb-6 hotel-text-color">
-                                <x-money-display :amount="$product->price"
-                                                 :currency="$hotel->user->currency"></x-money-display>
-                            </p>
-                            {{--                    <small>Tax Included</small>--}}
-                        </div>
-
-                        <div>
-
-                            @csrf
-                            <input type="hidden" name="product_id" value="{{$product->id}}">
-                            <input type="hidden" name="hotel_id" value="{{$hotel_id}}">
-                            <input type="hidden" name="product_name" value="{{$product->name}}">
-                            <div @if(is_countable($variations) && count($variations) <= 1) style="display: none"
-                                 @endif class="mt-4">
-                                @if(is_countable($variations) && count($variations) <= 1)
-                                    <input type="hidden" name="product_type" value="simple">
-                                @else
-                                    <input type="hidden" name="product_type" value="variable">
-                                @endif
-                                <label class="block w-full hotel-text-color" for="options">Options</label>
-                                <select id="options" name="variation_id">
-                                    @foreach($variations as $variation)
-                                        <option value="{{$variation->id}}">{{$variation->name}} -
-                                            <x-money-display :amount="$variation->price"
-                                                             :currency="$hotel->user->currency"></x-money-display>
-
-                                        </option>
-                                    @endforeach
-                                </select>
+            @if($have_details)
+                <form id="addToCart" action="/cart/add" method="post">
+                    @endif
+                    <div class="flex flex-wrap items-end">
+                        <div class="lg:basis-1/2 basis-full lg:pr-4">
+                            @include ('hotel.partials.product-image', ['item' => $product])                </div>
+                        <div class="lg:basis-1/2 basis-full lg:pl-4">
+                            <div class="mt-4 lg:mt-0">
+                                <p class="open-sans text-3xl mb-2 hotel-text-color">{{$product->name}}</p>
+                                <p class="open-sans text-xl mb-6 hotel-text-color">
+                                    <x-money-display :amount="$product->price"
+                                                     :currency="$hotel->user->currency"></x-money-display>
+                                </p>
+                                {{--                    <small>Tax Included</small>--}}
                             </div>
-                            <div class="mt-4">
-                                <x-input-label class="hotel-text-color text-xl" for="quantity" :value="__('Quantity')"/>
-                                <div class="w-[100px]">
-                                    <x-number-input :key="'quantity'" :quantity="1"/>
+
+                            <div>
+
+                                @csrf
+                                <input type="hidden" name="product_id" value="{{$product->id}}">
+                                <input type="hidden" name="hotel_id" value="{{$hotel_id}}">
+                                <input type="hidden" name="product_name" value="{{$product->name}}">
+                                <div @if(is_countable($variations) && count($variations) <= 1) style="display: none"
+                                     @endif class="mt-4">
+                                    @if(is_countable($variations) && count($variations) <= 1)
+                                        <input type="hidden" name="product_type" value="simple">
+                                    @else
+                                        <input type="hidden" name="product_type" value="variable">
+                                    @endif
+                                    <label class="block w-full hotel-text-color" for="options">Options</label>
+                                    <select id="options" name="variation_id">
+                                        @foreach($variations as $variation)
+                                            <option value="{{$variation->id}}">{{$variation->name}} -
+                                                <x-money-display :amount="$variation->price"
+                                                                 :currency="$hotel->user->currency"></x-money-display>
+
+                                            </option>
+                                        @endforeach
+                                    </select>
                                 </div>
+                                <div class="mt-4">
+                                    <x-input-label class="hotel-text-color text-xl" for="quantity"
+                                                   :value="__('Quantity')"/>
+                                    <div class="w-[100px]">
+                                        <x-number-input :key="'quantity'" :quantity="1"/>
+                                    </div>
+                                </div>
+
+
                             </div>
 
 
                         </div>
-
-
                     </div>
-                </div>
 
-                <div class="mt-4">
+                    <div class="mt-4">
+                        @if($have_details)
+                            @include('hotel.partials.select-product-date', ['dateArray' => $dateArray])
+                        @else
+                            @include('hotel.partials.select-stay-dates', [
+                                'arrival_date' => session()->get('arrival_date'),
+                                'departure_date' => session()->get('departure_date'),
+                                'specifics' => $specifics,
+                                ])
+                        @endif
+                    </div>
 
-                    {{--                <details>--}}
-                    {{--                    <summary><p class="cursor-pointer text-[#5a5a5a] text-xl font-bold">Select--}}
-                    {{--                            when you would like this.</p></summary>--}}
-                    <p class="hotel-text-color text-xl font-bold">Select when you would like this.</p>
-                    <ul class="flex flex-wrap mt-4">
-                        @php($i = 1)
-                        @foreach ($dateArray as $date)
-                            <li class="basis-full sm:basis-1/2 md:basis-1/3"><label
-                                    class="border border-black bg-[#F7F7F7] rounded p-2 flex items-center mr-2 mb-2 basis-1/3 fancy-checkbox">
-                                    <input @if($i == 1) checked @endif style="width: 0; height: 0; opacity: 0"
-                                           name="dates[]" type="checkbox" value="{{ $date }}">
-                                    <span class="w-[29px] h-[29px] border border-darkGrey rounded mr-2 relative"></span>
-                                    <span></span>
-                                    <span class="relative">
-                                    <span class="font-bold">Day {{$i}}</span>
-                                    ({{ \Carbon\Carbon::parse($date)->format('jS M') }})</span></label></li>
-                            @php($i++)
-                        @endforeach
-                    </ul>
-                    {{--                </details>--}}
-                </div>
+                    <x-primary-button
+                        :disabled="!$have_details"
+                        class=" justify-center mt-4 w-full md:w-1/2 hotel-button-color hotel-button-text-color">Add to
+                        basket
+                    </x-primary-button>
 
-                <x-primary-button
-                    class=" justify-center mt-4 w-full md:w-1/2 hotel-button-color hotel-button-text-color">Add to
-                    basket
-                </x-primary-button>
 
-                <span id="success"
-                      class="hidden text-black hotel-accent-color-50 my-4 p-2 w-full block">Added to basket</span>
+                    <span id="success"
+                          class="hidden text-black hotel-accent-color-50 my-4 p-2 w-full block">Added to basket</span>
 
-                <div class="mt-4 hotel-text-color">
-                    {{$product->description}}
-            </div>
-        </form>
-    </div>
+                    <div class="mt-4 hotel-text-color">
+                        {{$product->description}}
+                    </div>
+                    @if($have_details)
+                </form>
+            @endif
+        </div>
 </x-guest-layout>

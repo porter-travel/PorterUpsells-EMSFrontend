@@ -37,6 +37,8 @@ class FulfilmentController extends Controller
                 })->toArray();
         }
 
+        dd($hotels);
+
 
 
 
@@ -47,6 +49,8 @@ class FulfilmentController extends Controller
         if($fulfilmentKey->expires_at && $fulfilmentKey->expires_at < now()){
             return response()->json(['message' => 'Key has expired'], 404);
         }
+
+//        dd($hotels);
         return view('admin.fulfilment', ['hotels' => $hotels]);
     }
 }

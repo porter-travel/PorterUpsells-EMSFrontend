@@ -20,4 +20,10 @@ class WelcomeController extends Controller
 
         return redirect()->route('hotel.dashboard', ['id' => $hotel_slug] );
     }
+
+    public function setUserStayDates(Request $request){
+        $request->session()->put('arrival_date', $request->input('arrival_date'));
+        $request->session()->put('departure_date', $request->input('departure_date'));
+        return redirect()->back();
+    }
 }

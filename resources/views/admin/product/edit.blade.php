@@ -17,6 +17,17 @@
 
                         <input type="hidden" name="product_id" value="{{$product->id}}">
                         <input type="hidden" name="hotel_id" value="{{$hotel->id}}">
+
+                        <div class="mt-4">
+                            <x-input-label class="text-black font-sans" for="status" :value="__('Status')"/>
+                            <select name="status" id="status">
+                                <option {{$product->status == 'active' ? 'selected' : ''}} value="active">Active</option>
+                                <option {{$product->status == 'inactive' ? 'selected' : ''}} value="inactive">Inactive</option>
+                                <option {{$product->status == 'draft' ? 'selected' : ''}} value="draft">Draft</option>
+                            </select>
+                        </div>
+
+
                         <div class="mt-4">
                             <x-input-label class="text-black font-sans" for="name" value="Name"/>
                             <x-text-input id="name" class="block mt-1 w-full p-4" type="text" name="name"
@@ -49,6 +60,8 @@
                                 <input type="file" name="image" id="image">
                             </div>
                         </div>
+
+                        @include('admin.product.partials.specifics')
 
 
                         <div id="variantContainer">

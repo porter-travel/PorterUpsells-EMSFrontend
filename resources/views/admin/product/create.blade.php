@@ -13,6 +13,16 @@
                     <form enctype="multipart/form-data" method="post" action="/admin/product/store">
                         @csrf
                         <input type="hidden" name="hotel_id" value="{{$hotel->id}}">
+
+                        <div class="mt-4">
+                            <x-input-label class="text-black font-sans" for="status" :value="__('Status')"/>
+                            <select name="status" id="status">
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                                <option value="draft">Draft</option>
+                            </select>
+                        </div>
+
                         <div class="mt-4">
                             <x-input-label class="text-black font-sans" for="name" :value="__('Name')"/>
                             <x-text-input id="name" class="block mt-1 w-full p-4" type="text" name="name"
@@ -41,6 +51,8 @@
                             <x-input-label class="text-black font-sans" for="image" :value="__('Image')"/>
                             <input type="file" required name="image" id="image">
                         </div>
+
+                        @include('admin.product.partials.specifics')
 
 
                         <div id="variantContainer">

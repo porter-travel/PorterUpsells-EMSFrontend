@@ -18,4 +18,11 @@ class Product extends Model
     {
         return $this->hasMany(Variation::class);
     }
+
+    public function specifics()
+    {
+        return $this->hasMany(ProductSpecific::class);
+    }
+
+
 }

@@ -43,14 +43,8 @@ class HotelController extends Controller
             return app(WelcomeController::class)->createSession($newRequest);
         }
 
-        return view('hotel.welcome')->with([
-            'hotel' => $hotel,
-            'name' => $name,
-            'booking_ref' => $booking_ref,
-            'arrival_date' => $arrival_date,
-            'email_address' => $email_address,
-            'departure_date' => $departure_date
-        ]);
+//        dd($hotel);
+        return redirect()->route('hotel.dashboard', ['id' => $hotel->slug]);
     }
 
 
@@ -60,6 +54,7 @@ class HotelController extends Controller
 
 //        Mail::to('alex@gluestudio.co.uk')->send(new ConfigTest(json_encode([])));
 
+//        var_dump($request->session()->all());
         $data['name'] = $request->session()->get('name');
         $data['booking_ref'] = $request->session()->get('booking_ref');
         $data['arrival_date'] = $request->session()->get('arrival_date');
@@ -72,7 +67,7 @@ class HotelController extends Controller
             $hotel = Hotel::where('slug', $id)->first();
         }
 
-        $products = $hotel->products;
+        $products = $hotel->activeProducts();
 
         $data['days_until_arrival'] = (strtotime($data['arrival_date']) - strtotime(date('Y-m-d'))) / (60 * 60 * 24);
 

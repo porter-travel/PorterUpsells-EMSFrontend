@@ -134,8 +134,17 @@ class CheckoutController extends Controller
                 'application_fee_amount' => round(($order->total * 0.035) * 100, 0),
                 'transfer_data' => ['destination' => $hotel->user->stripe_account_number],
             ],
-            'customer_email' => $email_address,
             'mode' => 'payment',
+            'custom_fields' => [
+                [
+                    'key' => 'name',
+                    'label' => [
+                        'type' => 'custom',
+                        'custom' => 'Name on Booking',
+                    ],
+                    'type' => 'text',
+                ],
+            ],
             'metadata' => [
                 'payment_type' => 'hotel_item_order',
                 'order_id' => $order->id, // This is the order ID from your system

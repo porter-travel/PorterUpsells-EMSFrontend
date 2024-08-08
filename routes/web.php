@@ -13,7 +13,13 @@ Route::get('/hotel/{id}/welcome', [\App\Http\Controllers\HotelController::class,
 
 Route::post('/createSession', [WelcomeController::class, 'createSession']);
 
-Route::get('/hotel/{id}/dashboard', [\App\Http\Controllers\HotelController::class, 'dashboard'] )->name('hotel.dashboard');
+Route::get('/hotel/{id}/dashboard', function($id){
+    return redirect()->route('hotel.dashboard', ['id' => $id]);
+})->name('hotel.dashboard-old');
+
+Route::post('/set-user-stay-dates', [WelcomeController::class, 'setUserStayDates']);
+
+Route::get('/hotel/{id}/', [\App\Http\Controllers\HotelController::class, 'dashboard'] )->name('hotel.dashboard');
 
 Route::get('/hotel/{hotel_id}/item/{item_id}', [\App\Http\Controllers\ProductController::class, 'show'] )->name('hotel.item');
 
