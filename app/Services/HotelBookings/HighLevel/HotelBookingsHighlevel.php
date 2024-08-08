@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\HotelBookings\Highlevel;
+namespace App\Services\HotelBookings\HighLevel;
 
 use App\Services\HotelBookings\HighLevel\Endpoints\Authorise;
 use App\Services\HotelBookings\HighLevel\Endpoints\Reservations;
@@ -14,8 +14,8 @@ class HotelBookingsHighlevel
     var $config;
 
     /**
-     * @param array $config 
-     * @return void 
+     * @param array $config
+     * @return void
      */
     function __construct(array $config)
     {
@@ -25,7 +25,7 @@ class HotelBookingsHighlevel
     }
 
     /**
-     * 
+     *
      * @return array<Reservation>
      */
     function getCloseReservations() : array
@@ -35,5 +35,5 @@ class HotelBookingsHighlevel
 
         return $reservationsArray;
     }
-   
+
 }
