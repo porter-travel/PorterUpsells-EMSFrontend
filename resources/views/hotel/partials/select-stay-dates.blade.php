@@ -6,7 +6,7 @@
         </p>
         <div class="flex flex-wrap sm:flex-nowrap items-end justify-between max-w-[600px] mx-auto">
 
-            @if($specifics['on_arrival'])
+            @if(isset($specifics['on_arrival']) && $specifics['on_arrival'])
                 <div class="mt-2  basis-full sm:basis-1/2 sm:pr-2">
                     <x-input-label class="hotel-main-box-text-color open-sans" for="arrival-date"
                                    :value="__('Arrival Date')"/>
@@ -17,7 +17,7 @@
                 </div>
             @endif
 
-            @if($specifics['on_departure'])
+            @if(isset($specifics['on_departure']) && $specifics['on_departure'])
                 <div class="mt-2  basis-full sm:basis-1/2 sm:pl-2">
                     <x-input-label class="hotel-main-box-text-color open-sans" for="departure-date"
                                    :value="__('Departure Date')"/>
