@@ -1,5 +1,6 @@
 <?php
 
+use App\Console\Commands\ListBookings;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
@@ -19,3 +20,7 @@ Schedule::command('orders:send-hotel-email-summary')
 Schedule::command('emails:send-scheduled')
     ->everyMinute()
     ->description('Send scheduled emails.');
+
+Schedule::command('bookings:fetch')
+    ->dailyAt('20:00')
+    ->description('Check for new bookings.');

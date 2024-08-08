@@ -47,7 +47,7 @@ Route::get('/view-customer-email', function(){
 });
 Route::middleware(['auth', 'verified'])->group(function(){
     Route::get('/dashboard', [\App\Http\Controllers\AdminController::class, 'dashboard'])->name('dashboard');
-
+    
     Route::post('admin/hotel/create', [\App\Http\Controllers\HotelController::class, 'store'] )->name('hotel.store');
     Route::get('admin/hotel/create', [\App\Http\Controllers\HotelController::class, 'create'] )->name('hotel.create');
 
