@@ -3,7 +3,7 @@
 namespace App\Services\HotelBookings\HighLevel\Endpoints;
 
 use App\Services\HotelBookings\Entities\Reservation;
-use App\Services\HotelBookings\Highlevel\ReservationMapper;
+use App\Services\HotelBookings\HighLevel\ReservationMapper;
 
 class Reservations extends HighlevelEndpoint
 {
@@ -13,7 +13,7 @@ class Reservations extends HighlevelEndpoint
     * @return array<Reservation>
     */
     public function get() : array
-    {  
+    {
         $endpoint = "/api/v1/reservations/search";
 
         $daysRange = 15;
@@ -30,14 +30,14 @@ class Reservations extends HighlevelEndpoint
         ];
         $searchParams += $this->authParams;
 
-        
+
         $response = $this->client->request('POST', $endpoint,['json' => $searchParams]);
         $responseString = $response->getBody();
         $responseObject = json_decode($responseString);
         $reservationsArray = [];
         foreach($responseObject->data as $reservationRaw)
         {
-            $reservationsArray[] = self::parseReservation($reservationRaw);     
+            $reservationsArray[] = self::parseReservation($reservationRaw);
         }
 
         return $reservationsArray;
