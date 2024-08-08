@@ -1,5 +1,5 @@
 <x-app-layout>
-{{--        {{dd($hotels)}}--}}
+    {{--        {{dd($hotels)}}--}}
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -18,21 +18,27 @@
                             <h2 class="text-xl font-bold mb-6">{{$hotel['name']}}</h2>
 
                             @foreach($hotel['orders'] as $order)
-                                <div class=" border mb-4">
-                                <p>Guest: {{$order['name']}}</p>
-                                <p>Room Number: {{$order['booking']['room']}}</p>
-                                <p>Guest: @if($order['booking']['checkin']) Checked-in @else Not Arrived @endif</p>
+                                @if($order['booking'])
 
-                            <p><strong>Order Details</strong></p>
-                                @foreach($order['items'] as $item)
-                                    <p>{{$item['quantity']}} x {{$item['product_name']}}</p>
-                                @endforeach
-                                </div>
+                                    <div class=" border mb-4">
+                                        <p>Guest: {{$order['name']}}</p>
+                                        <p>Room Number: {{$order['booking']['room'] ?? '--'}}</p>
+                                        <p>Guest: @if($order['booking']['checkin'])
+                                                Checked-in
+                                            @else
+                                                Not Arrived
+                                            @endif</p>
+
+                                        <p><strong>Order Details</strong></p>
+                                        @foreach($order['items'] as $item)
+                                            <p>{{$item['quantity']}} x {{$item['product_name']}}</p>
+                                        @endforeach
+                                    </div>
+                                @endif
                             @endforeach
                         </div>
 
                     @endforeach
-
 
 
                 </div>

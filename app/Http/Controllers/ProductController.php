@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Hotel;
 use App\Models\Product;
+use App\Models\ProductSpecific;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -11,6 +12,8 @@ class ProductController extends Controller
 {
     public function show($hotel_id, $item_id, Request $request)
     {
+
+//        var_dump($request->session()->all());
 
         if (is_numeric($hotel_id)) {
             $hotel = Hotel::find($hotel_id);
@@ -21,6 +24,21 @@ class ProductController extends Controller
 
         $product = Product::find($item_id);
         $variations = $product->variations;
+        $specifics = $product->specifics->mapWithKeys(function ($specific) {
+            return [$specific->name => (bool)$specific->value];
+        })->toArray();
+
+//        dd($specifics);
+
+        $have_details = true;
+
+        if(isset($specifics['on_arrival']) && $specifics['on_arrival'] && !$request->session()->get('arrival_date')){
+            $have_details = false;
+        }
+
+        if(isset($specifics['on_departure']) && $specifics['on_departure'] && !$request->session()->get('departure_date')){
+            $have_details = false;
+        }
 
         $cart = session()->get('cart');
 
@@ -36,7 +54,7 @@ class ProductController extends Controller
         $arrivalDate = $request->session()->get('arrival_date');
         $departureDate = $request->session()->get('departure_date');
 
-$dateArray = $this->getDatesInRange($arrivalDate, $departureDate);
+        $dateArray = $this->getDatesInRange($arrivalDate, $departureDate, $specifics);
 
         return view('hotel.item', [
             'hotel_id' => $hotel_id,
@@ -46,7 +64,9 @@ $dateArray = $this->getDatesInRange($arrivalDate, $departureDate);
             'variations' => $variations,
             'cart' => $cart,
             'cartCount' => $cartCount,
-            'dateArray' => $dateArray
+            'dateArray' => $dateArray,
+            'specifics' => $specifics,
+            'have_details' => $have_details
         ]);
     }
 
@@ -59,14 +79,20 @@ $dateArray = $this->getDatesInRange($arrivalDate, $departureDate);
     public function edit($hotel_id, $product_id)
     {
         $hotel = Hotel::find($hotel_id);
-        $product = Product::find($product_id);
+        $product = Product::with('specifics')->find($product_id);
+        $specificsArray = $product->specifics->mapWithKeys(function ($specific) {
+            return [$specific->name => (bool) $specific->value];
+        })->toArray();
+
+        $product->specifics = $specificsArray;
+
+//        dd($product);
         return view('admin.product.edit', ['hotel' => $hotel, 'product' => $product]);
     }
 
 
     public function store(Request $request)
     {
-//        dd($request->all());
 
         $filePath = $request->file('image')->store('product-images', 's3');
 
@@ -78,6 +104,7 @@ $dateArray = $this->getDatesInRange($arrivalDate, $departureDate);
 
 
         $product = new Product();
+        $product->status = $request->status;
         $product->name = $request->name;
         $product->description = $request->description;
         $product->price = $request->price;
@@ -107,6 +134,15 @@ $dateArray = $this->getDatesInRange($arrivalDate, $departureDate);
             ]);
         }
 
+        if(isset($request->specifics)){
+            foreach($request->specifics as $name => $specific){
+                $product->specifics()->create([
+                    'name' => $name,
+                    'value' => $specific
+                ]);
+            }
+        }
+
         return redirect()->route('hotel.edit', ['id' => $request->hotel_id]);
     }
 
@@ -115,6 +151,10 @@ $dateArray = $this->getDatesInRange($arrivalDate, $departureDate);
 
 
         $product = Product::find($request->product_id);
+
+        if ($request->status) {
+            $product->status = $request->status;
+        }
 
         if ($request->name) {
             $product->name = $request->name;
@@ -188,15 +228,50 @@ $dateArray = $this->getDatesInRange($arrivalDate, $departureDate);
             $variation->image = $product->image;
             $variation->save();
         }
+//dd($request->specifics);
+        if(isset($request->specifics)){
+            foreach($request->specifics as $name => $specific){
+                $ps = ProductSpecific::where('product_id', $product->id)->where('name', $name)->first();
+                if($ps){
+                    $ps->value = $specific;
+                    $ps->save();
+                } else {
+                    $product->specifics()->create([
+                        'name' => $name,
+                        'value' => $specific
+                    ]);
+                }
+            }
+        }
 
         return redirect()->route('product.edit', ['hotel_id' => $request->hotel_id, 'product_id' => $request->product_id]);
 
     }
 
-    private function getDatesInRange($arrivalDate, $departureDate){
+    private function getDatesInRange($arrivalDate, $departureDate, $specifics){
+
+        if(isset($specifics['on_departure']) && !$specifics['on_departure'] && isset($specifics['during_stay']) &&  !$specifics['during_stay']){
+            return [$arrivalDate];
+        }
+
+        if(isset($specifics['on_arrival']) && !$specifics['on_arrival'] && isset($specifics['during_stay']) && !$specifics['during_stay']){
+            return [$departureDate];
+        }
+
+        if(isset($specifics['during_stay']) && !$specifics['during_stay']){
+            return [$arrivalDate, $departureDate];
+        }
+
         $start = new \DateTime($arrivalDate);
         $end = new \DateTime($departureDate);
-        $end->modify('+1 day'); // Include the end date in the period
+
+        if(isset($specifics['on_arrival']) && !$specifics['on_arrival']){
+            $start->modify('+1 day');
+        }
+
+        if(isset($specifics['on_departure']) && $specifics['on_departure']){
+            $end->modify('+1 day'); // Include the end date in the period
+        }
 
         $dates = [];
         $interval = new \DateInterval('P1D'); // 1 day interval

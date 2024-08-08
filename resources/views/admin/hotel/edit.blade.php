@@ -41,6 +41,9 @@
                                 </a>
 
                                 <p class="mr-2">
+                                    <span class="pr-4">
+                                    {{$product->status}}
+                                        </span>
                                     <x-money-display :amount="$product->price" :currency="auth()->user()->currency"/>
                                 </p>
                             </div>

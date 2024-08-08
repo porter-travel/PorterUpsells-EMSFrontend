@@ -49,4 +49,10 @@ class Hotel extends Model
     {
         return $this->hasMany(FulfilmentKey::class);
     }
+
+    public function activeProducts(){
+        return $this->products()->where('status', 'active')->get();
+    }
+
+
 }
