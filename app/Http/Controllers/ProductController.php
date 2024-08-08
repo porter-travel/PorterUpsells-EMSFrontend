@@ -32,6 +32,10 @@ class ProductController extends Controller
 
         $have_details = true;
 
+        if(!isset($specifics['on_arrival']) || !isset($specifics['on_departure']) || !isset($specifics['during_stay'])){
+            $have_details = false;
+        }
+
         if(isset($specifics['on_arrival']) && $specifics['on_arrival'] && !$request->session()->get('arrival_date')){
             $have_details = false;
         }
