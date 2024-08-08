@@ -127,7 +127,7 @@
                     </div>
 
                     <x-primary-button
-                        :disabled="!session()->get('arrival_date')"
+                        :disabled="!$have_details"
                         class=" justify-center mt-4 w-full md:w-1/2 hotel-button-color hotel-button-text-color">Add to
                         basket
                     </x-primary-button>
