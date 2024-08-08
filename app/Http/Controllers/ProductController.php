@@ -36,17 +36,27 @@ class ProductController extends Controller
             $specifics['on_arrival'] = true;
         }
 
-        if(!isset($specifics['on_arrival']) || !isset($specifics['on_departure']) || !isset($specifics['during_stay'])){
-            $have_details = false;
-        }
+//        var_dump($have_details);
+
+//        if(!isset($specifics['on_arrival']) || !isset($specifics['on_departure']) || !isset($specifics['during_stay'])){
+//            $have_details = false;
+//        }
+
+//        var_dump($have_details);
 
         if(isset($specifics['on_arrival']) && $specifics['on_arrival'] && !$request->session()->get('arrival_date')){
             $have_details = false;
         }
 
+//        var_dump($have_details);
+
         if(isset($specifics['on_departure']) && $specifics['on_departure'] && !$request->session()->get('departure_date')){
             $have_details = false;
         }
+
+//        var_dump($specifics);
+//        var_dump($request->session()->all());
+//        var_dump($have_details);
 
         $cart = session()->get('cart');
 
@@ -257,6 +267,16 @@ class ProductController extends Controller
     }
 
     private function getDatesInRange($arrivalDate, $departureDate, $specifics){
+
+        if(!isset($specifics['on_arrival']) && !isset($specifics['on_departure']) && !isset($specifics['during_stay'])){
+            return [$arrivalDate];
+        }
+
+//        dd($specifics, count($specifics) == 1, isset($specifics['on_arrival']), $specifics['on_arrival'], $arrivalDate);
+
+        if(count($specifics) == 1 && isset($specifics['on_arrival']) && $specifics['on_arrival']){
+            return [$arrivalDate];
+        }
 
         if(isset($specifics['on_departure']) && !$specifics['on_departure'] && isset($specifics['during_stay']) &&  !$specifics['during_stay']){
             return [$arrivalDate];
