@@ -6,7 +6,7 @@
         </p>
         <div class="flex flex-wrap sm:flex-nowrap items-end justify-between max-w-[600px] mx-auto">
 
-            @if(isset($specifics['on_arrival']) && $specifics['on_arrival'])
+            @if(!isset($specifics['on_arrival']) || (isset($specifics['on_arrival']) && $specifics['on_arrival']))
                 <div class="mt-2  basis-full sm:basis-1/2 sm:pr-2">
                     <x-input-label class="hotel-main-box-text-color open-sans" for="arrival-date"
                                    :value="__('Arrival Date')"/>
