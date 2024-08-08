@@ -3,7 +3,7 @@
 namespace App\Services\HotelBookings;
 
 use App\Services\HotelBookings\Entities\Reservation;
-use App\Services\HotelBookings\Highlevel\HotelBookingsHighlevel;
+use App\Services\HotelBookings\HighLevel\HotelBookingsHighlevel;
 use App\Services\HotelBookings\Highlevel\ReservationMapper;
 
 class HotelBookingsService
@@ -13,9 +13,9 @@ class HotelBookingsService
     var $config;
 
     /**
-     * 
-     * @param array<mixed> $config 
-     * @return void 
+     *
+     * @param array<mixed> $config
+     * @return void
      */
     function __construct(array $config)
     {
@@ -25,11 +25,11 @@ class HotelBookingsService
     /**
      * @return array<Reservation>
      */
-    function fetchReservations() : array 
+    function fetchReservations() : array
     {
         $HotelBookingsHighlevel = new HotelBookingsHighlevel($this->config);
         $ReservationsArray = $HotelBookingsHighlevel->getCloseReservations();
         return $ReservationsArray;
     }
-   
+
 }
