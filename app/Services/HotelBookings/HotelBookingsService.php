@@ -4,7 +4,7 @@ namespace App\Services\HotelBookings;
 
 use App\Services\HotelBookings\Entities\Reservation;
 use App\Services\HotelBookings\HighLevel\HotelBookingsHighlevel;
-use App\Services\HotelBookings\Highlevel\ReservationMapper;
+//use App\Services\HotelBookings\Highlevel\ReservationMapper;
 
 class HotelBookingsService
 {
