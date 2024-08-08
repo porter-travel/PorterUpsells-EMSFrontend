@@ -10,6 +10,12 @@ class CartController extends Controller
 {
     function show($hotel_id)
     {
+
+        if(session()->get('hotel_id') == null){
+            session()->put('hotel_id', $hotel_id);
+        }
+
+
         $data['cart'] = session()->get('cart');
         if (is_numeric($hotel_id)) {
             $hotel = Hotel::find($hotel_id);

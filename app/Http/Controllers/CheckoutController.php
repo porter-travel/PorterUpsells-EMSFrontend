@@ -259,7 +259,12 @@ class CheckoutController extends Controller
     public function checkoutComplete()
     {
 
-        $hotel = Hotel::find(session()->get('hotel_id'));
+        $hotel_id = session()->get('hotel_id');
+        if (is_numeric($hotel_id)) {
+            $hotel = Hotel::find($hotel_id);
+        } else {
+            $hotel = Hotel::where('slug', $hotel_id)->first();
+        }
         $cartItems = session()->get('cart');
         session()->forget('cart');
 //dd($cartItems);
