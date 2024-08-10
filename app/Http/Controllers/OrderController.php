@@ -14,6 +14,9 @@ class OrderController extends Controller
     {
 
         $hotel = Hotel::find($hotel_id);
+        if ($hotel->user_id != auth()->user()->id && auth()->user()->role != 'superadmin'){
+            return redirect()->route('dashboard');
+        }
 // Fetch orders with future departure date and their items
         $orders = Order::where('hotel_id', $hotel_id)
             ->with('items')
@@ -28,6 +31,10 @@ class OrderController extends Controller
     {
 
         $hotel = Hotel::find($hotel_id);
+
+        if ($hotel->user_id != auth()->user()->id && auth()->user()->role != 'superadmin'){
+            return redirect()->route('dashboard');
+        }
 
 //        global $startDate, $endDate;
         $startDate = Carbon::now()->startOfDay();

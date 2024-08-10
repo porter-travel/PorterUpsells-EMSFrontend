@@ -97,6 +97,9 @@ class ProductController extends Controller
     public function edit($hotel_id, $product_id)
     {
         $hotel = Hotel::find($hotel_id);
+        if ($hotel->user_id != auth()->user()->id && auth()->user()->role != 'superadmin'){
+            return redirect()->route('dashboard');
+        }
         $product = Product::with('specifics')->find($product_id);
         $specificsArray = $product->specifics->mapWithKeys(function ($specific) {
             return [$specific->name => (bool) $specific->value];
