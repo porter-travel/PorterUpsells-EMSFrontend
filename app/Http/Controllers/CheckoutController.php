@@ -175,6 +175,11 @@ class CheckoutController extends Controller
         $sig_header = $_SERVER['HTTP_STRIPE_SIGNATURE'];
         $event = null;
 
+        $test = [$endpoint_secret, $stripe_secret_key,  $payload, $sig_header];
+
+//        Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($test)));
+
+
         try {
             $event = \Stripe\Webhook::constructEvent(
                 $payload, $sig_header, $endpoint_secret
@@ -182,12 +187,12 @@ class CheckoutController extends Controller
         }
         catch (\UnexpectedValueException $e) {
             // Invalid payload
-            Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($e)));
+            Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode(['UnexpectedValueException', $e])));
             http_response_code(400);
             exit();
         } catch (\Stripe\Exception\SignatureVerificationException $e) {
             // Invalid signature
-            Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($e)));
+            Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode(['SignatureVerificationException', $e])));
             http_response_code(400);
             exit();
         }
@@ -216,14 +221,24 @@ class CheckoutController extends Controller
 
 
                 $order = Order::find($session->metadata->order_id);
+try {
+    $order->stripe_id = $session->id;
+    $order->payment_status = $session->payment_status;
+    $order->email = $session->customer_details->email;
+    foreach ($session->custom_fields as $field) {
+        if ($field->key === 'name') {
+            $order->name = $field->text->value;
+            break;
+        }
+    }
+    $order->save();
+} catch (\Exception $e) {
+    Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($e)));
 
-                $order->stripe_id = $session->id;
-                $order->payment_status = $session->payment_status;
-
-                $order->save();
+}
 
                 Mail::to($session->customer_details->email, $session->metadata->name)->send(new OrderConfirmation($order));
-//                Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($payload)));
+                Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($session)));
 
 
                 //Cancel any Scheduled Emails for the customer
