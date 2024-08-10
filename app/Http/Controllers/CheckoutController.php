@@ -243,6 +243,18 @@ class CheckoutController extends Controller
                 $controller = new CustomerEmailController();
                 $controller->cancelScheduledEmails($order);
 
+                //Update the booking object
+                $booking = Booking::find($order->booking_id);
+                $booking->name = $order->name;
+                $booking->email_address = $order->email;
+                if($booking->arrival_date == null) {
+                    $booking->arrival_date = $order->arrival_date;
+                }
+                if($booking->departure_date == null) {
+                    $booking->departure_date = $order->departure_date;
+                }
+                $booking->save();
+
 
                 session()->forget('cart');
 
