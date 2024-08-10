@@ -28,11 +28,13 @@ opacity-35
             </div>
             <div class="flex items-start justify-start">
                 <span class="mr-2">Order:</span>
+                    <div>
                 @foreach($order['items'] as $item)
                     <div>
                         <span class="text-sm text-gray-600">{{$item['quantity']}} x {{$item['name']}} </span>
                     </div>
                 @endforeach
+                    </div>
             </div>
         </div>
 
