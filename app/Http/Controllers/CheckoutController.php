@@ -37,6 +37,8 @@ class CheckoutController extends Controller
         $departure_date = session()->get('departure_date');
         $email_address = session()->get('email_address');
         $booking_ref = session()->get('booking_ref');
+
+        $booking = null;
         if($booking_ref != null) {
             $booking = Booking::where('hotel_id', $the_hotel_id)->where('booking_ref', $booking_ref)->first();
         }
