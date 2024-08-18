@@ -3,6 +3,7 @@
 namespace App\Services\HotelBookings\HighLevel;
 
 use App\Services\HotelBookings\HighLevel\Endpoints\Authorise;
+use App\Services\HotelBookings\HighLevel\Endpoints\ReservationEndpoint;
 use App\Services\HotelBookings\HighLevel\Endpoints\Reservations;
 
 class HotelBookingsHighlevel
@@ -34,6 +35,14 @@ class HotelBookingsHighlevel
         $reservationsArray = $ReservationsEndpoint->get();
 
         return $reservationsArray;
+    }
+
+    function getReservationByRef(string $bookingRef) : array
+    {
+        $ReservationEndpoint = new ReservationEndpoint($this->config,$this->authParams);
+        $reservationArray = $ReservationEndpoint->get($bookingRef);
+
+        return $reservationArray;
     }
 
 }

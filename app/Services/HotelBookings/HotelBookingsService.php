@@ -32,4 +32,11 @@ class HotelBookingsService
         return $ReservationsArray;
     }
 
+    function fetchReservationByRef(string $bookingRef) : array
+    {
+        $HotelBookingsHighlevel = new HotelBookingsHighlevel($this->config);
+        $Reservation = $HotelBookingsHighlevel->getReservationByRef($bookingRef);
+        return $Reservation;
+    }
+
 }
