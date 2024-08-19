@@ -38,8 +38,8 @@ class RefreshHighlevelBookings extends Command
         
         foreach ($PendingBookings as $Booking) 
         {
-           $highLevelReservation =  $HotelBookingsService->fetchReservationByRef($Booking->booking_ref);
-           //if($highLevelReservation->)
+           $highLevelReservation = $HotelBookingsService->fetchReservationByRef($Booking->booking_ref);
+           
         }
         
     }

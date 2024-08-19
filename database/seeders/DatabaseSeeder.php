@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Booking;
 use App\Models\Hotel;
 use App\Models\Product;
 use App\Models\User;
@@ -35,5 +36,8 @@ class DatabaseSeeder extends Seeder
                 ->has(Variation::factory()->count(3))
                 ->count(3))
             ->create();
+        
+        //Booking::factory(5)->create();
+
     }
 }

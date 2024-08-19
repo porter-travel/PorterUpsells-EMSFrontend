@@ -45,5 +45,15 @@ class HighlevelEndpoint
          $this->client = $Client;
          $this->Logger = $Logger;
      }
+
+     function parseAuthParams(array $params) : array
+     {
+        return 
+        [
+            "access_token" => $params["access_token"],
+            "refresh_token" => $params["refresh_token"],
+            "session_expires" => $params["session_expires"]
+        ];
+     }
    
 }

@@ -16,7 +16,7 @@ class Reservations extends HighlevelEndpoint
     {
         $endpoint = "/api/v1/reservations/search";
 
-        $daysRange = 15;
+        $daysRange = 60;
         $from = date("Y-m-d",time() - ($daysRange * 24 * 60 * 60));
         $to = date("Y-m-d",time() + ($daysRange * 24 * 60 * 60));
         $searchParams =
@@ -28,7 +28,7 @@ class Reservations extends HighlevelEndpoint
             "to" => $to
           ]
         ];
-        $searchParams += $this->authParams;
+        $searchParams += $this->parseAuthParams($this->authParams);
 
 
         $response = $this->client->request('POST', $endpoint,['json' => $searchParams]);

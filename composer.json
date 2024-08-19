@@ -60,7 +60,8 @@
         "test": [
             "vendor/phpunit/phpunit/phpunit"
         ],
-        "start": "php -S 0.0.0.0:8081 -t public"
+        "start": "php -S 0.0.0.0:8081 -t public",
+        "reset-dev": "php artisan migrate:fresh --seed"
     },
     "extra": {
         "laravel": {
