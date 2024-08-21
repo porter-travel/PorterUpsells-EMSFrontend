@@ -16,8 +16,8 @@ class ReservationEndpoint extends HighlevelEndpoint
     {
         $endpoint = "/api/v1/reservations/" . $id;
 
-
-        $response = $this->client->request('GET', $endpoint,['json' => $this->parseAuthParams($this->authParams)]);
+        $authParams = $this->parseAuthParams($this->authParams);
+        $response = $this->client->request('GET', $endpoint,['json' => $authParams]);
         if($response->getStatusCode()!=200)
           return [];
         

@@ -31,6 +31,8 @@ class DatabaseSeeder extends Seeder
             'password' => 'password',
         ]);
 
+
+        // integration id 82cb4c8c-fd81-11ee-baef-02a3e6f84031
         Hotel::factory(10)
             ->has(Product::factory()
                 ->has(Variation::factory()->count(3))
