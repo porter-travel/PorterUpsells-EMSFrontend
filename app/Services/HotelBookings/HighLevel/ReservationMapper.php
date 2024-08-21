@@ -15,7 +15,7 @@ class ReservationMapper
 
         $Reservation->name =  $reservationObject->guest->name;
         $Reservation->email = $reservationObject->guest->email;
-        $Reservation->externalBookingId = $reservationObject->booking;
+        $Reservation->externalBookingId = $reservationObject->id;
         $Reservation->roomNumber = $reservationObject->room->number;
         $Reservation->hotelId = $reservationObject->hotel;
         
