@@ -17,7 +17,7 @@
 @endphp
 
 
-<div class="flex items-start justify-start">
+<div class="flex items-start justify-start flex-wrap">
     <div class="mt-4 basis-1/2 pr-4">
         <hr>
 
@@ -58,6 +58,20 @@
 
             <x-input-label class="text-black font-sans" for="after_checkin"
                            :value="__('Product can only be delivered after guest has checked in')"/>
+        </div>
+    </div>
+
+    <div class="mt-4 basis-1/2 pr-4">
+        <hr>
+
+        <h4 class="font-bold py-4">Notice Period</h4>
+        <div class="flex items-center justify-start">
+
+            <x-input-label class="text-black font-sans" for="after_checkin">
+            Product must be ordered at least
+                <input min="0" style="width: 70px; text-align: center" type="number" name="specifics[notice_period]" value="{{$product->specifics['notice_period'] ?? 0}}" id="notice_period">
+            day(s) before arrival
+            </x-input-label>
         </div>
     </div>
 

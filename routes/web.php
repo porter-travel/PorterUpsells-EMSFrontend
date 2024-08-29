@@ -82,6 +82,8 @@ Route::middleware(['auth', 'verified'])->group(function(){
     Route::post('/admin/fulfilment-keys/{id}/update', [\App\Http\Controllers\FulfilmentKeyController::class, 'update'])->name('fulfilment-keys.update');
     Route::delete('/admin/fulfilment-keys/{key}/delete', [\App\Http\Controllers\FulfilmentKeyController::class, 'delete'])->name('fulfilment-keys.delete');
 
+    Route::post('/admin/order/update/', [\App\Http\Controllers\OrderController::class, 'updateOrder'])->name('order.update');
+
 });
 
 Route::middleware('auth')->group(function () {

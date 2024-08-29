@@ -130,29 +130,32 @@
                                                 @foreach($orders as $order)
 
                                                     <tr style="border-width: 1px; border-color: #000000; border-style: solid">
-                                                        <td style="padding: 8px">{{$order['item']->booking_ref}}</td>
-                                                        <td style="padding: 8px">{{date_create_from_format('Y-m-d', $order['item']->date)->format('d/m/Y')}}</td>
-                                                        <td style="padding: 8px">{{$order['order_name']}}</td>
+                                                        <td style="padding: 8px">{{$order['booking_ref']}}</td>
+                                                        <td style="padding: 8px">{{date_create_from_format('Y-m-d', $order['arrival_date'])->format('d/m/Y')}}</td>
+                                                        <td style="padding: 8px">{{$order['name']}}</td>
                                                         {{--                                        <td class="p-2">{{$order->created_at}}</td>--}}
                                                         <td style="padding: 8px">
-                                                            {{$order['item']->quantity}} x
-                                                            {{$order['item']->product_name}} @if($order['item']->product_type == 'variable')
-                                                                <br><span
-                                                                    class="text-sm">{{$order['item']->variation_name}}</span>
-                                                            @endif
+                                                            @foreach($order['items'] as $item)
+                                                                {{$item['quantity']}} x
+                                                                {{$item['name']}}
+                                                                @if($item['product_type'] == 'variable')
+                                                                    <br><span class="text-sm">{{$item['variation_name']}}</span>
+                                                                @endif
+                                                                <br>
+                                                            @endforeach
                                                         </td>
                                                         <td style="padding: 8px; background-color:
-                                        @if($order['item']->status == 'cancelled')
+                                        @if($order['status'] == 'cancelled')
                                         #FF0000;
-@elseif($order['item']->status == 'fulfilled')
+@elseif($order['status'] == 'fulfilled')
                                        #D4F6D1;
-@elseif($order['item']->status == 'pending')
+@elseif($order['status'] == 'pending')
                                         #F5D6E1;
                                         @endif
                                         ">
 
 
-                                                            {{$order['item']->status}}
+                                                            {{$order['status']}}
                                                         </td>
                                                     </tr>
 
