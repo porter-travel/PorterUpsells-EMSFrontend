@@ -54,15 +54,19 @@ class ProductController extends Controller
             $have_details = false;
         }
 
+        if(isset($specifics['during_stay']) && $specifics['during_stay'] && !$request->session()->get('arrival_date') && !$request->session()->get('departure_date')){
+            $have_details = false;
+        }
+
         if (isset($specifics['on_departure']) && $specifics['on_departure'] && isset($specifics['on_arrival']) && $specifics['on_arrival']) {
             $date_picker_title = 'To add this product, first let us know the dates of your stay';
+        } elseif (isset($specifics['during_stay']) && $specifics['during_stay']) {
+            $date_picker_title = 'To add this product, let us know the dates of your stay';
         } elseif (isset($specifics['on_arrival']) && $specifics['on_arrival']) {
             $date_picker_title = 'To add this product, let us know the date of your arrival';
         } elseif (isset($specifics['on_departure']) && $specifics['on_departure']) {
             $date_picker_title = 'To add this product, let us know the date of your departure';
-        } elseif (isset($specifics['during_stay']) && $specifics['during_stay']) {
-            $date_picker_title = 'To add this product, let us know the dates of your stay';
-        } else {
+        }  else {
             $date_picker_title = 'To add this product, let us know the dates of your stay';
         }
 
@@ -295,7 +299,9 @@ class ProductController extends Controller
 
     private function getDatesInRange($arrivalDate, $departureDate, $specifics)
     {
-
+var_dump($specifics);
+echo '<br>';
+var_dump($departureDate);
         if (!isset($specifics['on_arrival']) && !isset($specifics['on_departure']) && !isset($specifics['during_stay'])) {
             return [['date' => $arrivalDate, 'status' => 'available']];
         }
@@ -311,7 +317,7 @@ class ProductController extends Controller
             $noticeDay = null;
         }
 
-        if($noticeDay > $departureDate){
+        if($departureDate && ($noticeDay > $departureDate)){
             return ['error' => 'You must book this product at least ' . $noticePeriod . ' days before your stay'];
         }
 
@@ -338,37 +344,41 @@ class ProductController extends Controller
             return [['date' => $departureDate, 'status' => 'available']];
         }
 
-        if (isset($specifics['during_stay']) && !$specifics['during_stay']) {
-            if ($noticeDay && $noticeDay > $arrivalDate) {
-                return ['error' => 'You must book this product at least ' . $noticePeriod . ' days before your departure date'];
-            }
-            return [['date' => $arrivalDate, 'status' => 'available'],['date' =>  $departureDate, 'status' => 'available']];
-        }
+//        if (isset($specifics['during_stay']) && !$specifics['during_stay']) {
+//            if ($noticeDay && $noticeDay > $arrivalDate) {
+//                return ['error' => 'You must book this product at least ' . $noticePeriod . ' days before your departure date'];
+//            }
+//            return [['date' => $arrivalDate, 'status' => 'available'],['date' =>  $departureDate, 'status' => 'available']];
+//        }
 
         $start = new \DateTime($arrivalDate);
         $end = new \DateTime($departureDate);
 
-        if (isset($specifics['on_arrival']) && !$specifics['on_arrival']) {
-            $start->modify('+1 day');
-        }
-
-        if (isset($specifics['on_departure']) && $specifics['on_departure']) {
-            $end->modify('+1 day'); // Include the end date in the period
-        }
 
         $dates = [];
         $interval = new \DateInterval('P1D'); // 1 day interval
         $period = new \DatePeriod($start, $interval, $end);
 
-        foreach ($period as $date) {
+        foreach ($period as $key => $date) {
+            $status = 'available';
+
+            if (isset($specifics['on_departure']) && !$specifics['on_departure'] && $key == count((array)$period) - 1) {
+                $status = 'unavailable';
+            }
+            if (isset($specifics['on_arrival']) && !$specifics['on_arrival'] && $key == 0) {
+                $status = 'unavailable';
+            }
+
+            if(isset($specifics['during_stay']) && !$specifics['during_stay'] && $key != 0 && $key != count((array)$period) - 1){
+                $status = 'unavailable';
+            }
+
             if ($noticeDay) {
                 if ($date->format('Y-m-d') >= $noticeDay) {
                     $status = 'available';
                 } else {
                     $status = 'unavailable';
                 }
-            } else {
-                $status = 'available';
             }
             $dates[] = [
                 'date' => $date->format('Y-m-d'),

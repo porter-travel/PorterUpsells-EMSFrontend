@@ -66,10 +66,9 @@
 
         <h4 class="font-bold py-4">Notice Period</h4>
         <div class="flex items-center justify-start">
-
             <x-input-label class="text-black font-sans" for="after_checkin">
             Product must be ordered at least
-                <input min="0" style="width: 70px; text-align: center" type="number" name="specifics[notice_period]" value="{{$product->specifics['notice_period'] ?? 0}}" id="notice_period">
+                <input min="0" style="width: 70px; text-align: center" type="number" name="specifics[notice_period]" value="{{$product->specifics['notice_period'] ? $product->specifics['notice_period'] : 0}}" id="notice_period">
             day(s) before arrival
             </x-input-label>
         </div>
