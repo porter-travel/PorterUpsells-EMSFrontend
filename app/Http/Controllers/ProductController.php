@@ -299,9 +299,9 @@ class ProductController extends Controller
 
     private function getDatesInRange($arrivalDate, $departureDate, $specifics)
     {
-var_dump($specifics);
-echo '<br>';
-var_dump($departureDate);
+//var_dump($specifics);
+//echo '<br>';
+//var_dump($departureDate);
         if (!isset($specifics['on_arrival']) && !isset($specifics['on_departure']) && !isset($specifics['during_stay'])) {
             return [['date' => $arrivalDate, 'status' => 'available']];
         }
