@@ -43,7 +43,7 @@ opacity-35
                 <span class="mr-2">Room:</span>
                 <span class="text-lg font-bold">{{$order['room']}}</span>
             </div>
-            <div class="bg-[#DDE1DD] p-1 rounded-lg leading-none">
+            <div class="bg-[#DDE1DD] p-1 rounded-lg leading-none status-pill">
                 <span
                     class="text-xs leading-none h-[0.5rem]">Status: {{$order['checkin'] ? 'Checked In' : 'Not arrived'}}</span>
             </div>

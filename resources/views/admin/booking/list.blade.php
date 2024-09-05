@@ -36,10 +36,9 @@
                                 <thead>
                                 <tr class="text-left bg-grey">
                                     <th class="p-2">Booking Ref</th>
-                                    <th class="p-2">Name</th>
-                                    <th class="p-2">Arrival Date</th>
-                                    <th class="p-2">Departure Date</th>
-                                    <th class="p-2 ">Email Address</th>
+                                    <th class="p-2">Details</th>
+                                    <th class="p-2">Stay Dates</th>
+                                    <th class="p-2">Room</th>
                                     <th class="p-2">Quick Link</th>
                                 </tr>
                                 </thead>
@@ -49,12 +48,17 @@
 
                                     <tr class="border">
                                         <td class="p-2">{{$booking->booking_ref}}</td>
-                                        <td class="p-2">{{$booking->name}}</td>
-                                        <td class="p-2">{{$booking->arrival_date}}</td>
-                                        <td class="p-2">{{$booking->departure_date}}</td>
-                                        <td class="p-2">{{$booking->email_address}}</td>
+                                        <td class="p-2">{{$booking->name}}<br>{{$booking->email_address}}</td>
+                                        <td class="p-2"> {{\App\Helpers\Date::formatToDayAndMonth($booking->arrival_date)}} - {{\App\Helpers\Date::formatToDayAndMonth($booking->departure_date)}}</td>
                                         <td>
-                                        <input class="booking-link" type="text" disabled
+                                            <form class="update-form flex" method="post" action="/admin/booking/{{$booking->id}}/update">
+                                                @csrf
+                                                <input name="room" class="w-20" value="{{$booking->room}}">
+                                                <button type="submit" class="update-room bg-grey border-r border-y rounded-tr rounded-br px-2">✓</button>
+                                            </form>
+                                        </td>
+                                        <td>
+                                        <input class=" w-0 p-0 opacity-0 booking-link" type="text" disabled
                                                value="{{env('APP_URL')}}/hotel/{{$hotel->slug}}/welcome?name={{$booking->name}}&arrival_date={{$booking->arrival_date}}&departure_date={{$booking->departure_date}}&email_address={{$booking->email_address}}&booking_ref={{$booking->booking_ref}}">
                                             <span class="copy-label cursor-pointer" onclick="copyToClipboard(this)">Copy</span>
 
@@ -100,5 +104,55 @@
                 document.body.removeChild(tempTextArea);
             }
         }
+
+        // Function to handle form submission without page reload
+        document.addEventListener('DOMContentLoaded', function() {
+            // Select all forms with the class 'update-form'
+            const forms = document.querySelectorAll('.update-form');
+
+            // Iterate through each form
+            forms.forEach(form => {
+                form.addEventListener('submit', function(event) {
+                    event.preventDefault(); // Prevent the default form submission
+
+                    // Get the form action URL and method
+                    const url = form.action;
+                    const method = form.method;
+
+                    // Create a FormData object from the form
+                    const formData = new FormData(form);
+
+                    // Send the AJAX request using fetch
+                    fetch(url, {
+                        method: method,
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest' // Optional: to specify AJAX request
+                        }
+                    })
+                        .then(response => response.json()) // Assuming the response is in JSON format
+                        .then(data => {
+                            // Handle the response (e.g., update the page, display a message, etc.)
+                            console.log('Success:', data);
+
+                            // Find the submit button within the current form
+                            const button = form.querySelector('.update-room');
+
+                            // Change button background to green
+                            button.style.backgroundColor = '#D4F6D1';
+
+                            // Revert button background after 2 seconds
+                            setTimeout(() => {
+                                button.style.backgroundColor = ''; // Reset to original color
+                            }, 2000);
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            // Handle errors (e.g., display an error message)
+                        });
+                });
+            });
+        });
+
     </script>
 </x-app-layout>

@@ -36,6 +36,18 @@
             left: 50%;
             transform: translate(-50%, -50%);
         }
+
+        .temporary-complete{
+            opacity: 0.5;
+        }
+
+        .temporary-complete span{
+            text-decoration: line-through;
+        }
+
+        .no-integration .status-pill{
+            display: none;
+        }
     </style>
     <x-slot name="header">
         <div class="flex items-center justify-between">
@@ -50,12 +62,12 @@
                 <div class="p-6 text-gray-900">
                     <div class="relative mb-6">
                         <ul id="hotelsDropdown"
-                            class="bg-yellow border border-black rounded-xl p-2 pr-6 cursor-pointer">
+                            class="bg-yellow border border-black rounded-xl p-2  cursor-pointer">
                             @php $i = 0; @endphp
                             @foreach($hotels as $hotel)
                                 <li id="orderTrigger{{$i}}"
                                     data-target="ordersPanel{{$i}}"
-                                    class="text-xl font-bold @if($i > 0) hidden @else active @endif cursor-pointer">
+                                    class="text-xl pr-6 font-bold @if($i > 0) hidden @else active @endif cursor-pointer">
                                     {{$hotel['name']}}
                                     @if(isset($hotel['orders']['ready']) && count($hotel['orders']['ready']) > 0)
                                         <span class="">
@@ -67,7 +79,7 @@
                                 @php $i++; @endphp
                             @endforeach
                         </ul>
-                        <div class="absolute right-2 top-[19px]">
+                        <div style="pointer-events: none" class="absolute right-2 top-[19px]">
                             <svg width="14" height="9" viewBox="0 0 14 9" fill="none"
                                  xmlns="http://www.w3.org/2000/svg">
                                 <path d="M1 1L7 7L13 0.999999" stroke="black" stroke-width="2" stroke-linecap="round"/>
@@ -77,7 +89,7 @@
                     <hr>
                     @php $i = 0; @endphp
                     @foreach($hotels as $hotel)
-                        <div class="orders-panel mt-6 @if($i > 0) hidden @endif" id="ordersPanel{{$i}}">
+                        <div class="orders-panel  mt-6 {{$hotel['integration'] ?: 'no-integration'}} @if($i > 0) hidden @endif" id="ordersPanel{{$i}}">
                             @if(isset($hotel['orders']['ready']) && count($hotel['orders']['ready']) > 0)
                                 <div>
                                     <h2 class="text-lg font-bold mb-6">Ready to be fulfilled:</h2>
@@ -138,6 +150,7 @@
                 const key = $(this).data('key');
                 const status = $(this).is(':checked') ? 'complete' : 'pending';
 
+                const that = $(this);
                 $.ajax({
                     url: `/fulfil-order/`,
                     method: 'POST',
@@ -148,6 +161,7 @@
                         key: key
                     },
                     success: function (response) {
+                        that.parents('.fulfilment-panel').addClass('temporary-complete')
                         console.log(response);
                     },
                     error: function (error) {

@@ -63,7 +63,7 @@
 
                                         @if($order['status'] == 'cancelled')
                                         bg-red
-@elseif($order['status'] == 'fulfilled')
+@elseif($order['status'] == 'complete')
                                         bg-mint
 @elseif($order['status'] == 'pending')
                                         bg-pink

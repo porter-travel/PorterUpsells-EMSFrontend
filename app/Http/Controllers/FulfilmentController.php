@@ -42,6 +42,7 @@ class FulfilmentController extends Controller
             $output[$k] = [
                 'name' => $hotel['name'],
                 'logo' => $hotel['logo'],
+                'integration' => (bool) $hotel['id_for_integration'],
                 'orders' => []
             ];
 
