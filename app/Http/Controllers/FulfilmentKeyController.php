@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\FulfilmentKey;
+use App\Models\Hotel;
 use Illuminate\Http\Request;
+
 
 class FulfilmentKeyController extends Controller
 {
@@ -27,7 +29,14 @@ class FulfilmentKeyController extends Controller
 
     public function create()
     {
-        $hotels = auth()->user()->hotels;
+        if(auth()->user()->role == 'superadmin') {
+            $hotels = Hotel::all();
+        }else {
+            // Assuming you have a hotels relationship on the User model (which is a collection of hotels the user has access to
+            $hotels = auth()->user()->hotels;
+        }
+
+
         return view('admin.fulfilment-keys.create',[ 'hotels' => $hotels]);
     }
 

@@ -69,6 +69,10 @@ class BookingController extends Controller
         // Fetch the hotel by ID
         $hotel = Hotel::find($id);
 
+        if ($hotel->user_id != auth()->user()->id && auth()->user()->role != 'superadmin'){
+            return redirect()->route('dashboard');
+        }
+
         // Ensure the hotel is found
         if (!$hotel) {
             return redirect()->back()->with('error', 'Hotel not found');

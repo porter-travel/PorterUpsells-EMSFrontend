@@ -12,8 +12,11 @@ class AdminController extends Controller
 
         $user = auth()->user();
 
-        $hotels = Hotel::whereBelongsTo($user)->get();
-//        dd($hotels);
+        if($user->role === 'superadmin'){
+            $hotels = Hotel::all();
+        } else {
+            $hotels = Hotel::whereBelongsTo($user)->get();
+        }
 
         if($user->account_status === 'pending'){
             return view('admin.pending-dashboard', ['user' => $user]);

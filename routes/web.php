@@ -38,6 +38,7 @@ Route::post('/checkout/stripe/checkoutSessionWebhook', [\App\Http\Controllers\Ch
 Route::get('/dashboard', [\App\Http\Controllers\AdminController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/fulfilment/{key}', [\App\Http\Controllers\FulfilmentController::class, 'fulfilment'])->name('fulfilment');
+Route::post('/fulfil-order/', [\App\Http\Controllers\FulfilmentController::class, 'fulfilOrder'])->name('fulfil-order');
 
 
 Route::get('/view-customer-email', function(){
@@ -47,7 +48,7 @@ Route::get('/view-customer-email', function(){
 });
 Route::middleware(['auth', 'verified'])->group(function(){
     Route::get('/dashboard', [\App\Http\Controllers\AdminController::class, 'dashboard'])->name('dashboard');
-    
+
     Route::post('admin/hotel/create', [\App\Http\Controllers\HotelController::class, 'store'] )->name('hotel.store');
     Route::get('admin/hotel/create', [\App\Http\Controllers\HotelController::class, 'create'] )->name('hotel.create');
 
@@ -80,6 +81,8 @@ Route::middleware(['auth', 'verified'])->group(function(){
     Route::get('/admin/fulfilment-keys/{id}/edit', [\App\Http\Controllers\FulfilmentKeyController::class, 'edit'])->name('fulfilment-keys.edit');
     Route::post('/admin/fulfilment-keys/{id}/update', [\App\Http\Controllers\FulfilmentKeyController::class, 'update'])->name('fulfilment-keys.update');
     Route::delete('/admin/fulfilment-keys/{key}/delete', [\App\Http\Controllers\FulfilmentKeyController::class, 'delete'])->name('fulfilment-keys.delete');
+
+    Route::post('/admin/order/update/', [\App\Http\Controllers\OrderController::class, 'updateOrder'])->name('order.update');
 
 });
 

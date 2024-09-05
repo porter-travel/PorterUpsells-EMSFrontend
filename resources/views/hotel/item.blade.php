@@ -116,22 +116,26 @@
 
                     <div class="mt-4">
                         @if($have_details)
-                            @include('hotel.partials.select-product-date', ['dateArray' => $dateArray])
+                            @if(isset($dateArray['error']))
+                                <div class="bg-black text-white p-4">{{$dateArray['error']}}</div>
+                            @else
+                                @include('hotel.partials.select-product-date', ['dateArray' => $dateArray])
+                                <x-primary-button
+                                    :disabled="!$have_details"
+                                    class=" justify-center mt-4 w-full md:w-1/2 hotel-button-color hotel-button-text-color">Add
+                                    to
+                                    basket
+                                </x-primary-button>
+                            @endif
                         @else
                             @include('hotel.partials.select-stay-dates', [
                                 'arrival_date' => session()->get('arrival_date'),
                                 'departure_date' => session()->get('departure_date'),
                                 'specifics' => $specifics,
+                                'date_picker_title' => $date_picker_title,
                                 ])
                         @endif
                     </div>
-
-                    <x-primary-button
-                        :disabled="!$have_details"
-                        class=" justify-center mt-4 w-full md:w-1/2 hotel-button-color hotel-button-text-color">Add to
-                        basket
-                    </x-primary-button>
-
 
                     <span id="success"
                           class="hidden text-black hotel-accent-color-50 my-4 p-2 w-full block">Added to basket</span>
