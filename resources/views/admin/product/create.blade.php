@@ -52,7 +52,7 @@
                             <input type="file" required name="image" id="image">
                         </div>
 
-                        @include('admin.product.partials.specifics')
+                        @include('admin.product.partials.specifics', ['method' => 'create'])
 
 
                         <div id="variantContainer">
@@ -76,4 +76,6 @@
             </div>
         </div>
     </div>
+
+
 </x-app-layout>

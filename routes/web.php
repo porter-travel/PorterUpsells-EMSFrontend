@@ -85,6 +85,9 @@ Route::middleware(['auth', 'verified'])->group(function(){
 
     Route::post('/admin/order/update/', [\App\Http\Controllers\OrderController::class, 'updateOrder'])->name('order.update');
 
+    Route::post('/admin/product/{id}/unavailability/store', [\App\Http\Controllers\UnavailabilityController::class, 'store'])->name('unavailability.store');
+    Route::get('/admin/unavailability/{id}/delete', [\App\Http\Controllers\UnavailabilityController::class, 'delete'])->name('unavailability.delete');
+
 });
 
 Route::middleware('auth')->group(function () {

@@ -4,6 +4,25 @@ namespace App\Helpers;
 
 class Date
 {
+
+    public static function formatToDayMonthYear($date)
+    {
+        // Create a DateTime object
+        $dateTime = new \DateTime($date);
+
+        // Extract the day and add the ordinal suffix
+        $day = $dateTime->format('j'); // Day without leading zeros
+        $dayWithSuffix = self::getOrdinalSuffix($day);
+
+        // Format the month
+        $month = $dateTime->format('M'); // Short month name (e.g., 'Sep')
+
+        // Format the year
+        $year = $dateTime->format('Y'); // 4-digit year
+
+        // Combine them into the desired format
+        return "{$dayWithSuffix} {$month} {$year}";
+    }
     public static function formatToDayAndMonth($date)
     {
         // Create a DateTime object

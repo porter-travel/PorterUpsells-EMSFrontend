@@ -24,5 +24,10 @@ class Product extends Model
         return $this->hasMany(ProductSpecific::class);
     }
 
+    public function unavailabilities()
+    {
+        return $this->hasMany(Unavailability::class);
+    }
+
 
 }
