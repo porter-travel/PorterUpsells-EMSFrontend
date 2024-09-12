@@ -69,7 +69,7 @@ class OrderController extends Controller
         $order->save();
 
 
-        if($order->status == 'fulfilled') {
+        if($order->status == 'complete') {
             // Send email to customer later
             $className = 'bg-mint';
         }

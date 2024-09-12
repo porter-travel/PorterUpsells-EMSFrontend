@@ -17,8 +17,9 @@ class WelcomeController extends Controller
         $request->session()->put('departure_date', $request->input('departure_date'));
         $request->session()->put('email_address', $request->input('email_address'));
         $request->session()->put('hotel_id', $hotel_id);
-
-        return redirect()->route('hotel.dashboard', ['id' => $hotel_slug] );
+        $data = $request->session()->all();
+//dd($request->session()->all());
+        return redirect()->route('hotel.dashboard', ['id' => $hotel_slug, 'data' => $data] );
     }
 
     public function setUserStayDates(Request $request){

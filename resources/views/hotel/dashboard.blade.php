@@ -22,7 +22,7 @@
             </div>
 
             <div class="md:basis-5/12 basis-full md:pl-12 pt-4 md:pt-0">
-                <p class="hotel-text-color open-sans font-semibold md:text-2xl mb-6">Welcome,</p>
+                <p class="hotel-text-color open-sans font-semibold md:text-2xl mb-6">Welcome, {{$data['name'] ?? ''}}</p>
 {{--                <div class="flex items-start justify-start mb-3">--}}
 {{--                    <div>--}}
                 {{--                    <svg class="mr-2 mt-1" width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">--}}

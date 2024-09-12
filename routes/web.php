@@ -68,6 +68,7 @@ Route::middleware(['auth', 'verified'])->group(function(){
     Route::get('admin/hotel/{id}/create-booking', [\App\Http\Controllers\BookingController::class, 'create'] )->name('booking.create');
     Route::post('admin/hotel/{id}/store-booking', [\App\Http\Controllers\BookingController::class, 'store'] )->name('booking.store');
     Route::get('admin/hotel/{id}/list-bookings', [\App\Http\Controllers\BookingController::class, 'list'] )->name('bookings.list');
+    Route::post('admin/booking/{booking_id}/update', [\App\Http\Controllers\BookingController::class, 'updateBooking'] )->name('booking.update');
 
     Route::post('/admin/hotel/{id}/email/send-customer-email', [\App\Http\Controllers\CustomerEmailController::class, 'send'] )->name('email.send');
 
