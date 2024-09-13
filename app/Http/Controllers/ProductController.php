@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Hotel;
 use App\Models\Product;
 use App\Models\ProductSpecific;
+use App\Models\Unavailability;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -88,7 +89,9 @@ class ProductController extends Controller
         $arrivalDate = $request->session()->get('arrival_date');
         $departureDate = $request->session()->get('departure_date');
 
-        $dateArray = $this->getDatesInRange($arrivalDate, $departureDate, $specifics);
+        $unavailabilities = Unavailability::where('product_id', $item_id)->get();
+
+        $dateArray = $this->getDatesInRange($arrivalDate, $departureDate, $specifics, $unavailabilities);
 
         return view('hotel.item', [
             'hotel_id' => $hotel_id,
@@ -117,12 +120,13 @@ class ProductController extends Controller
         if ($hotel->user_id != auth()->user()->id && auth()->user()->role != 'superadmin') {
             return redirect()->route('dashboard');
         }
-        $product = Product::with('specifics')->find($product_id);
+        $product = Product::with(['specifics', 'unavailabilities'])->find($product_id);
         $specificsArray = $product->specifics->mapWithKeys(function ($specific) {
             return [$specific->name => $this->parseSpecificsValue($specific->value)];
         })->toArray();
 
         $product->specifics = $specificsArray;
+
 
 //        dd($product);
         return view('admin.product.edit', ['hotel' => $hotel, 'product' => $product]);
@@ -297,7 +301,7 @@ class ProductController extends Controller
 
     }
 
-    private function getDatesInRange($arrivalDate, $departureDate, $specifics)
+    private function getDatesInRange($arrivalDate, $departureDate, $specifics, $unavailabilities)
     {
 //var_dump($specifics);
 //echo '<br>';
@@ -351,6 +355,17 @@ class ProductController extends Controller
 //            return [['date' => $arrivalDate, 'status' => 'available'],['date' =>  $departureDate, 'status' => 'available']];
 //        }
 
+
+//        dd($unavailabilities->toArray());
+
+        $unavailable_ranges = array_map(function($range) {
+            return [
+                'from' => new \DateTime($range['start_at']),
+                'to' => new \DateTime($range['end_at']),
+                'is_recurrent' => $range['is_recurrent']
+            ];
+        }, $unavailabilities->toArray());
+
         $start = new \DateTime($arrivalDate);
         $end = new \DateTime($departureDate);
 
@@ -361,6 +376,28 @@ class ProductController extends Controller
 
         foreach ($period as $key => $date) {
             $status = 'available';
+            $status = $this->checkDayOfWeek($date, $specifics);
+
+            foreach ($unavailable_ranges as $range) {
+                if ($range['is_recurrent']) {
+                    // Compare month and day only, ignoring the year
+                    $date_month_day = $date->format('m-d');
+                    $from_month_day = $range['from']->format('m-d');
+                    $to_month_day = $range['to']->format('m-d');
+
+                    if ($date_month_day >= $from_month_day && $date_month_day <= $to_month_day) {
+                        $status = 'unavailable';
+                        break; // No need to check further if already unavailable
+                    }
+                } else {
+                    // Normal date comparison including the year
+                    if ($date >= $range['from'] && $date <= $range['to']) {
+                        $status = 'unavailable';
+                        break; // No need to check further if already unavailable
+                    }
+                }
+            }
+
 
             if (isset($specifics['on_departure']) && !$specifics['on_departure'] && $key == count((array)$period) - 1) {
                 $status = 'unavailable';
@@ -388,5 +425,33 @@ class ProductController extends Controller
         }
 
         return $dates;
+    }
+
+    function checkDayOfWeek($date, $specifics) {
+        // Check if any day keys are present in the specifics array
+        $days = [
+            'available_monday',
+            'available_tuesday',
+            'available_wednesday',
+            'available_thursday',
+            'available_friday',
+            'available_saturday',
+            'available_sunday'
+        ];
+
+        // Extract the day of the week from the $date
+        $dayOfWeek = strtolower($date->format('l')); // 'Monday', 'Tuesday', etc.
+        $specificDayKey = "available_{$dayOfWeek}"; // Construct the key, e.g., 'available_monday'
+
+        // Check if the specifics array has any of the day keys set
+        $hasDaysSet = array_intersect_key(array_flip($days), $specifics);
+
+        // If no days are mentioned in specifics, return 'available' by default
+        if (empty($hasDaysSet)) {
+            return 'available';
+        }
+
+        // Return the status based on the specific day availability
+        return $specifics[$specificDayKey] ?? false ? 'available' : 'unavailable';
     }
 }
