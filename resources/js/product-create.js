@@ -22,7 +22,7 @@ if(container) {
 
                             <div class="">
                                 <label class="block font-medium text-sm text-gray-700 text-black font-sans" for="image">Image</label>
-                                <input type="file" name="variants[${id}][variant_image]" id="image">
+                                <input required type="file" name="variants[${id}][variant_image]" id="image">
                             </div>
 
                             <div>

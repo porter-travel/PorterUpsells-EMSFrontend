@@ -33,6 +33,7 @@ if (form) {
                 console.log(response.data);
                 document.getElementById('cartCount').innerText = response.data.cart.cartCount;
                 document.getElementById('success').classList.remove('hidden');
+                document.getElementById('success').classList.add('block')
             })
             .catch(function (error) {
                 console.log(error);

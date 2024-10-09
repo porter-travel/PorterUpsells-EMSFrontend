@@ -15,15 +15,20 @@ document.addEventListener('DOMContentLoaded', (event) => {
         }
     }
 
-    arrivalDateInput.addEventListener('blur', () => {
+    arrivalDateInput.addEventListener('change', () => {
         if (departureDateInput.value) {
             validateDates();
+        } else {
+            departureDateInput.value = arrivalDateInput.value;
+
         }
     });
 
-    departureDateInput.addEventListener('blur', () => {
+    departureDateInput.addEventListener('change', () => {
         if (arrivalDateInput.value) {
             validateDates();
+        } else {
+            arrivalDateInput.value = departureDateInput.value;
         }
     });
 });

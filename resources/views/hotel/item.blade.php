@@ -136,9 +136,13 @@
                                 ])
                         @endif
                     </div>
-
-                    <span id="success"
-                          class="hidden text-black hotel-accent-color-50 my-4 p-2 w-full block">Added to basket</span>
+                    <div id="success" class="hidden">
+{{--                        <div class="fixed inset-0 bg-grey/50"></div>--}}
+                    <div
+                         class="fixed right-4 bottom-4 w-[250px] text-black hotel-accent-color-50 my-4 p-2 block"><p>Added to your basket!</p>
+                        <a class="underline font-bold" href="/hotel/{{$hotel_id}}/cart">Proceed to basket</a>
+                    </div>
+                    </div>
 
                     <div class="mt-4 hotel-text-color">
                         {{$product->description}}
