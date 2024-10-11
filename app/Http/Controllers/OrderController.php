@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Hotel;
 use App\Models\Order;
+use App\Services\OrderService;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -14,6 +15,9 @@ class OrderController extends Controller
     {
 
         $hotel = Hotel::find($hotel_id);
+        if ($hotel->user_id != auth()->user()->id && auth()->user()->role != 'superadmin'){
+            return redirect()->route('dashboard');
+        }
 // Fetch orders with future departure date and their items
         $orders = Order::where('hotel_id', $hotel_id)
             ->with('items')
@@ -29,6 +33,10 @@ class OrderController extends Controller
 
         $hotel = Hotel::find($hotel_id);
 
+        if ($hotel->user_id != auth()->user()->id && auth()->user()->role != 'superadmin'){
+            return redirect()->route('dashboard');
+        }
+
 //        global $startDate, $endDate;
         $startDate = Carbon::now()->startOfDay();
 
@@ -39,51 +47,44 @@ class OrderController extends Controller
             $endDate = Carbon::createFromFormat('Y-m-d', $request->input('end_date'));
         }
 
+        $service = new OrderService();
 
-// Assuming you have the hotel ID
+        $output = $service->generateOrderArrayForEmailAndAdminView($hotel_id, $startDate, $endDate);
 
-// Fetch orders with future departure date and their items, ordered by soonest item date
-// Fetch orders within the date range
-        $orders = Order::where('hotel_id', $hotel_id)
-            ->whereHas('items', function ($query) use ($startDate, $endDate) {
-                $query->whereDate('date', '>=', $startDate->toDateString())
-                    ->whereDate('date', '<=', $endDate->toDateString());
-            })
-            ->with(['items' => function ($query) {
-                $query->orderBy('date', 'asc');
-            }])
-            ->get()
-            ->sortBy(function ($order) {
-                return $order->items->min('date');
-            });
-
-
-        // Prepare the result array
-        $result = [];
-
-        foreach ($orders as $order) {
-            foreach ($order->items as $item) {
-                // Convert item date string to Carbon instance
-                $itemDate = Carbon::createFromFormat('Y-m-d', $item->date);
-
-                // Check if the item date is within the range
-                if ($itemDate->between($startDate, $endDate)) {
-                    $result[] = [
-                        'order_name' => $order->name,
-                        'order_total' => $order->total,
-                        'booking_ref' => $order->booking_ref,
-                        'item' => $item,
-                    ];
-                }
-            }
-        }
 
         return view('admin.orders.listItemsForPicking',
             [
-                'orders' => $result,
+                'orders' => $output,
                 'hotel' => $hotel,
                 'startDate' => $startDate->format('Y-m-d'),
                 'endDate' => $endDate->format('Y-m-d')
             ]);
     }
+
+    public function updateOrder(Request $request){
+        $order = Order::find($request->id);
+        $order->status = $request->status;
+        $order->items()->update(['status' => $request->status]);
+
+        $order->save();
+
+
+        if($order->status == 'complete') {
+            // Send email to customer later
+            $className = 'bg-mint';
+        }
+
+        if($order->status == 'cancelled') {
+            // Send email to customer later
+            $className = 'bg-red';
+        }
+
+        if($order->status == 'pending') {
+            $className = 'bg-pink';
+        }
+
+        return response()->json(['message' => 'Order status updated successfully', 'className' => 'p-2 ' . $className]);
+
+    }
+
 }

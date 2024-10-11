@@ -55,9 +55,10 @@ class HotelController extends Controller
 //        Mail::to('alex@gluestudio.co.uk')->send(new ConfigTest(json_encode([])));
 
 //        var_dump($request->session()->all());
-        $data['name'] = $request->session()->get('name');
-        $data['booking_ref'] = $request->session()->get('booking_ref');
-        $data['arrival_date'] = $request->session()->get('arrival_date');
+//        $data['name'] = $request->session()->get('name');
+//        $data['booking_ref'] = $request->session()->get('booking_ref');
+//        $data['arrival_date'] = $request->session()->get('arrival_date');
+        $data = $request->session()->all();
 
         $cart = session()->get('cart');
 
@@ -69,14 +70,7 @@ class HotelController extends Controller
 
         $products = $hotel->activeProducts();
 
-        $data['days_until_arrival'] = (strtotime($data['arrival_date']) - strtotime(date('Y-m-d'))) / (60 * 60 * 24);
-
-        $data['dummy_items'] = [
-            ['img' => 'breakfast.png', 'title' => 'Breakfast', 'price' => '£15.00', 'id' => '1'],
-            ['img' => 'prosecco.png', 'title' => 'Bottle of Prosecco in your room', 'price' => '£21.99', 'id' => '1'],
-            ['img' => 'romance.png', 'title' => 'Romance package including petals and wine', 'price' => '£49.99', 'id' => '1'],
-            ['img' => 'massage.png', 'title' => 'Head massage in our spa facilities', 'price' => '£59.99', 'id' => '1']
-        ];
+//        $data['days_until_arrival'] = (strtotime($data['arrival_date']) - strtotime(date('Y-m-d'))) / (60 * 60 * 24);
 
         return view('hotel.dashboard', ['data' => $data, 'hotel' => $hotel, 'products' => $products, 'cart' => $cart])->with('id', $id);
     }
@@ -115,7 +109,7 @@ class HotelController extends Controller
     public function edit(Request $request, $id)
     {
         $hotel = \App\Models\Hotel::find($id);
-        if ($hotel->user_id != auth()->user()->id) {
+        if ($hotel->user_id != auth()->user()->id && auth()->user()->role != 'superadmin'){
             return redirect()->route('dashboard');
         }
         return view('admin.hotel.edit', ['hotel' => $hotel]);

@@ -63,3 +63,23 @@ details > summary::-webkit-details-marker {
 button[disabled]{
     opacity: 0.4;
 }
+
+
+.fancy-checkbox {
+    position: relative;
+}
+
+.fancy-checkbox input:checked + span {
+    background-color: #C7EDF2;
+    z-index: 10;
+}
+
+.fancy-checkbox input:checked + span + span {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #80C7EDF2;
+}

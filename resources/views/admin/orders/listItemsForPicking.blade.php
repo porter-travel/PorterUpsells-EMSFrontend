@@ -33,7 +33,7 @@
                                 <thead>
                                 <tr class="text-left bg-grey">
                                     <th class="p-2">Booking Ref</th>
-                                    <th class="p-2">Date Requested</th>
+                                    <th class="p-2">Checkin</th>
                                     <th class="p-2">Name</th>
                                     {{--                                    <th class="p-2">Order Date</th>--}}
                                     <th class="p-2">Items</th>
@@ -41,38 +41,42 @@
                                 </tr>
                                 </thead>
                                 @foreach($orders as $order)
-
+{{--                                    {{dd($order)}}--}}
                                     {{--                                    {{dd($order->order_items)}}--}}
 
                                     <tr class="border">
-                                        <td class="p-2">{{$order['item']->booking_ref}}</td>
-                                        <td class="p-2">{{date_create_from_format('Y-m-d', $order['item']->date)->format('d/m/Y')}}</td>
-                                        <td class="p-2">{{$order['order_name']}}</td>
+                                        <td class="p-2">{{$order['booking_ref']}}</td>
+                                        <td class="p-2">{{date_create_from_format('Y-m-d', $order['arrival_date'])->format('d/m/Y')}}</td>
+                                        <td class="p-2">{{$order['name']}}</td>
                                         {{--                                        <td class="p-2">{{$order->created_at}}</td>--}}
                                         <td class="p-2">
-                                            {{$order['item']->quantity}} x
-                                            {{$order['item']->product_name}} @if($order['item']->product_type == 'variable')
-                                                <br><span class="text-sm">{{$order['item']->variation_name}}</span>
-                                            @endif
+                                            @foreach($order['items'] as $item)
+                                                {{$item['quantity']}} x
+                                                {{$item['name']}}
+                                                @if($item['product_type'] == 'variable')
+                                                    <br><span class="text-sm">{{$item['variation_name']}}</span>
+                                                @endif
+                                                <br>
+                                            @endforeach
                                         </td>
                                         <td class="p-2
 
-                                        @if($order['item']->status == 'cancelled')
+                                        @if($order['status'] == 'cancelled')
                                         bg-red
-@elseif($order['item']->status == 'fulfilled')
+@elseif($order['status'] == 'complete')
                                         bg-mint
-@elseif($order['item']->status == 'pending')
+@elseif($order['status'] == 'pending')
                                         bg-pink
                                         @endif
                                         ">
                                             <form class="orderItemUpdate" method="post"
-                                                  action="{{route('orderItem.update', $order['item']->id)}}">
+                                                  action="{{route('order.update')}}">
                                                 @csrf
-                                                <input type="hidden" name="id" value="{{$order['item']->id}}">
+                                                <input type="hidden" name="id" value="{{$order['id']}}">
 
                                                 <select name="status" class="order-status-select">
                                                     @foreach(\App\Enums\OrderStatus::getValues() as $value)
-                                                        <option @if($order['item']->status == $value) selected
+                                                        <option @if($order['status'] == $value) selected
                                                                 @endif value="{{$value}}">{{ucfirst($value)}}</option>
                                                     @endforeach
                                                 </select>

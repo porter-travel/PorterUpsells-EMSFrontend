@@ -5,21 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class OrderItem extends Model
+class Unavailability extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'order_id',
-        'product_id',
-        'quantity',
-        'price'
-    ];
+    protected $fillable = ['start_at', 'end_at', 'is_recurrent'];
 
-    public function order()
-    {
-        return $this->belongsTo(Order::class);
-    }
+    protected  $table = 'unavailabilities';
 
     public function product()
     {

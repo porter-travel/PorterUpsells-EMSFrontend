@@ -61,7 +61,7 @@
                             </div>
                         </div>
 
-                        @include('admin.product.partials.specifics')
+                        @include('admin.product.partials.specifics', ['method' => 'update'])
 
 
                         <div id="variantContainer">
@@ -129,4 +129,7 @@
             </div>
         </div>
     </div>
+
+    @include('admin.product.partials.unavailability-modal', ['product' => $product])
+
 </x-app-layout>

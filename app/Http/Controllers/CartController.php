@@ -11,9 +11,10 @@ class CartController extends Controller
     function show($hotel_id)
     {
 
-        if(session()->get('hotel_id') == null){
-            session()->put('hotel_id', $hotel_id);
-        }
+        session()->put('hotel_id', $hotel_id);
+
+
+        $this->removeFromCartIfProductFromWrongHotel();
 
 
         $data['cart'] = session()->get('cart');
@@ -124,6 +125,27 @@ class CartController extends Controller
         }
 
         return json_encode(['success' => 'Cart updated successfully', $cart]);
+    }
+
+    function removeFromCartIfProductFromWrongHotel()
+    {
+        $cart = session()->get('cart');
+        $hotel_id = session()->get('hotel_id');
+
+        if (is_numeric($hotel_id)) {
+            $hotel = Hotel::find($hotel_id);
+            $hotel_id = $hotel->slug;
+        }
+
+        foreach ($cart as $key => $item) {
+            if (is_array($item) && $item['hotel_id'] != $hotel_id) {
+                unset($cart[$key]);
+            }
+        }
+
+        $cart = $this->calculateCartTotals($cart);
+
+        session()->put('cart', $cart);
     }
 
     function updateCartQty(Request $request, $id)

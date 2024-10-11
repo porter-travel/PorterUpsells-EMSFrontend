@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Hotel;
 use App\Models\Product;
 use App\Models\ProductSpecific;
+use App\Models\Unavailability;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -25,14 +26,14 @@ class ProductController extends Controller
         $product = Product::find($item_id);
         $variations = $product->variations;
         $specifics = $product->specifics->mapWithKeys(function ($specific) {
-            return [$specific->name => (bool)$specific->value];
+            return [$specific->name => $this->parseSpecificsValue($specific->value)];
         })->toArray();
 
 //        dd($specifics);
 
         $have_details = true;
 
-        if(!isset($specifics['on_arrival'])){
+        if (!isset($specifics['on_arrival'])) {
             $specifics['on_arrival'] = true;
         }
 
@@ -44,14 +45,30 @@ class ProductController extends Controller
 
 //        var_dump($have_details);
 
-        if(isset($specifics['on_arrival']) && $specifics['on_arrival'] && !$request->session()->get('arrival_date')){
+        if (isset($specifics['on_arrival']) && $specifics['on_arrival'] && !$request->session()->get('arrival_date')) {
             $have_details = false;
         }
 
 //        var_dump($have_details);
 
-        if(isset($specifics['on_departure']) && $specifics['on_departure'] && !$request->session()->get('departure_date')){
+        if (isset($specifics['on_departure']) && $specifics['on_departure'] && !$request->session()->get('departure_date')) {
             $have_details = false;
+        }
+
+        if(isset($specifics['during_stay']) && $specifics['during_stay'] && !$request->session()->get('arrival_date') && !$request->session()->get('departure_date')){
+            $have_details = false;
+        }
+
+        if (isset($specifics['on_departure']) && $specifics['on_departure'] && isset($specifics['on_arrival']) && $specifics['on_arrival']) {
+            $date_picker_title = 'To add this product, first let us know the dates of your stay';
+        } elseif (isset($specifics['during_stay']) && $specifics['during_stay']) {
+            $date_picker_title = 'To add this product, let us know the dates of your stay';
+        } elseif (isset($specifics['on_arrival']) && $specifics['on_arrival']) {
+            $date_picker_title = 'To add this product, let us know the date of your arrival';
+        } elseif (isset($specifics['on_departure']) && $specifics['on_departure']) {
+            $date_picker_title = 'To add this product, let us know the date of your departure';
+        }  else {
+            $date_picker_title = 'To add this product, let us know the dates of your stay';
         }
 
 //        var_dump($specifics);
@@ -72,7 +89,9 @@ class ProductController extends Controller
         $arrivalDate = $request->session()->get('arrival_date');
         $departureDate = $request->session()->get('departure_date');
 
-        $dateArray = $this->getDatesInRange($arrivalDate, $departureDate, $specifics);
+        $unavailabilities = Unavailability::where('product_id', $item_id)->get();
+
+        $dateArray = $this->getDatesInRange($arrivalDate, $departureDate, $specifics, $unavailabilities);
 
         return view('hotel.item', [
             'hotel_id' => $hotel_id,
@@ -84,7 +103,8 @@ class ProductController extends Controller
             'cartCount' => $cartCount,
             'dateArray' => $dateArray,
             'specifics' => $specifics,
-            'have_details' => $have_details
+            'have_details' => $have_details,
+            'date_picker_title' => $date_picker_title
         ]);
     }
 
@@ -97,15 +117,28 @@ class ProductController extends Controller
     public function edit($hotel_id, $product_id)
     {
         $hotel = Hotel::find($hotel_id);
-        $product = Product::with('specifics')->find($product_id);
+        if ($hotel->user_id != auth()->user()->id && auth()->user()->role != 'superadmin') {
+            return redirect()->route('dashboard');
+        }
+        $product = Product::with(['specifics', 'unavailabilities'])->find($product_id);
         $specificsArray = $product->specifics->mapWithKeys(function ($specific) {
-            return [$specific->name => (bool) $specific->value];
+            return [$specific->name => $this->parseSpecificsValue($specific->value)];
         })->toArray();
 
         $product->specifics = $specificsArray;
 
+
 //        dd($product);
         return view('admin.product.edit', ['hotel' => $hotel, 'product' => $product]);
+    }
+
+    private function parseSpecificsValue($value)
+    {
+        if ($value == '1' || $value == '0' || $value == 1 || $value == 0) {
+            return (bool)$value;
+        } else {
+            return $value;
+        }
     }
 
 
@@ -152,8 +185,10 @@ class ProductController extends Controller
             ]);
         }
 
-        if(isset($request->specifics)){
-            foreach($request->specifics as $name => $specific){
+//        dd($request->specifics);
+
+        if (isset($request->specifics)) {
+            foreach ($request->specifics as $name => $specific) {
                 $product->specifics()->create([
                     'name' => $name,
                     'value' => $specific
@@ -231,7 +266,7 @@ class ProductController extends Controller
             }
         }
 
-        if($product->variations->count() == 0){
+        if ($product->variations->count() == 0) {
             $product->variations()->create([
                 'name' => $product->name,
                 'price' => $product->price,
@@ -239,7 +274,7 @@ class ProductController extends Controller
             ]);
         }
 
-        if($product->variations->count() == 1){
+        if ($product->variations->count() == 1) {
             $variation = $product->variations->first();
             $variation->name = $product->name;
             $variation->price = $product->price;
@@ -247,10 +282,10 @@ class ProductController extends Controller
             $variation->save();
         }
 //dd($request->specifics);
-        if(isset($request->specifics)){
-            foreach($request->specifics as $name => $specific){
+        if (isset($request->specifics)) {
+            foreach ($request->specifics as $name => $specific) {
                 $ps = ProductSpecific::where('product_id', $product->id)->where('name', $name)->first();
-                if($ps){
+                if ($ps) {
                     $ps->value = $specific;
                     $ps->save();
                 } else {
@@ -266,49 +301,157 @@ class ProductController extends Controller
 
     }
 
-    private function getDatesInRange($arrivalDate, $departureDate, $specifics){
+    private function getDatesInRange($arrivalDate, $departureDate, $specifics, $unavailabilities)
+    {
+//var_dump($specifics);
+//echo '<br>';
+//var_dump($departureDate);
+        if (!isset($specifics['on_arrival']) && !isset($specifics['on_departure']) && !isset($specifics['during_stay'])) {
+            return [['date' => $arrivalDate, 'status' => 'available']];
+        }
 
-        if(!isset($specifics['on_arrival']) && !isset($specifics['on_departure']) && !isset($specifics['during_stay'])){
-            return [$arrivalDate];
+        if (isset($specifics['notice_period']) && $specifics['notice_period'] > 0) {
+            $noticePeriod = $specifics['notice_period'];
+//Notice period is a number so  calculate the date that is $noticePeriod days from today
+            $today = new \DateTime();
+            $today->modify('+' . $noticePeriod . ' day');
+            $noticeDay = $today->format('Y-m-d');
+//            var_dump($noticeDay);
+        } else {
+            $noticeDay = null;
+        }
+
+        if($departureDate && ($noticeDay > $departureDate)){
+            return ['error' => 'You must book this product at least ' . $noticePeriod . ' days before your stay'];
         }
 
 //        dd($specifics, count($specifics) == 1, isset($specifics['on_arrival']), $specifics['on_arrival'], $arrivalDate);
 
-        if(count($specifics) == 1 && isset($specifics['on_arrival']) && $specifics['on_arrival']){
-            return [$arrivalDate];
+        if (count($specifics) == 1 && isset($specifics['on_arrival']) && $specifics['on_arrival']) {
+            if ($noticeDay && $noticeDay > $arrivalDate) {
+                return ['error' => 'You must book this product at least ' . $noticePeriod . ' days before your arrival date'];
+            }
+            return [['date' => $arrivalDate, 'status' => 'available']];
         }
 
-        if(isset($specifics['on_departure']) && !$specifics['on_departure'] && isset($specifics['during_stay']) &&  !$specifics['during_stay']){
-            return [$arrivalDate];
+        if (isset($specifics['on_departure']) && !$specifics['on_departure'] && isset($specifics['during_stay']) && !$specifics['during_stay']) {
+            if ($noticeDay && $noticeDay > $arrivalDate) {
+                return ['error' => 'You must book this product at least ' . $noticePeriod . ' days before your arrival date'];
+            }
+            return [['date' => $arrivalDate, 'status' => 'available']];
         }
 
-        if(isset($specifics['on_arrival']) && !$specifics['on_arrival'] && isset($specifics['during_stay']) && !$specifics['during_stay']){
-            return [$departureDate];
+        if (isset($specifics['on_arrival']) && !$specifics['on_arrival'] && isset($specifics['during_stay']) && !$specifics['during_stay']) {
+            if ($noticeDay && $noticeDay > $arrivalDate) {
+                return ['error' => 'You must book this product at least ' . $noticePeriod . ' days before your departure date'];
+            }
+            return [['date' => $departureDate, 'status' => 'available']];
         }
 
-        if(isset($specifics['during_stay']) && !$specifics['during_stay']){
-            return [$arrivalDate, $departureDate];
-        }
+//        if (isset($specifics['during_stay']) && !$specifics['during_stay']) {
+//            if ($noticeDay && $noticeDay > $arrivalDate) {
+//                return ['error' => 'You must book this product at least ' . $noticePeriod . ' days before your departure date'];
+//            }
+//            return [['date' => $arrivalDate, 'status' => 'available'],['date' =>  $departureDate, 'status' => 'available']];
+//        }
+
+
+//        dd($unavailabilities->toArray());
+
+        $unavailable_ranges = array_map(function($range) {
+            return [
+                'from' => new \DateTime($range['start_at']),
+                'to' => new \DateTime($range['end_at']),
+                'is_recurrent' => $range['is_recurrent']
+            ];
+        }, $unavailabilities->toArray());
 
         $start = new \DateTime($arrivalDate);
         $end = new \DateTime($departureDate);
 
-        if(isset($specifics['on_arrival']) && !$specifics['on_arrival']){
-            $start->modify('+1 day');
-        }
-
-        if(isset($specifics['on_departure']) && $specifics['on_departure']){
-            $end->modify('+1 day'); // Include the end date in the period
-        }
 
         $dates = [];
         $interval = new \DateInterval('P1D'); // 1 day interval
         $period = new \DatePeriod($start, $interval, $end);
 
-        foreach ($period as $date) {
-            $dates[] = $date->format('Y-m-d');
+        foreach ($period as $key => $date) {
+            $status = 'available';
+            $status = $this->checkDayOfWeek($date, $specifics);
+
+            foreach ($unavailable_ranges as $range) {
+                if ($range['is_recurrent']) {
+                    // Compare month and day only, ignoring the year
+                    $date_month_day = $date->format('m-d');
+                    $from_month_day = $range['from']->format('m-d');
+                    $to_month_day = $range['to']->format('m-d');
+
+                    if ($date_month_day >= $from_month_day && $date_month_day <= $to_month_day) {
+                        $status = 'unavailable';
+                        break; // No need to check further if already unavailable
+                    }
+                } else {
+                    // Normal date comparison including the year
+                    if ($date >= $range['from'] && $date <= $range['to']) {
+                        $status = 'unavailable';
+                        break; // No need to check further if already unavailable
+                    }
+                }
+            }
+
+
+            if (isset($specifics['on_departure']) && !$specifics['on_departure'] && $key == count((array)$period) - 1) {
+                $status = 'unavailable';
+            }
+            if (isset($specifics['on_arrival']) && !$specifics['on_arrival'] && $key == 0) {
+                $status = 'unavailable';
+            }
+
+            if(isset($specifics['during_stay']) && !$specifics['during_stay'] && $key != 0 && $key != count((array)$period) - 1){
+                $status = 'unavailable';
+            }
+
+            if ($noticeDay) {
+                if ($date->format('Y-m-d') >= $noticeDay) {
+                    $status = 'available';
+                } else {
+                    $status = 'unavailable';
+                }
+            }
+            $dates[] = [
+                'date' => $date->format('Y-m-d'),
+                'status' => $status
+            ];
+
         }
 
         return $dates;
+    }
+
+    function checkDayOfWeek($date, $specifics) {
+        // Check if any day keys are present in the specifics array
+        $days = [
+            'available_monday',
+            'available_tuesday',
+            'available_wednesday',
+            'available_thursday',
+            'available_friday',
+            'available_saturday',
+            'available_sunday'
+        ];
+
+        // Extract the day of the week from the $date
+        $dayOfWeek = strtolower($date->format('l')); // 'Monday', 'Tuesday', etc.
+        $specificDayKey = "available_{$dayOfWeek}"; // Construct the key, e.g., 'available_monday'
+
+        // Check if the specifics array has any of the day keys set
+        $hasDaysSet = array_intersect_key(array_flip($days), $specifics);
+
+        // If no days are mentioned in specifics, return 'available' by default
+        if (empty($hasDaysSet)) {
+            return 'available';
+        }
+
+        // Return the status based on the specific day availability
+        return $specifics[$specificDayKey] ?? false ? 'available' : 'unavailable';
     }
 }

@@ -38,6 +38,7 @@ Route::post('/checkout/stripe/checkoutSessionWebhook', [\App\Http\Controllers\Ch
 Route::get('/dashboard', [\App\Http\Controllers\AdminController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/fulfilment/{key}', [\App\Http\Controllers\FulfilmentController::class, 'fulfilment'])->name('fulfilment');
+Route::post('/fulfil-order/', [\App\Http\Controllers\FulfilmentController::class, 'fulfilOrder'])->name('fulfil-order');
 
 
 Route::get('/view-customer-email', function(){
@@ -47,7 +48,7 @@ Route::get('/view-customer-email', function(){
 });
 Route::middleware(['auth', 'verified'])->group(function(){
     Route::get('/dashboard', [\App\Http\Controllers\AdminController::class, 'dashboard'])->name('dashboard');
-    
+
     Route::post('admin/hotel/create', [\App\Http\Controllers\HotelController::class, 'store'] )->name('hotel.store');
     Route::get('admin/hotel/create', [\App\Http\Controllers\HotelController::class, 'create'] )->name('hotel.create');
 
@@ -67,6 +68,7 @@ Route::middleware(['auth', 'verified'])->group(function(){
     Route::get('admin/hotel/{id}/create-booking', [\App\Http\Controllers\BookingController::class, 'create'] )->name('booking.create');
     Route::post('admin/hotel/{id}/store-booking', [\App\Http\Controllers\BookingController::class, 'store'] )->name('booking.store');
     Route::get('admin/hotel/{id}/list-bookings', [\App\Http\Controllers\BookingController::class, 'list'] )->name('bookings.list');
+    Route::post('admin/booking/{booking_id}/update', [\App\Http\Controllers\BookingController::class, 'updateBooking'] )->name('booking.update');
 
     Route::post('/admin/hotel/{id}/email/send-customer-email', [\App\Http\Controllers\CustomerEmailController::class, 'send'] )->name('email.send');
 
@@ -80,6 +82,11 @@ Route::middleware(['auth', 'verified'])->group(function(){
     Route::get('/admin/fulfilment-keys/{id}/edit', [\App\Http\Controllers\FulfilmentKeyController::class, 'edit'])->name('fulfilment-keys.edit');
     Route::post('/admin/fulfilment-keys/{id}/update', [\App\Http\Controllers\FulfilmentKeyController::class, 'update'])->name('fulfilment-keys.update');
     Route::delete('/admin/fulfilment-keys/{key}/delete', [\App\Http\Controllers\FulfilmentKeyController::class, 'delete'])->name('fulfilment-keys.delete');
+
+    Route::post('/admin/order/update/', [\App\Http\Controllers\OrderController::class, 'updateOrder'])->name('order.update');
+
+    Route::post('/admin/product/{id}/unavailability/store', [\App\Http\Controllers\UnavailabilityController::class, 'store'])->name('unavailability.store');
+    Route::get('/admin/unavailability/{id}/delete', [\App\Http\Controllers\UnavailabilityController::class, 'delete'])->name('unavailability.delete');
 
 });
 

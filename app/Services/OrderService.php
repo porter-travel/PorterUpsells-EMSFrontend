@@ -23,38 +23,52 @@ class OrderService
         $startDate = Carbon::now()->startOfDay();
         $endDate = Carbon::now()->addDays(7)->endOfDay();
 
-        $orders = Order::where('hotel_id', $this->hotel->id)
+        return $this->generateOrderArrayForEmailAndAdminView($hotel_id, $startDate, $endDate);
+    }
+
+    public function generateOrderArrayForEmailAndAdminView($hotel_id, $startDate, $endDate){
+        $orders = Order::where('hotel_id', $hotel_id)
             ->whereHas('items', function ($query) use ($startDate, $endDate) {
                 $query->whereDate('date', '>=', $startDate->toDateString())
                     ->whereDate('date', '<=', $endDate->toDateString());
             })
             ->with(['items' => function ($query) {
                 $query->orderBy('date', 'asc');
-            }])
+            }, 'items.product', 'items.product.specifics', 'booking'])
             ->get()
             ->sortBy(function ($order) {
                 return $order->items->min('date');
             });
 
-        $result = [];
+        // Prepare the result array
+        $output = [];
+        foreach ($orders as $hotelOrderKey => $order) {
 
-        foreach ($orders as $order) {
-            foreach ($order->items as $item) {
-                // Convert item date string to Carbon instance
-                $itemDate = Carbon::createFromFormat('Y-m-d', $item->date);
+            $orderArr = [
+                'id' => $order['id'],
+                'room' => $order['booking']['room'],
+                'name' => $order['booking']['name'],
+                'arrival_date' => $order['booking']['arrival_date'],
+                'booking_ref' => $order['booking']['booking_ref'],
+                'items' => [],
+                'status' => $order['status'],
+            ];
+            foreach ($order['items'] as $item) {
+                $orderArr['items'][] = [
+                    'name' => $item['product']['name'],
+                    'variation_name' => $item['variation_name'],
+                    'quantity' => $item['quantity'],
+                    'image' => $item['product']['image'],
+                    'date' => $item['date'],
+                    'product_type' => $item['product_type'],
+                ];
 
-                // Check if the item date is within the range
-                if ($itemDate->between($startDate, $endDate)) {
-                    $result[] = [
-                        'order_name' => $order->name,
-                        'order_total' => $order->total,
-                        'booking_ref' => $order->booking_ref,
-                        'item' => $item,
-                    ];
-                }
             }
+
+            $output[] = $orderArr;
+
         }
 
-        return $result;
+        return $output;
     }
 }

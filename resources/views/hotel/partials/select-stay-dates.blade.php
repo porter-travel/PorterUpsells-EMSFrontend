@@ -2,11 +2,11 @@
     <form method="post" action="/set-user-stay-dates">
         @csrf
         <p class="hotel-main-box-text-color font-bold text-left open-sans text-lg">
-            Please provide your stay dates.
+            {{$date_picker_title}}
         </p>
         <div class="flex flex-wrap sm:flex-nowrap items-end justify-between max-w-[600px] mx-auto">
-
-            @if(!isset($specifics['on_arrival']) || (isset($specifics['on_arrival']) && $specifics['on_arrival']))
+{{--{{var_dump($specifics)}}--}}
+            @if(!isset($specifics['on_arrival']) || (isset($specifics['on_arrival']) && $specifics['on_arrival']) || (isset($specifics['during_stay']) && $specifics['during_stay']))
                 <div class="mt-2  basis-full sm:basis-1/2 sm:pr-2">
                     <x-input-label class="hotel-main-box-text-color open-sans" for="arrival-date"
                                    :value="__('Arrival Date')"/>
@@ -17,7 +17,7 @@
                 </div>
             @endif
 
-            @if(isset($specifics['on_departure']) && $specifics['on_departure'])
+            @if((isset($specifics['on_departure']) && $specifics['on_departure']) || (isset($specifics['during_stay']) && $specifics['during_stay']))
                 <div class="mt-2  basis-full sm:basis-1/2 sm:pl-2">
                     <x-input-label class="hotel-main-box-text-color open-sans" for="departure-date"
                                    :value="__('Departure Date')"/>
@@ -30,8 +30,7 @@
 
 
         </div>
-        <x-secondary-button type="submit" class="w-full justify-center mt-4 hotel-button-color hotel-button-text-color">Personalise my
-            stay
+        <x-secondary-button type="submit" class="w-full justify-center mt-4 hotel-button-color hotel-button-text-color">Save
         </x-secondary-button>
     </form>
 </div>

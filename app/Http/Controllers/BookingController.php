@@ -69,6 +69,10 @@ class BookingController extends Controller
         // Fetch the hotel by ID
         $hotel = Hotel::find($id);
 
+        if ($hotel->user_id != auth()->user()->id && auth()->user()->role != 'superadmin') {
+            return redirect()->route('dashboard');
+        }
+
         // Ensure the hotel is found
         if (!$hotel) {
             return redirect()->back()->with('error', 'Hotel not found');
@@ -76,10 +80,10 @@ class BookingController extends Controller
 
         // Filter bookings based on the date range
         $bookings = $hotel->bookings()
-            ->where(function($query) use ($startDate, $endDate) {
+            ->where(function ($query) use ($startDate, $endDate) {
                 $query->whereBetween('arrival_date', [$startDate, $endDate])
                     ->orWhereBetween('departure_date', [$startDate, $endDate])
-                    ->orWhere(function($query) use ($startDate, $endDate) {
+                    ->orWhere(function ($query) use ($startDate, $endDate) {
                         $query->where('arrival_date', '<=', $startDate)
                             ->where('departure_date', '>=', $endDate);
                     });
@@ -92,6 +96,19 @@ class BookingController extends Controller
             'startDate' => $startDate,
             'endDate' => $endDate
         ]);
+    }
+
+    public function updateBooking($booking_id, Request $request)
+    {
+        $booking = Booking::find($booking_id);
+
+        if ($request->has('room')) {
+            $booking->room = $request->room;
+        }
+
+        $booking->save();
+
+        return response()->json(['message' => 'Booking updated successfully']);
     }
 
 }
