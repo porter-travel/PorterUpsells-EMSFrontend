@@ -28,6 +28,9 @@ class HighLevelAuthObject
 
     function isValid() : bool
     {
+        return false;
+
+        // Issue when we retrieve the highlevel endpoint doesn't like it
         if ($this->access_token==null)
             return false;
             
@@ -40,7 +43,7 @@ class HighLevelAuthObject
     function tokenHasExpired() : bool
     {
         $timestamp = strtotime($this->session_expires);
-        return $timestamp>=time();
+        return $timestamp<=time();
     }
 
     function getAuthParams() : array

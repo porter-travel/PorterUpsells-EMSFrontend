@@ -10,17 +10,28 @@ class ReservationEndpoint extends HighlevelEndpoint
 
   // e48fe378-fd81-11ee-9d39-0a593bc257b1
    /**
-    * @return Reservation
+    * @return array<Reservation>
     */
     public function get(string $id) : array
     {
-        $endpoint = "/api/v1/reservations/" . $id;
+        $endpoint = "/api/v1/reservations/search";
 
-        $authParams = $this->parseAuthParams($this->authParams);
-        $response = $this->client->request('GET', $endpoint,['json' => $authParams]);
-        if($response->getStatusCode()!=200)
-          return [];
-        
+        $daysRange = 60;
+        $from = date("Y-m-d",time() - ($daysRange * 24 * 60 * 60));
+        $to = date("Y-m-d",time() + ($daysRange * 24 * 60 * 60));
+        $searchParams =
+        [
+          "booked" =>
+          [
+            "type" => "between",
+            "from" => $from,
+            "to" => $to
+          ]
+        ];
+        $searchParams += $this->parseAuthParams($this->authParams);
+
+
+        $response = $this->client->request('POST', $endpoint,['json' => $searchParams]);
         $responseString = $response->getBody();
         $responseObject = json_decode($responseString);
         $reservationsArray = [];

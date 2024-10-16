@@ -23,6 +23,7 @@ class RefreshHighlevelBookings extends Command
     }
 
     // Execute the console command
+    // Will only update bookings where checkin is null
     public function handle()
     {
         $config =
@@ -33,14 +34,16 @@ class RefreshHighlevelBookings extends Command
                 "token" => "e57ab82f1d2c9c43",
                 "secret" => "6453fd736fea0b6190e27331a318a8f39da15d41013474417a78cf96858d8a2b"
             ];
-        $HotelBookingsService = new HotelBookingsService($config);
-        $PendingBookings = Booking::whereNull("checkin")->get();
-        
-        foreach ($PendingBookings as $Booking) 
-        {
-           $highLevelReservation = $HotelBookingsService->fetchReservationByRef($Booking->booking_ref);
-           
-        }
+            $HotelBookingsService = new HotelBookingsService($config);
+            foreach ($HotelBookingsService->fetchReservations() as $Reservation) {
+                // Find hotel id
+                $Booking = Booking::where("booking_ref", $Reservation->externalBookingId)->where("checkin", null)->first();
+                if ($Booking != null) {
+                   
+                    $Booking->checkin = $Reservation->checkedInString;
+                    $Booking->save();
+                }
+            }
         
     }
 }
