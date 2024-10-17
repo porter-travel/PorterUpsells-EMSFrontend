@@ -9,31 +9,34 @@ class ResDiaryController extends Controller
 {
     public function install(Request $request)
     {
+        // Generate the code verifier and challenge
         $codeVerifier = $this->generateCodeVerifier();
-        session()->put('code_verifier', $codeVerifier);
+        session()->put('code_verifier', $codeVerifier);  // Store codeVerifier in session properly
         $codeChallenge = $this->generateCodeChallenge($codeVerifier);
-// Get all query parameters
+
+        // Get all query parameters
         $data = $request->query();
 
-// Parse the authorization_uri separately if it contains more query parameters
+        // Parse the authorization_uri separately if it contains more query parameters
         if (isset($data['authorization_uri'])) {
+            // Ensure there's no duplicate response_type by removing it if it already exists
             $authorizationUri = parse_url($data['authorization_uri'], PHP_URL_QUERY);
             parse_str($authorizationUri, $authParams);
 
+            // Remove any duplicate 'response_type'
+            unset($authParams['response_type']);
         }
 
-
-        $response_type = 'code'; // This is required when getting the authorization code
-
+        // Add response_type=code only once
         $authorizationUrl = $data['authorization_uri']
-            . '&response_type=' . $response_type
+            . '&response_type=code'
             . '&code_challenge=' . $codeChallenge
             . '&code_challenge_method=S256';
 
+        // Redirect to the authorization URL
         return redirect($authorizationUrl);
-
-
     }
+
 
     public function callback(Request $request)
     {
@@ -50,8 +53,7 @@ class ResDiaryController extends Controller
             'code' => $request->code,
             'client_secret' => env('RESDIARY_CLIENT_SECRET'),
             'redirect_uri' => env('APP_URL') . '/resdiray/callback',
-            'code_verifier' => $codeVerifier,
-            'response_type' => 'code'
+            'code_verifier' => $codeVerifier
         ]);
 
         if ($response->failed()) {
