@@ -10,7 +10,7 @@ class ResDiaryController extends Controller
     public function install(Request $request)
     {
         $codeVerifier = $this->generateCodeVerifier();
-        session()->save($codeVerifier);
+        session()->put('code_verifier', $codeVerifier);
         $codeChallenge = $this->generateCodeChallenge($codeVerifier);
 // Get all query parameters
         $data = $request->query();
