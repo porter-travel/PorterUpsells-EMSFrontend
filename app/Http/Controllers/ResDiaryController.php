@@ -10,7 +10,17 @@ class ResDiaryController extends Controller
     {
         $codeVerifier = $this->generateCodeVerifier();
         $codeChallenge = $this->generateCodeChallenge($codeVerifier);
-        $data = urldecode($request->getRequestUri());
+// Get all query parameters
+        $data = $request->query();
+
+// Parse the authorization_uri separately if it contains more query parameters
+        if (isset($data['authorization_uri'])) {
+            $authorizationUri = parse_url($data['authorization_uri'], PHP_URL_QUERY);
+            parse_str($authorizationUri, $authParams);
+
+            $data['authorization_uri_params'] = $authParams;
+        }
+
         dd($data);
 
         $client_id = env('RESDIARY_CLIENT_ID');
