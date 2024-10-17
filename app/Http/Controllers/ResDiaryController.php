@@ -45,11 +45,16 @@ class ResDiaryController extends Controller
             dd('Code verifier is missing');
         }
 
+        $code = $request->code;
+        if(!$code){
+            dd('Code is missing');
+        }
+
 
         $response = Http::asForm()->post(env('RESDIARY_OAUTH_URL'), [
             'client_id' => env('RESDIARY_CLIENT_ID'),
             'grant_type' => 'authorization_code',
-            'code' => $request->code,
+            'code' => $code,
             'client_secret' => env('RESDIARY_CLIENT_SECRET'),
             'redirect_uri' => env('APP_URL') . '/resdiary/callback',
             'code_verifier' => $codeVerifier
