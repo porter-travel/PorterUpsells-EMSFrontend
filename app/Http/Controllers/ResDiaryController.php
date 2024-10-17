@@ -21,14 +21,16 @@ class ResDiaryController extends Controller
             $data['authorization_uri_params'] = $authParams;
         }
 
-        dd($data);
+//        dd($data);
 
-        $client_id = env('RESDIARY_CLIENT_ID');
-        $redirect_uri = env('RESDIARY_REDIRECT_URI');
-        $scope = env('RESDIARY_SCOPE');
-        $state = env('RESDIARY_STATE');
-        $url = "https://resdiary.com/oauth/authorize?client_id=$client_id&redirect_uri=$redirect_uri&scope=$scope&state=$state";
-        return redirect($url);
+        return redirect($data['authorization_uri']);
+
+//        $client_id = env('RESDIARY_CLIENT_ID');
+//        $redirect_uri = env('RESDIARY_REDIRECT_URI');
+//        $scope = env('RESDIARY_SCOPE');
+//        $state = env('RESDIARY_STATE');
+//        $url = "https://resdiary.com/oauth/authorize?client_id=$client_id&redirect_uri=$redirect_uri&scope=$scope&state=$state";
+//        return redirect($url);
     }
 
     public function callback(Request $request)
