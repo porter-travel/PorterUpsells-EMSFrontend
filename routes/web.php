@@ -88,6 +88,8 @@ Route::middleware(['auth', 'verified'])->group(function(){
     Route::post('/admin/product/{id}/unavailability/store', [\App\Http\Controllers\UnavailabilityController::class, 'store'])->name('unavailability.store');
     Route::get('/admin/unavailability/{id}/delete', [\App\Http\Controllers\UnavailabilityController::class, 'delete'])->name('unavailability.delete');
 
+    Route::get('/resdiary/install', [\App\Http\Controllers\ResDiaryController::class, 'install'])->name('resdiary.install');
+    Route::get('/resdiary/callback', [\App\Http\Controllers\ResDiaryController::class, 'callback'])->name('resdiary.callback');
 });
 
 Route::middleware('auth')->group(function () {
