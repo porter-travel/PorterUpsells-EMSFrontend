@@ -23,7 +23,7 @@ class ResDiaryController extends Controller
 
 //        dd($data);
 
-        return redirect($data['authorization_uri']);
+        return redirect($data['authorization_uri'] . '?code_challenge=' . $codeChallenge . '&code_challenge_method=S256');
 
 //        $client_id = env('RESDIARY_CLIENT_ID');
 //        $redirect_uri = env('RESDIARY_REDIRECT_URI');
