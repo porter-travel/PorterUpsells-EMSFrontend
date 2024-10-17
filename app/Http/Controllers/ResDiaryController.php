@@ -37,7 +37,7 @@ class ResDiaryController extends Controller
         }
 
 
-        $response = Http::post(env('RESDIARY_OAUTH_URL'), [
+        $response = Http::asForm()->post(env('RESDIARY_OAUTH_URL'), [
             'client_id' => env('RESDIARY_CLIENT_ID'),
             'grant_type' => 'authorisation_code',
             'code' => $request->code,
