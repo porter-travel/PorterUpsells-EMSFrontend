@@ -40,7 +40,7 @@ class ResDiaryController extends Controller
             'code_verifier' => session()->get('code_verifier')
         ]);
 
-        dd($response);
+//        dd($response);
 
     }
 
