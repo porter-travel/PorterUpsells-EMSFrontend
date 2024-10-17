@@ -23,7 +23,14 @@ class ResDiaryController extends Controller
         }
 
 
-        return redirect($data['authorization_uri'] . '&code_challenge=' . $codeChallenge . '&code_challenge_method=S256');
+        $response_type = 'code'; // This is required when getting the authorization code
+
+        $authorizationUrl = $data['authorization_uri']
+            . '&response_type=' . $response_type
+            . '&code_challenge=' . $codeChallenge
+            . '&code_challenge_method=S256';
+
+        return redirect($authorizationUrl);
 
 
     }
@@ -39,7 +46,7 @@ class ResDiaryController extends Controller
 
         $response = Http::asForm()->post(env('RESDIARY_OAUTH_URL'), [
             'client_id' => env('RESDIARY_CLIENT_ID'),
-            'grant_type' => 'authorisation_code',
+            'grant_type' => 'authorization_code',
             'code' => $request->code,
             'client_secret' => env('RESDIARY_CLIENT_SECRET'),
             'redirect_uri' => env('APP_URL') . '/resdiray/callback',
