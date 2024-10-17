@@ -24,3 +24,7 @@ Schedule::command('emails:send-scheduled')
 Schedule::command('bookings:fetch')
     ->dailyAt('20:00')
     ->description('Check for new bookings.');
+
+Schedule::command('bookings:fetch')
+    ->hourly()
+    ->description('Refresh bookings to updated checkin.');

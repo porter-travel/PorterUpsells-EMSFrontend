@@ -5,18 +5,18 @@ namespace App\Services\HotelBookings\HighLevel\Endpoints;
 use App\Services\HotelBookings\Entities\Reservation;
 use App\Services\HotelBookings\HighLevel\ReservationMapper;
 
-class Reservations extends HighlevelEndpoint
+class ReservationEndpoint extends HighlevelEndpoint
 {
 
   // e48fe378-fd81-11ee-9d39-0a593bc257b1
    /**
     * @return array<Reservation>
     */
-    public function get() : array
+    public function get(string $id) : array
     {
         $endpoint = "/api/v1/reservations/search";
 
-        $daysRange = 90;
+        $daysRange = 60;
         $from = date("Y-m-d",time() - ($daysRange * 24 * 60 * 60));
         $to = date("Y-m-d",time() + ($daysRange * 24 * 60 * 60));
         $searchParams =

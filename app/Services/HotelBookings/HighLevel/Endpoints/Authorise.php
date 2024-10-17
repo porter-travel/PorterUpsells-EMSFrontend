@@ -43,7 +43,7 @@ class Authorise extends HighlevelEndpoint
          $this->authParams = $responseArray;
      }
 
-     static function parseAuthResponse(object $authResponseObject) : array
+    static function parseAuthResponse(object $authResponseObject) : array
     {
         $responseArray = [];
         if(empty($authResponseObject->data))

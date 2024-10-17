@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Services\HotelBookings\HotelBookingsService;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -12,7 +14,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        
+        $this->app->bind(HotelBookingsService::class, function() {
+            $config = Config::get('app.hotelbookingapis.highlevel');
+            return new HotelBookingsService($config);
+          });
     }
 
     /**
