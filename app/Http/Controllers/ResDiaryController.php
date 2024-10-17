@@ -51,7 +51,7 @@ class ResDiaryController extends Controller
             'grant_type' => 'authorization_code',
             'code' => $request->code,
             'client_secret' => env('RESDIARY_CLIENT_SECRET'),
-            'redirect_uri' => env('APP_URL') . '/resdiray/callback',
+            'redirect_uri' => env('APP_URL') . '/resdiary/callback',
             'code_verifier' => $codeVerifier
         ]);
 
