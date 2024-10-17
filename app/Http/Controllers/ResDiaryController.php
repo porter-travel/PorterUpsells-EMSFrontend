@@ -31,17 +31,26 @@ class ResDiaryController extends Controller
     public function callback(Request $request)
     {
 
+        $codeVerifier = session()->get('code_verifier');
+        if (!$codeVerifier) {
+            dd('Code verifier is missing');
+        }
+
+
         $response = Http::post(env('RESDIARY_OAUTH_URL'), [
-            'grant_type' => 'authorization_code',
-            'code' => $request->code,
             'client_id' => env('RESDIARY_CLIENT_ID'),
+            'grant_type' => 'authorisation_code',
+            'code' => $request->code,
             'client_secret' => env('RESDIARY_CLIENT_SECRET'),
-            'redirect_uri' => env('APP_URL'),
-            'code_verifier' => session()->get('code_verifier')
+            'redirect_uri' => env('APP_URL') . '/resdiray/callback',
+            'code_verifier' => $codeVerifier
         ]);
 
-//        dd($response);
+        if ($response->failed()) {
+            dd($response->body()); // Log or display the error for debugging
+        }
 
+        dd($response->json());
     }
 
 
