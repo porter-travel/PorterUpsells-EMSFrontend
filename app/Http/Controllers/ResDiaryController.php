@@ -6,8 +6,13 @@ use Illuminate\Http\Request;
 
 class ResDiaryController extends Controller
 {
-    public function install(Request $request){
-        dd($request);
+    public function install(Request $request)
+    {
+        $codeVerifier = $this->generateCodeVerifier();
+        $codeChallenge = $this->generateCodeChallenge($codeVerifier);
+        $data = urldecode($request->getRequestUri());
+        dd($data);
+
         $client_id = env('RESDIARY_CLIENT_ID');
         $redirect_uri = env('RESDIARY_REDIRECT_URI');
         $scope = env('RESDIARY_SCOPE');
@@ -16,7 +21,8 @@ class ResDiaryController extends Controller
         return redirect($url);
     }
 
-    public function callback(Request $request){
+    public function callback(Request $request)
+    {
         dd($request);
         $code = $request->code;
         $client_id = env('RESDIARY_CLIENT_ID');
@@ -42,5 +48,16 @@ class ResDiaryController extends Controller
         $resdiary->expires_at = $expires_at;
         $resdiary->save();
         return redirect()->route('dashboard');
+    }
+
+
+    private function generateCodeVerifier()
+    {
+        return bin2hex(random_bytes(64));  // 128-character string
+    }
+
+    private function generateCodeChallenge($codeVerifier)
+    {
+        return rtrim(strtr(base64_encode(hash('sha256', $codeVerifier, true)), '+/', '-_'), '=');
     }
 }
