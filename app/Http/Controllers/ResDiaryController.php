@@ -13,6 +13,7 @@ class ResDiaryController extends Controller
         $codeVerifier = $this->generateCodeVerifier();
         session()->put('code_verifier', $codeVerifier);  // Store codeVerifier in session properly
         $codeChallenge = $this->generateCodeChallenge($codeVerifier);
+        session()->put('code_challenge', $codeChallenge);  // Store codeChallenge in session properly
 
         // Get all query parameters
         $data = $request->query();
@@ -45,6 +46,11 @@ class ResDiaryController extends Controller
             dd('Code verifier is missing');
         }
 
+        $codeChallenge = session()->get('code_challenge');
+        if (!$codeChallenge) {
+            dd('Code challenge is missing');
+        }
+
         $code = $request->code;
         if(!$code){
             dd('Code is missing');
@@ -58,7 +64,8 @@ class ResDiaryController extends Controller
             'client_secret' => env('RESDIARY_CLIENT_SECRET'),
             'redirect_uri' => env('APP_URL') . '/resdiary/callback',
             'code_verifier' => $codeVerifier,
-            'response_type' => 'code'
+            'response_type' => 'code',
+            'code_challenge' => $codeChallenge,
         ]);
 
         if ($response->failed()) {
