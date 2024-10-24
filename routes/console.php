@@ -26,5 +26,5 @@ Schedule::command('bookings:fetch')
     ->description('Check for new bookings.');
 
 Schedule::command('bookings:refresh')
-    ->hourly()
+    ->everyTenMinutes()
     ->description('Refresh bookings to updated checkin.');
