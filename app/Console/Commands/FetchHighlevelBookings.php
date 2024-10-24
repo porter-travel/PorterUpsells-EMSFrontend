@@ -43,6 +43,9 @@ class FetchHighlevelBookings extends Command
             // Check have we already got it
             $Booking = Booking::where("booking_ref", $Reservation->externalBookingId)->first();
             if ($Booking == null) {
+                $dateTime = null;
+                if($Reservation->checkedInString!=null)
+                    $dateTime = Carbon::parse($Reservation->checkedInString);
                 $Booking = new Booking(
                     [
                         'hotel_id' => $Hotel->id,
@@ -50,7 +53,9 @@ class FetchHighlevelBookings extends Command
                         'email_address' => $Reservation->email,
                         'arrival_date' => $Reservation->HotelDates->checkinString,
                         'departure_date' => $Reservation->HotelDates->checkoutString,
-                        'booking_ref' => $Reservation->externalBookingId
+                        'booking_ref' => $Reservation->externalBookingId,
+                        'room' => $Reservation->roomNumber,
+                        'checkin' => $dateTime?->toDateTimeString(),
                     ]
                 );
 

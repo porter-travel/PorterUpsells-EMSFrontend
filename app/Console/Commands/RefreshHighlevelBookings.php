@@ -39,11 +39,14 @@ class RefreshHighlevelBookings extends Command
                 // Find hotel id
                 $Booking = Booking::where("booking_ref", $Reservation->externalBookingId)->where("checkin", null)->first();
                 if ($Booking != null) {
-                   
-                    $Booking->checkin = $Reservation->checkedInString;
+                    $dateTime = null;
+                    if($Reservation->checkedInString!=null)
+                        $dateTime = Carbon::parse($Reservation->checkedInString);
+                    $Booking->room = $Reservation->roomNumber;
+                    $Booking->checkin = $dateTime?->toDateTimeString();
                     $Booking->save();
                 }
             }
-        
+
     }
 }

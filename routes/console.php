@@ -25,6 +25,6 @@ Schedule::command('bookings:fetch')
     ->dailyAt('20:00')
     ->description('Check for new bookings.');
 
-Schedule::command('bookings:fetch')
+Schedule::command('bookings:refresh')
     ->hourly()
     ->description('Refresh bookings to updated checkin.');
