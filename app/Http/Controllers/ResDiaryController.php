@@ -29,9 +29,10 @@ class ResDiaryController extends Controller
 
         // Add response_type=code only once
         $authorizationUrl = $data['authorization_uri']
+            . '&response_type=code'
             . '&code_challenge=' . $codeChallenge
             . '&code_challenge_method=S256';
-
+dd($authorizationUrl);
         // Redirect to the authorization URL
         return redirect($authorizationUrl);
     }
