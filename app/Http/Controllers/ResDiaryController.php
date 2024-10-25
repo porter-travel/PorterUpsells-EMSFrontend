@@ -69,7 +69,7 @@ class ResDiaryController extends Controller
         ]);
 
         if ($response->failed()) {
-            dd($response->body()); // Log or display the error for debugging
+            dd( 'ERROR AT THE CALLBACK', $response->body()); // Log or display the error for debugging
         }
 
         dd($response);
