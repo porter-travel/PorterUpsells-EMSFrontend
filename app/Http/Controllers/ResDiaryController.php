@@ -64,8 +64,8 @@ class ResDiaryController extends Controller
             'client_secret' => env('RESDIARY_CLIENT_SECRET'),
             'redirect_uri' => env('APP_URL') . '/resdiary/callback',
             'code_verifier' => $codeVerifier,
-//            'response_type' => 'code',
-//            'code_challenge' => $codeChallenge,
+            'response_type' => 'code',
+            'code_challenge' => $codeChallenge,
         ]);
 
         if ($response->failed()) {
