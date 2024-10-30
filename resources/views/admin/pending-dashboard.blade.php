@@ -1,5 +1,9 @@
 <x-app-layout>
 
+    <div class="container mx-auto">
+        <h2 class="grandstander uppercase text-4xl mt-8">Subscribe</h2>
+    </div>
+
     @if(env('APP_ENV') == 'production')
         <script async src="https://js.stripe.com/v3/pricing-table.js"></script>
         <stripe-pricing-table pricing-table-id="prctbl_1PM63SJQ5u1m2fEsuJzR9SHZ"

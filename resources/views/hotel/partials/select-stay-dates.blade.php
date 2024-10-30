@@ -1,4 +1,4 @@
-<div class="hotel-main-box-color box-shadow px-8 pt-8 pb-8 max-w-[667px] mx-auto rounded-3xl relative">
+<div class="hotel-main-box-color box-shadow px-8 pt-8 pb-8 max-w-[667px] mx-auto rounded relative">
     <form method="post" action="/set-user-stay-dates">
         @csrf
         <p class="hotel-main-box-text-color font-bold text-left open-sans text-lg">

@@ -115,7 +115,7 @@
                             </div>
 
 
-                            <x-primary-button class="w-full justify-center mt-4">Update</x-primary-button>
+                            <x-primary-button class=" mt-4">Update</x-primary-button>
 
                     </form>
                     <form enctype="multipart/form-data" method="post" action="/admin/hotel/{{$hotel->id}}/update">
@@ -125,7 +125,7 @@
                             <input type="file" name="logo" id="logo" value="{{$hotel->logo}}">
                         </div>
 
-                        <x-primary-button class="w-full justify-center mt-4">Update Logo</x-primary-button>
+                        <x-primary-button class=" mt-4">Update Logo</x-primary-button>
                     </form>
 
                     <form enctype="multipart/form-data" method="post" action="/admin/hotel/{{$hotel->id}}/update">
@@ -138,14 +138,14 @@
                             </div>
                         </div>
 
-                        <x-primary-button class="w-full justify-center mt-4">Update Featured Image</x-primary-button>
+                        <x-primary-button class="mt-4">Update Featured Image</x-primary-button>
                     </form>
 
                     <form method="post" action="/admin/hotel/{{$hotel->id}}/update">
 
                         @include('admin.hotel.partials.colour-scheme', ['hotel' => $hotel])
 
-                        <x-primary-button class="w-full justify-center mt-4">Update Hotel Colour Scheme
+                        <x-primary-button class=" mt-4">Update Hotel Colour Scheme
                         </x-primary-button>
 
                     </form>
