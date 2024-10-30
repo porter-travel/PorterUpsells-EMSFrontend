@@ -75,6 +75,7 @@ class ResDiaryController extends Controller
 
         $user = auth()->user();
         $hotels = $user->hotels;
+        dd($hotels);
         if($hotels->count() > 1){
             session()->put('resdiary_access_token', $response->json()['access_token']);
             session()->put('resdiary_refresh_token', $response->json()['refresh_token']);
