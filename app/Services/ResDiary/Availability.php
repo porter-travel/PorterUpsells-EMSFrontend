@@ -13,6 +13,7 @@ class Availability
             ->post("https://api.rdbranch.com/api/ConsumerApi/v1/Restaurant/$resdiary_microsite_name/AvailabilitySearch", [
                 'VisitDate' => $date,
                 'PartySize' => $partySize,
+                'ChannelCode' => 'ONLINE'
             ]);
 
         if ($response->successful()) {
