@@ -9,10 +9,9 @@ class Availability
     public function getAvailability($accessToken, $resdiary_microsite_name, $date, $partySize)
     {
         $response = Http::withToken($accessToken)
-            ->get("https://api.rdbranch.com/api/ConsumerApi/v1/Restaurant/$resdiary_microsite_name/AvailabilitySearch", [
+            ->post("https://api.rdbranch.com/api/ConsumerApi/v1/Restaurant/$resdiary_microsite_name/AvailabilitySearch", [
                 'VisitDate' => $date,
                 'PartySize' => $partySize,
-                'ChannelCode' => 'ONLINE'
             ]);
 
         if ($response->successful()) {
