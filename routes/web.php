@@ -90,6 +90,7 @@ Route::middleware(['auth', 'verified'])->group(function(){
 
     Route::get('/resdiary/install', [\App\Http\Controllers\ResDiaryController::class, 'install'])->name('resdiary.install');
     Route::get('/resdiary/callback', [\App\Http\Controllers\ResDiaryController::class, 'callback'])->name('resdiary.callback');
+    Route::post('/resdiary/set-hotel', [\App\Http\Controllers\ResDiaryController::class, 'setHotel'])->name('resdiary.set-hotel');
 });
 
 Route::middleware('auth')->group(function () {

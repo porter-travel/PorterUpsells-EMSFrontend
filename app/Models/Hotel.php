@@ -54,5 +54,10 @@ class Hotel extends Model
         return $this->products()->where('status', 'active')->get();
     }
 
+    public function connections()
+    {
+        return $this->hasMany(Connection::class);
+    }
+
 
 }

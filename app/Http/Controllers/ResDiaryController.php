@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Connection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -72,7 +73,53 @@ class ResDiaryController extends Controller
             dd( 'ERROR AT THE CALLBACK', $response->body()); // Log or display the error for debugging
         }
 
-        dd($response, $response->body());
+        $user = auth()->user();
+        $hotels = $user->hotels;
+        if($hotels->count() > 1){
+            session()->put('resdiary_access_token', $response->json()['access_token']);
+            session()->put('resdiary_refresh_token', $response->json()['refresh_token']);
+
+            $status = 'pending_hotel_selection';
+        } else {
+            $status = 'success';
+            $connection = new Connection();
+            $hotel = $hotels->first();
+
+            $connection->key = 'resdiary_access_token';
+            $connection->value = $response->json()['access_token'];
+            $connection->hotel_id = $hotel->id;
+            $connection->save();
+
+            $connection = new Connection();
+            $connection->key = 'resdiary_refresh_token';
+            $connection->value = $response->json()['refresh_token'];
+            $connection->hotel_id = $hotel->id;
+            $connection->save();
+        }
+
+        return view('admin.resdiary.callback', ['status' => $status, 'hotels' => $hotels]);
+
+    }
+
+    public function setHotel(Request $request)
+    {
+        $hotel_id = $request->hotel_id;
+        $access_token = session()->get('resdiary_access_token');
+        $refresh_token = session()->get('resdiary_refresh_token');
+
+        $connection = new Connection();
+        $connection->key = 'resdiary_access_token';
+        $connection->value = $access_token;
+        $connection->hotel_id = $hotel_id;
+        $connection->save();
+
+        $connection = new Connection();
+        $connection->key = 'resdiary_refresh_token';
+        $connection->value = $refresh_token;
+        $connection->hotel_id = $hotel_id;
+        $connection->save();
+
+        return view('admin.resdiary.callback', ['status' => 'success', 'hotels' => []]);
     }
 
 
