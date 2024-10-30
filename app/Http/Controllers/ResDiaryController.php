@@ -129,7 +129,7 @@ class ResDiaryController extends Controller
 
     public function getAvailability(Request $request)
     {
-        $hotel_id = $request->hotel_id ?? 1;
+        $hotel_id = $request->hotel_id ?? 2;
         $date = $request->date ?? date('Y-m-d');
         $partySize = $request->party_size ?? 2;
 
