@@ -28,11 +28,11 @@ class RefreshHighlevelBookings extends Command
     {
         $config =
             [
-                "apiKey" => "3f3WkVeHuF1iwxTxeC8vn7oZYm00U3gu7d9jx6TQ",
-                "host" => "https://api.stage.dev.high-level-software.com",
+                "apiKey" => env("HLS_API_KEY"),
+                "host" => env("HLS_HOST"),
                 //"host" => "https://api.high-level-software.com"
-                "token" => "e57ab82f1d2c9c43",
-                "secret" => "6453fd736fea0b6190e27331a318a8f39da15d41013474417a78cf96858d8a2b"
+                "token" => env("HLS_TOKEN"),
+                "secret" => env("HLS_SECRET"),
             ];
             $HotelBookingsService = new HotelBookingsService($config);
             foreach ($HotelBookingsService->fetchReservations() as $Reservation) {
