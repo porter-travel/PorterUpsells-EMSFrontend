@@ -135,9 +135,10 @@ class ResDiaryController extends Controller
 
         $hotel = Hotel::find($hotel_id);
         $access_token = $hotel->connections->where('key', 'resdiary_access_token')->first()->value;
+        $resdiary_microsite_name = $hotel->connections->where('key', 'resdiary_microsite_name')->first()->value;
 
         $availability = new Availability();
-        $availability->getAvailability($access_token, $hotel->resdiary_microsite_name, $date, $partySize);
+        $availability->getAvailability($access_token, $resdiary_microsite_name, $date, $partySize);
     }
 
 
