@@ -94,7 +94,7 @@
                             <div class="flex items-start justify-start flex-wrap">
                                 <div class="lg:basis-1/2 basis-full">
                                     <x-input-label class="text-black font-sans" for="integration_name"
-                                                   :value="__('Integration Type')"/>
+                                                   :value="__('PMS Name')"/>
                                     <select id="integration_name" name="integration_name">
                                         <option></option>
                                         <option @if($hotel->integration_name == 'zonal') selected @endif value="zonal">
@@ -104,9 +104,9 @@
 
                                 </div>
                                 <div class="lg:basis-1/2 basis-full">
-                                    <x-input-label class="text-black font-sans" for="email_address"
-                                                   :value="__('Hotel ID Within Integration Partner')"/>
-                                    <x-text-input id="email_address" class="block mt-1 w-full p-4" type="text"
+                                    <x-input-label class="text-black font-sans" for="id_for_integration"
+                                                   :value="__('Hotel ID Within PMS')"/>
+                                    <x-text-input id="id_for_integration" class="block mt-1 w-full p-4" type="text"
                                                   name="id_for_integration"
                                                   :value="$hotel->id_for_integration"
                                                   placeholder="Integration Partner ID"/>
@@ -114,9 +114,19 @@
                                 </div>
                             </div>
 
+                            <div class=" basis-full">
+                                <x-input-label class="text-black font-sans" for="resdiary_microsite_name"
+                                               :value="__('ResDiary Microsite Name')"/>
+                                <x-text-input id="resdiary_microsite_name" class="block mt-1 w-full p-4" type="text"
+                                              name="resdiary_microsite_name"
+                                              :value="$resdiary_microsite_name->value"
+                                              placeholder="EnhanceMyStay"/>
+                                <x-input-error :messages="$errors->get('resdiary_microsite_name')" class="mt-2"/>
+                            </div>
+
 
                             <x-primary-button class=" mt-4">Update</x-primary-button>
-
+                        </div>
                     </form>
                     <form enctype="multipart/form-data" method="post" action="/admin/hotel/{{$hotel->id}}/update">
                         @csrf

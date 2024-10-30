@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Connection;
+use App\Models\Hotel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use App\Services\ResDiary\Availability;
 
 class ResDiaryController extends Controller
 {
@@ -123,6 +125,19 @@ class ResDiaryController extends Controller
         $connection->save();
 
         return view('admin.resdiary.callback', ['status' => 'success', 'hotels' => []]);
+    }
+
+    public function getAvailability(Request $request)
+    {
+        $hotel_id = $request->hotel_id ?? 1;
+        $date = $request->date ?? date('Y-m-d');
+        $partySize = $request->party_size ?? 2;
+
+        $hotel = Hotel::find($hotel_id);
+        $access_token = $hotel->connections->where('key', 'resdiary_access_token')->first()->value;
+
+        $availability = new Availability();
+        $availability->getAvailability($access_token, $hotel->resdiary_microsite_name, $date, $partySize);
     }
 
 

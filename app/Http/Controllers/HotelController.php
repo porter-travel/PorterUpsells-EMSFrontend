@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\ConfigTest;
+use App\Models\Connection;
 use App\Models\Hotel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -109,10 +110,11 @@ class HotelController extends Controller
     public function edit(Request $request, $id)
     {
         $hotel = \App\Models\Hotel::find($id);
+        $resdiary_microsite_name = Connection::where('hotel_id', $hotel->id)->where('key', 'resdiary_microsite_name')->first();
         if ($hotel->user_id != auth()->user()->id && auth()->user()->role != 'superadmin'){
             return redirect()->route('dashboard');
         }
-        return view('admin.hotel.edit', ['hotel' => $hotel]);
+        return view('admin.hotel.edit', ['hotel' => $hotel, 'resdiary_microsite_name' => $resdiary_microsite_name]);
     }
 
     public function update(Request $request, $id)
@@ -186,6 +188,18 @@ class HotelController extends Controller
         }
 
         $hotel->save();
+
+        if ($request->resdiary_microsite_name) {
+            Connection::updateOrCreate(
+                [
+                    'hotel_id' => $hotel->id,
+                    'key' => 'resdiary_microsite_name'
+                ],
+                [
+                    'value' => $request->resdiary_microsite_name
+                ]
+            );
+        }
         return redirect()->route('hotel.edit', ['id' => $hotel->id]);
     }
 }
