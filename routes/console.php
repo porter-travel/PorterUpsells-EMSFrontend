@@ -28,3 +28,7 @@ Schedule::command('bookings:fetch')
 Schedule::command('bookings:refresh')
     ->everyTenMinutes()
     ->description('Refresh bookings to updated checkin.');
+
+Schedule::command('resdiary:refresh-tokens')
+    ->everyThirtyMinutes()
+    ->description('Refresh ResDiary tokens.');
