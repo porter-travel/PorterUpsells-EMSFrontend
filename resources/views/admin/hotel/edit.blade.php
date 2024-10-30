@@ -119,7 +119,7 @@
                                                :value="__('ResDiary Microsite Name')"/>
                                 <x-text-input id="resdiary_microsite_name" class="block mt-1 w-full p-4" type="text"
                                               name="resdiary_microsite_name"
-                                              :value="$resdiary_microsite_name->value"
+                                              :value="$resdiary_microsite_name"
                                               placeholder="EnhanceMyStay"/>
                                 <x-input-error :messages="$errors->get('resdiary_microsite_name')" class="mt-2"/>
                             </div>

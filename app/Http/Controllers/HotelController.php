@@ -111,6 +111,12 @@ class HotelController extends Controller
     {
         $hotel = \App\Models\Hotel::find($id);
         $resdiary_microsite_name = Connection::where('hotel_id', $hotel->id)->where('key', 'resdiary_microsite_name')->first();
+        if(!$resdiary_microsite_name){
+            $resdiary_microsite_name = '';
+        } else {
+            $resdiary_microsite_name = $resdiary_microsite_name->value;
+        }
+
         if ($hotel->user_id != auth()->user()->id && auth()->user()->role != 'superadmin'){
             return redirect()->route('dashboard');
         }
