@@ -57,15 +57,15 @@ class ResDiaryController extends Controller
         }
 
 
-        $response = Http::asForm()->post(env('RESDIARY_OAUTH_URL'), [
+        $response = Http::asForm()->post(env('RESDIARY_TOKEN_URL'), [
             'client_id' => env('RESDIARY_CLIENT_ID'),
             'grant_type' => 'authorization_code',
             'code' => $code,
             'client_secret' => env('RESDIARY_CLIENT_SECRET'),
             'redirect_uri' => env('APP_URL') . '/resdiary/callback',
             'code_verifier' => $codeVerifier,
-            'response_type' => 'code',
-            'code_challenge' => $codeChallenge,
+//            'response_type' => 'code',
+//            'code_challenge' => $codeChallenge,
         ]);
 
         if ($response->failed()) {
