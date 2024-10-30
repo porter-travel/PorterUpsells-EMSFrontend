@@ -2,14 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Booking;
-use App\Models\Hotel;
-use App\Models\Product;
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use App\Models\Variation;
-use Database\Factories\HotelFactory;
 use Illuminate\Database\Seeder;
+
+// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class HighlevelTestSeeder extends Seeder
 {
@@ -18,6 +13,6 @@ class HighlevelTestSeeder extends Seeder
      */
     public function run(): void
     {
-       
+
     }
 }

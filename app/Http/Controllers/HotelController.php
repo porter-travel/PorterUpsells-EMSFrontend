@@ -117,6 +117,7 @@ class HotelController extends Controller
 
     public function update(Request $request, $id)
     {
+//        dd($request);
         $hotel = \App\Models\Hotel::find($id);
 
         if ($request->name) {
@@ -133,7 +134,16 @@ class HotelController extends Controller
 
         if ($request->id_for_integration) {
             $hotel->id_for_integration = $request->id_for_integration;
+        } else {
+            $hotel->id_for_integration = null;
         }
+
+        if($request->integration_name){
+            $hotel->integration_name = $request->integration_name;
+        } else {
+            $hotel->integration_name = null;
+        }
+
 
         if ($request->page_background_color) {
             $hotel->page_background_color = $request->page_background_color;

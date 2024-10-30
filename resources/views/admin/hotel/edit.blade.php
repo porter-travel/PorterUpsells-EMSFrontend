@@ -91,17 +91,31 @@
                         </div>
 
                         <div class="mt-4">
-                            <x-input-label class="text-black font-sans" for="email_address"
-                                           :value="__('Hotel ID Within Integration Partner')"/>
-                            <x-text-input id="email_address" class="block mt-1 w-full p-4" type="text"
-                                          name="id_for_integration"
-                                          :value="$hotel->id_for_integration"
-                                          required placeholder="Integration Partner ID"/>
-                            <x-input-error :messages="$errors->get('id_for_integration')" class="mt-2"/>
-                        </div>
+                            <div class="flex items-start justify-start flex-wrap">
+                                <div class="lg:basis-1/2 basis-full">
+                                    <x-input-label class="text-black font-sans" for="integration_name"
+                                                   :value="__('Integration Type')"/>
+                                    <select id="integration_name" name="integration_name">
+                                        <option></option>
+                                        <option @if($hotel->integration_name == 'zonal') selected @endif value="zonal">
+                                            Zonal / High Level Software
+                                        </option>
+                                    </select>
+
+                                </div>
+                                <div class="lg:basis-1/2 basis-full">
+                                    <x-input-label class="text-black font-sans" for="email_address"
+                                                   :value="__('Hotel ID Within Integration Partner')"/>
+                                    <x-text-input id="email_address" class="block mt-1 w-full p-4" type="text"
+                                                  name="id_for_integration"
+                                                  :value="$hotel->id_for_integration"
+                                                  placeholder="Integration Partner ID"/>
+                                    <x-input-error :messages="$errors->get('id_for_integration')" class="mt-2"/>
+                                </div>
+                            </div>
 
 
-                        <x-primary-button class="w-full justify-center mt-4">Update</x-primary-button>
+                            <x-primary-button class="w-full justify-center mt-4">Update</x-primary-button>
 
                     </form>
                     <form enctype="multipart/form-data" method="post" action="/admin/hotel/{{$hotel->id}}/update">
