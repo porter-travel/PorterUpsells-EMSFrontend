@@ -78,6 +78,29 @@
     </div>
 
     <div class="mt-4 basis-1/2 pl-4">
+        <hr>
+
+        <h4 class="font-bold py-4">Resdiary</h4>
+        <div class="flex items-center justify-start flex-wrap">
+            <div class="flex items-center justify-start basis-full">
+
+                <input type="hidden" name="specifics[requires_resdiary_booking]" value="0">
+                <input class="mr-2" type="checkbox" name="specifics[requires_resdiary_booking]" value="1"
+                       id="requires_resdiary_booking"
+                    @checked($product->specifics['requires_resdiary_booking'])>
+
+                <x-input-label class="text-black font-sans" for="requires_resdiary_booking"
+                               :value="__('Product will create a booking in Resdiary')"/>
+            </div>
+            <div class="flex items-center justify-start basis-full">
+                <x-input-label class="text-black font-sans" for="resdiary_promotion_id">
+                    ResDiary Promotion ID
+                </x-input-label>
+                <x-text-input type="text" name="specifics[resdiary_promotion_id]"
+                              value="{{(isset($product->specifics['resdiary_promotion_id']) && $product->specifics['resdiary_promotion_id']) ? $product->specifics['resdiary_promotion_id'] : null}}"
+                              id="resdiary_promotion_id"/>
+            </div>
+        </div>
     </div>
     <div class="mt-4 basis-1/2 pr-4">
         <hr>

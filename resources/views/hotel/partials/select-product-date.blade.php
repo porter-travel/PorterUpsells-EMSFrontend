@@ -8,6 +8,7 @@
                 <label
                     class="border border-black bg-[#F7F7F7] rounded p-2 flex items-center mr-2 mb-2 basis-1/3 fancy-checkbox">
                     <input
+                        data-stay-date-selector
                         style="width: 0; height: 0; opacity: 0"
                         name="dates[]"
                         type="checkbox"

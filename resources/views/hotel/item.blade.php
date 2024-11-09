@@ -59,8 +59,11 @@
             </div>
         </div>
         <div class="narrow-container mx-auto p-4 mt-4">
+
             @if($have_details)
-                <form id="addToCart" action="/cart/add" method="post">
+                <form
+                    @if(isset($specifics['requires_resdiary_booking']) && $specifics['requires_resdiary_booking']) data-requires-resdiary-booking @endif
+                    id="addToCart" action="/cart/add" method="post">
                     @endif
                     <div class="flex flex-wrap items-end">
                         <div class="lg:basis-1/2 basis-full lg:pr-4">
@@ -136,6 +139,12 @@
                                 ])
                         @endif
                     </div>
+
+                    @if(isset($specifics['requires_resdiary_booking']) && $specifics['requires_resdiary_booking'])
+                        <x-input-label>Number of Guests</x-input-label>
+                        <x-text-input type="number" value="2" name="number_of_guests"></x-text-input>
+                        <div id="resdiary_time_selector"></div>
+                    @endif
                     <div id="success" class="hidden">
 {{--                        <div class="fixed inset-0 bg-grey/50"></div>--}}
                     <div

@@ -40,6 +40,8 @@ Route::get('/dashboard', [\App\Http\Controllers\AdminController::class, 'dashboa
 Route::get('/fulfilment/{key}', [\App\Http\Controllers\FulfilmentController::class, 'fulfilment'])->name('fulfilment');
 Route::post('/fulfil-order/', [\App\Http\Controllers\FulfilmentController::class, 'fulfilOrder'])->name('fulfil-order');
 
+Route::post('/resdiary/get-availability', [\App\Http\Controllers\ResDiaryController::class, 'getAvailability'])->name('resdiary.get-availability');
+
 
 Route::get('/view-customer-email', function(){
     $hotel = Hotel::find(1);
@@ -92,7 +94,6 @@ Route::middleware(['auth', 'verified'])->group(function(){
     Route::get('/resdiary/callback', [\App\Http\Controllers\ResDiaryController::class, 'callback'])->name('resdiary.callback');
     Route::post('/resdiary/set-hotel', [\App\Http\Controllers\ResDiaryController::class, 'setHotel'])->name('resdiary.set-hotel');
 
-    Route::get('/resdiary/get-availability', [\App\Http\Controllers\ResDiaryController::class, 'getAvailability'])->name('resdiary.get-availability');
 });
 
 Route::middleware('auth')->group(function () {

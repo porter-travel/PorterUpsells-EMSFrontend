@@ -175,7 +175,7 @@ class CheckoutController extends Controller
         $sig_header = $_SERVER['HTTP_STRIPE_SIGNATURE'];
         $event = null;
 
-        $test = [$endpoint_secret, $stripe_secret_key, $payload, $sig_header];
+//        $test = [$endpoint_secret, $stripe_secret_key, $payload, $sig_header];
 
 //        Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($test)));
 

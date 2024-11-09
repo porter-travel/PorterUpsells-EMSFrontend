@@ -18,7 +18,7 @@ class Availability
 
         if ($response->successful()) {
             $data = $response->json();
-            dd("success", $data);
+            return $data;
             // Process the response data as needed
         } else {
             // Handle errors here
