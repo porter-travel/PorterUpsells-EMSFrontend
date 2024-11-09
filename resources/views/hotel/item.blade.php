@@ -63,6 +63,9 @@
             @if($have_details)
                 <form
                     @if(isset($specifics['requires_resdiary_booking']) && $specifics['requires_resdiary_booking']) data-requires-resdiary-booking @endif
+                @if(isset($specifics['resdiary_promotion_id']) && $specifics['resdiary_promotion_id']) data-resdiary-promotion-id="{{$specifics['resdiary_promotion_id']}}" @endif
+
+
                     id="addToCart" action="/cart/add" method="post">
                     @endif
                     <div class="flex flex-wrap items-end">
