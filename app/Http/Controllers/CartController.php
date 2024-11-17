@@ -137,9 +137,11 @@ class CartController extends Controller
             $hotel_id = $hotel->slug;
         }
 
-        foreach ($cart as $key => $item) {
-            if (is_array($item) && $item['hotel_id'] != $hotel_id) {
-                unset($cart[$key]);
+        if(is_array($cart)) {
+            foreach ($cart as $key => $item) {
+                if (is_array($item) && $item['hotel_id'] != $hotel_id) {
+                    unset($cart[$key]);
+                }
             }
         }
 
@@ -181,9 +183,11 @@ class CartController extends Controller
     private function calculateTotal($cart)
     {
         $total = 0;
-        foreach ($cart as $item) {
-            if (is_array($item))
-                $total += $item['price'] * $item['quantity'];
+        if(is_array($cart)) {
+            foreach ($cart as $item) {
+                if (is_array($item))
+                    $total += $item['price'] * $item['quantity'];
+            }
         }
         return $total;
     }
