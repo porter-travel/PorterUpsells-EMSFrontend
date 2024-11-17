@@ -28,6 +28,7 @@ class OrderService
 
     public function generateOrderArrayForEmailAndAdminView($hotel_id, $startDate, $endDate){
         $orders = Order::where('hotel_id', $hotel_id)
+            ->where('status', '!=', 'pending') // Exclude orders with status "pending"
             ->whereHas('items', function ($query) use ($startDate, $endDate) {
                 $query->whereDate('date', '>=', $startDate->toDateString())
                     ->whereDate('date', '<=', $endDate->toDateString());
