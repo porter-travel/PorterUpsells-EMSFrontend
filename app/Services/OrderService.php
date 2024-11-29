@@ -28,17 +28,20 @@ class OrderService
 
     public function generateOrderArrayForEmailAndAdminView($hotel_id, $startDate, $endDate){
         $orders = Order::where('hotel_id', $hotel_id)
+            ->where('payment_status', '!=', 'pending') // Exclude pending payment orders
             ->whereHas('items', function ($query) use ($startDate, $endDate) {
                 $query->whereDate('date', '>=', $startDate->toDateString())
                     ->whereDate('date', '<=', $endDate->toDateString());
             })
             ->with(['items' => function ($query) {
                 $query->orderBy('date', 'asc');
-            }, 'items.product', 'items.product.specifics', 'booking'])
+            }, 'items.product', 'items.product.specifics', 'booking','items.meta'])
             ->get()
             ->sortBy(function ($order) {
                 return $order->items->min('date');
             });
+
+//        dd($orders->toArray());
 
         // Prepare the result array
         $output = [];
@@ -61,6 +64,7 @@ class OrderService
                     'image' => $item['product']['image'],
                     'date' => $item['date'],
                     'product_type' => $item['product_type'],
+                    'meta' => $item['meta']->toArray()
                 ];
 
             }

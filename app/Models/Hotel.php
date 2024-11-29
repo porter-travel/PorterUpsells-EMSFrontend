@@ -59,5 +59,10 @@ class Hotel extends Model
         return $this->hasMany(Connection::class);
     }
 
+    public function resdiaryOrders()
+    {
+        return $this->hasMany(OrdersResdiary::class);
+    }
+
 
 }

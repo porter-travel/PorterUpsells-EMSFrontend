@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Connection;
 use App\Models\Hotel;
+use App\Models\ProductSpecific;
 use App\Models\Variation;
+use App\Services\ResDiary\CreateBooking;
+use App\Services\ResDiary\ResDiaryBooking;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
@@ -15,6 +19,8 @@ class CartController extends Controller
 
 
         $this->removeFromCartIfProductFromWrongHotel();
+
+        $this->deleteCartIfExpired();
 
 
         $data['cart'] = session()->get('cart');
@@ -34,6 +40,7 @@ class CartController extends Controller
         $quantity = $items['quantity'];
         $product_id = $items['product_id'];
         $hotel_id = $items['hotel_id'];
+        $arrival_time = $items['arrival_time'] ?? null;
         $product_name = $items['product_name'];
         $product_type = $items['product_type'];
 
@@ -45,9 +52,29 @@ class CartController extends Controller
 
         $product = Variation::find($id);
 
+        $cartItemMeta = [];
+
+        $requiresResDiaryBooking = ProductSpecific::where('product_id', $product_id)->where('name', 'requires_resdiary_booking')->first();
+
+        if($requiresResDiaryBooking && $requiresResDiaryBooking->value == 1){
+
+            if(!$items['resdiary_promotion_id']){
+                return json_encode(['error' => 'Promotion ID is required for ResDiary bookings']);
+            }
+
+            $cartItemMeta['resdiary_promotion_id'] = $items['resdiary_promotion_id'];
+            $cartItemMeta['arrival_time'] = $items['arrival_time'];
+
+        }
+
         if (!$product) {
 
             abort(404);
+        }
+
+        $cartID = $product_id . '-' . $id;
+        if($arrival_time){
+            $cartID = $product_id . '-' . $id . '-' . $arrival_time;
         }
 
         $cart = session()->get('cart');
@@ -55,7 +82,7 @@ class CartController extends Controller
 
             $cart = [];
             foreach ($dates as $date) {
-                $cart[$date . '-' . $id] = [
+                $cart[$cartID] = [
                     'product_id' => $product_id,
                     'variation_id' => $id,
                     'hotel_id' => $hotel_id,
@@ -65,10 +92,13 @@ class CartController extends Controller
                     "price" => $product->price,
                     "image" => $product->image,
                     "date" => $date,
-                    "product_type" => $product_type
+                    "product_type" => $product_type,
+                    "arrival_time" => $arrival_time,
+                    "cart_item_meta" => $cartItemMeta
                 ];
             }
             $cart = $this->calculateCartTotals($cart);
+            $cart['expiry'] = time() + 3600;
             session()->put('cart', $cart);
 
             return json_encode(['message' => 'Product added to cart successfully!', 'cart' => $cart]);
@@ -76,8 +106,8 @@ class CartController extends Controller
 
 //        dd($cart);
         foreach ($dates as $date) {
-            if (isset($cart[$date . '-' . $id])) {
-                $cart[$date . '-' . $id]['quantity'] += $quantity;
+            if (isset($cart[$cartID])) {
+                $cart[$cartID]['quantity'] += $quantity;
                 $cart = $this->calculateCartTotals($cart);
                 session()->put('cart', $cart);
                 return json_encode(['message' => 'Product added to cart successfully!', 'cart' => $cart]);
@@ -85,7 +115,7 @@ class CartController extends Controller
         }
 
         foreach ($dates as $date) {
-            $cart[$date . '-' . $id] = [
+            $cart[$cartID] = [
                 'product_id' => $product_id,
                 'variation_id' => $id,
                 'hotel_id' => $hotel_id,
@@ -95,11 +125,13 @@ class CartController extends Controller
                 "price" => $product->price,
                 "image" => $product->image,
                 "date" => $date,
-                "product_type" => $product_type
-
+                "product_type" => $product_type,
+                "arrival_time" => $arrival_time,
+                "cart_item_meta" => $cartItemMeta
             ];
         }
         $cart = $this->calculateCartTotals($cart);
+        $cart['expiry'] = time() + 3600;
 
         $cartCount = 0;
         foreach ($cart as $item) {
@@ -108,6 +140,7 @@ class CartController extends Controller
             }
         }
         session()->put('cart', $cart);
+
 
         return json_encode(['message' => 'Product added to cart successfully!', 'cart' => $cart]);
     }
@@ -206,5 +239,12 @@ class CartController extends Controller
                 $total += $item['price'] * $item['quantity'];
         }
         return $total * 0.2;
+    }
+
+    private function deleteCartIfExpired(){
+        $cart = session()->get('cart');
+        if($cart['expiry'] < time()){
+            session()->forget('cart');
+        }
     }
 }

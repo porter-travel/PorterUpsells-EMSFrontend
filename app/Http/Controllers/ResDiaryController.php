@@ -55,7 +55,7 @@ class ResDiaryController extends Controller
         }
 
         $code = $request->code;
-        if(!$code){
+        if (!$code) {
             dd('Code is missing');
         }
 
@@ -66,40 +66,53 @@ class ResDiaryController extends Controller
             'code' => $code,
             'client_secret' => env('RESDIARY_CLIENT_SECRET'),
             'redirect_uri' => env('APP_URL') . '/resdiary/callback',
+//            'redirect_uri' => 'https://z5ypodmyns.sharedwithexpose.com/resdiary/callback',
             'code_verifier' => $codeVerifier,
 //            'response_type' => 'code',
 //            'code_challenge' => $codeChallenge,
         ]);
 
         if ($response->failed()) {
-            dd( 'ERROR AT THE CALLBACK', $response->body()); // Log or display the error for debugging
+            dd('ERROR AT THE CALLBACK', $response->body()); // Log or display the error for debugging
         }
 
         $user = auth()->user();
         $hotels = $user->hotels;
-        if($hotels->count() == 0){
+        if ($hotels->count() == 0) {
             $status = 'error';
-        }
-        elseif($hotels->count() > 1){
+        } elseif ($hotels->count() > 1) {
             session()->put('resdiary_access_token', $response->json()['access_token']);
             session()->put('resdiary_refresh_token', $response->json()['refresh_token']);
 
             $status = 'pending_hotel_selection';
         } else {
             $status = 'success';
-            $connection = new Connection();
             $hotel = $hotels->first();
+            //If the connection already exists, update the access token and refresh token
 
-            $connection->key = 'resdiary_access_token';
-            $connection->value = $response->json()['access_token'];
-            $connection->hotel_id = $hotel->id;
-            $connection->save();
+            $connection = $hotels->first()->connections->where('key', 'resdiary_access_token')->first();
+            if ($connection) {
+                $connection->value = $response->json()['access_token'];
+                $connection->save();
+            } else {
+                $connection = new Connection();
+                $connection->key = 'resdiary_access_token';
+                $connection->value = $response->json()['access_token'];
+                $connection->hotel_id = $hotel->id;
+                $connection->save();
+            }
 
-            $connection = new Connection();
-            $connection->key = 'resdiary_refresh_token';
-            $connection->value = $response->json()['refresh_token'];
-            $connection->hotel_id = $hotel->id;
-            $connection->save();
+            $connection = $hotels->first()->connections->where('key', 'resdiary_refresh_token')->first();
+            if ($connection) {
+                $connection->value = $response->json()['refresh_token'];
+                $connection->save();
+            } else {
+                $connection = new Connection();
+                $connection->key = 'resdiary_refresh_token';
+                $connection->value = $response->json()['refresh_token'];
+                $connection->hotel_id = $hotel->id;
+                $connection->save();
+            }
         }
 
         return view('admin.resdiary.callback', ['status' => $status, 'hotels' => $hotels]);
@@ -129,12 +142,14 @@ class ResDiaryController extends Controller
 
     public function getAvailability(Request $request)
     {
+
         $hotel_id = $request->hotel_id ?? 2;
         $date = $request->date ?? "2024-11-15"; //date('Y-m-d');
         $partySize = $request->party_size ?? 2;
 
         $hotel = Hotel::find($hotel_id);
         $access_token = $hotel->connections->where('key', 'resdiary_access_token')->first()->value;
+//        dd($access_token);
         $resdiary_microsite_name = $hotel->connections->where('key', 'resdiary_microsite_name')->first()->value;
 
         $availability = new Availability();

@@ -10,14 +10,13 @@ class OrderStatus extends Enum
     const COMPLETE = 'complete';
     const FULFILLED = 'fulfilled';
     const CANCELLED = 'cancelled';
-
     public static function getValues(): array
     {
         return [
             self::PENDING,
             self::COMPLETE,
             self::FULFILLED,
-            self::CANCELLED
+            self::CANCELLED,
         ];
     }
 }

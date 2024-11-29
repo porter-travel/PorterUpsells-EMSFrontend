@@ -41,8 +41,6 @@
                                 </tr>
                                 </thead>
                                 @foreach($orders as $order)
-{{--                                    {{dd($order)}}--}}
-                                    {{--                                    {{dd($order->order_items)}}--}}
 
                                     <tr class="border">
                                         <td class="p-2">{{$order['booking_ref']}}</td>
@@ -56,6 +54,11 @@
                                                 @if($item['product_type'] == 'variable')
                                                     <br><span class="text-sm">{{$item['variation_name']}}</span>
                                                 @endif
+                                            @foreach($item['meta'] as $meta)
+                                                @if($meta['key'] == 'arrival_time')
+                                                    <br><span class="text-sm">Time: {{$meta['value']}}</span>
+                                                @endif
+                                            @endforeach
                                                 <br>
                                             @endforeach
                                         </td>

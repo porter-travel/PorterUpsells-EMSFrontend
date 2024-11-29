@@ -1,10 +1,7 @@
 document.addEventListener("DOMContentLoaded", function() {
-    // Check if the form component has the "data-requires-resdiary-booking" attribute
-    const formComponent = document.querySelector("[data-requires-resdiary-booking]");
-    if (formComponent) {
-        // Find the input element with the "data-stay-date-selector" attribute
-        const stayDateInput = document.querySelector("[data-stay-date-selector]");
-
+    function fetchAvailability() {
+        document.getElementById('resdiary_time_selector').innerHTML = '<p>Loading...</p>';
+        const stayDateInput = document.querySelector("[data-stay-date-selector]:checked"); // Only get selected/checked input
         if (stayDateInput) {
             const date = stayDateInput.value;
 
@@ -15,9 +12,7 @@ document.addEventListener("DOMContentLoaded", function() {
             axios.defaults.headers.common['X-CSRF-TOKEN'] = csrfToken;
 
             // Make the axios request with the stay date value
-            axios.post('/resdiary/get-availability', {
-                date: date
-            })
+            axios.post('/resdiary/get-availability', { date: date })
                 .then(response => {
                     console.log("Response:", response.data);
                     processAvailableTimes(response.data);
@@ -26,12 +21,26 @@ document.addEventListener("DOMContentLoaded", function() {
                     console.error("Error:", error);
                 });
         } else {
-            console.error("Input with 'data-stay-date-selector' not found.");
+            console.error("No date selected.");
         }
+    }
+
+    // Initial fetch on page load
+    const formComponent = document.querySelector("[data-requires-resdiary-booking]");
+    if (formComponent) {
+        fetchAvailability(); // Run on load
+
+        // Add event listener to all stay date inputs
+        const stayDateInputs = document.querySelectorAll("[data-stay-date-selector]");
+        stayDateInputs.forEach(input => {
+            input.addEventListener('change', fetchAvailability); // Run on input change
+        });
     } else {
         console.log("Form does not require ResDiary booking.");
     }
 });
+
+
 
 function processAvailableTimes(times) {
     const el = document.querySelector("[data-resdiary-promotion-id]");
@@ -48,11 +57,12 @@ function processAvailableTimes(times) {
         }
     });
 
-    let output = '<ul>';
+    let output = '<label for="arrival_time">Arrival Time</label>';
+   output += '<select class="w-full rounded mr-2" name="arrival_time">';
     availableTimes.forEach(time => {
-        output += `<li>${time}</li>`;
+        output += `<option>${time}</option>`;
     })
-    output += '</ul>';
+    output += '</select>';
     document.getElementById('resdiary_time_selector').innerHTML = output;
 }
 

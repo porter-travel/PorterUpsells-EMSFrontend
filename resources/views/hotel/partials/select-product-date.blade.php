@@ -11,16 +11,20 @@
                         data-stay-date-selector
                         style="width: 0; height: 0; opacity: 0"
                         name="dates[]"
+                        @if(isset($specifics['requires_resdiary_booking']) && $specifics['requires_resdiary_booking'])
+                        type="radio"
+                        @else
                         type="checkbox"
+                        @endif
                         value="{{ $date['date'] }}"
                         @if($date['status'] == 'unavailable')
                             disabled
                         @endif
                         @if($date['status'] == 'available' && !$firstAvailableChecked)
                             checked
-                    @php($firstAvailableChecked = true) <!-- Set flag to true after the first available date is checked -->
-                    @endif
-                    >
+                    @php($firstAvailableChecked = true) {{-- Set the flag to true after the first available date has been checked --}}
+                    @endif>
+
                     <span class="w-[29px] h-[29px] border border-darkGrey rounded mr-2 relative"></span>
                     <span></span>
                     <span class="relative">

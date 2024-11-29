@@ -121,3 +121,40 @@ function updateTotals(data) {
     }
 }
 
+// Get the expiry time from the data attribute
+const countdownElement = document.getElementById('cartCountdown');
+if(countdownElement) {
+    const targetTimestamp = parseInt(countdownElement.dataset.expiry); // Assuming it's in Unix timestamp format (seconds)
+
+// Check if the timestamp is valid
+    if (!isNaN(targetTimestamp)) {
+        // Convert Unix timestamp to milliseconds
+        const targetTime = targetTimestamp * 1000;
+
+        function updateCountdown() {
+            const currentTime = new Date().getTime(); // Current time in milliseconds
+            const timeLeft = targetTime - currentTime; // Time remaining in milliseconds
+
+            if (timeLeft <= 0) {
+                clearInterval(interval); // Stop the countdown
+                countdownElement.textContent = "Expired";
+                return;
+            }
+
+            // Calculate days, hours, minutes, and seconds
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+            // Display the countdown in the span
+            countdownElement.textContent = `${minutes}m ${seconds}s`;
+        }
+
+        // Update every second
+        const interval = setInterval(updateCountdown, 1000);
+        updateCountdown(); // Initial call to display immediately
+    } else {
+        countdownElement.textContent = "Invalid expiry time";
+    }
+
+
+}
