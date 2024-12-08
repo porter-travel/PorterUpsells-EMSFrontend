@@ -1,7 +1,7 @@
 <?php
 
 namespace database\factories;
-
+use App\Models\Booking;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class BookingFactory extends Factory
 {
+
+    protected $model = Booking::class;
     /**
      * Define the model's default state.
      *

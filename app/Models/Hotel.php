@@ -12,6 +12,16 @@ class Hotel extends Model
     use HasFactory;
     use Sluggable, SluggableScopeHelpers;
 
+    protected $fillable = [
+        'name',
+        'address',
+        'logo',
+        'user_id',
+        'slug',
+        'featured_image',
+
+    ];
+
     /**
      * Return the sluggable configuration array for this model.
      *

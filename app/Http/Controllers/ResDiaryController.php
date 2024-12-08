@@ -10,6 +10,12 @@ use App\Services\ResDiary\Availability;
 
 class ResDiaryController extends Controller
 {
+
+    public $is_test = false;
+
+    public function __construct($is_test = false){
+        $this->is_test = $is_test;
+    }
     public function install(Request $request)
     {
         // Generate the code verifier and challenge
@@ -152,7 +158,7 @@ class ResDiaryController extends Controller
 //        dd($access_token);
         $resdiary_microsite_name = $hotel->connections->where('key', 'resdiary_microsite_name')->first()->value;
 
-        $availability = new Availability();
+        $availability = new Availability($this->is_test);
         $data = $availability->getAvailability($access_token, $resdiary_microsite_name, $date, $partySize);
 
         return response()->json($data);

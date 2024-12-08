@@ -52,7 +52,8 @@
                         stroke="black"/>
                 </svg>
                 <span id="cartCount"
-                      class="hotel-accent-color-50 text-black rounded-full px-2 py-1 ml-2 absolute left-0 bottom-0 -translate-x-full translate-y-1/2 text-xs">@if($cart && $cart['cartCount'] > 0)
+                      class="hotel-accent-color-50 text-black rounded-full px-2 py-1 ml-2 absolute left-0 bottom-0 -translate-x-full translate-y-1/2 text-xs">
+                    @if($cart && isset($cart['cartCount']) && $cart['cartCount'] > 0)
                         {{$cart['cartCount']}}
                     @endif</span>
             </a>

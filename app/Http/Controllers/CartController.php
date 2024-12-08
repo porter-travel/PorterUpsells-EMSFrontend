@@ -56,9 +56,9 @@ class CartController extends Controller
 
         $requiresResDiaryBooking = ProductSpecific::where('product_id', $product_id)->where('name', 'requires_resdiary_booking')->first();
 
-        if($requiresResDiaryBooking && $requiresResDiaryBooking->value == 1){
+        if ($requiresResDiaryBooking && $requiresResDiaryBooking->value == 1) {
 
-            if(!$items['resdiary_promotion_id']){
+            if (!$items['resdiary_promotion_id']) {
                 return json_encode(['error' => 'Promotion ID is required for ResDiary bookings']);
             }
 
@@ -73,7 +73,7 @@ class CartController extends Controller
         }
 
         $cartID = $product_id . '-' . $id;
-        if($arrival_time){
+        if ($arrival_time) {
             $cartID = $product_id . '-' . $id . '-' . $arrival_time;
         }
 
@@ -167,12 +167,17 @@ class CartController extends Controller
 
         if (is_numeric($hotel_id)) {
             $hotel = Hotel::find($hotel_id);
-            $hotel_id = $hotel->slug;
+
+            if(isset($hotel->slug)){
+                $hotel_id = $hotel->slug;
+            }
         }
 
-        foreach ($cart as $key => $item) {
-            if (is_array($item) && $item['hotel_id'] != $hotel_id) {
-                unset($cart[$key]);
+        if ($cart) {
+            foreach ($cart as $key => $item) {
+                if (is_array($item) && $item['hotel_id'] != $hotel_id) {
+                    unset($cart[$key]);
+                }
             }
         }
 
@@ -214,6 +219,9 @@ class CartController extends Controller
     private function calculateTotal($cart)
     {
         $total = 0;
+        if (!$cart) {
+            return 0;
+        }
         foreach ($cart as $item) {
             if (is_array($item))
                 $total += $item['price'] * $item['quantity'];
@@ -224,6 +232,9 @@ class CartController extends Controller
     private function calculateTotalWithTax($cart)
     {
         $total = 0;
+        if (!$cart) {
+            return 0;
+        }
         foreach ($cart as $item) {
             if (is_array($item))
                 $total += $item['price'] * $item['quantity'];
@@ -234,6 +245,10 @@ class CartController extends Controller
     private function calculateTax($cart)
     {
         $total = 0;
+
+        if (!$cart) {
+            return 0;
+        }
         foreach ($cart as $item) {
             if (is_array($item))
                 $total += $item['price'] * $item['quantity'];
@@ -241,9 +256,13 @@ class CartController extends Controller
         return $total * 0.2;
     }
 
-    private function deleteCartIfExpired(){
+    private function deleteCartIfExpired()
+    {
         $cart = session()->get('cart');
-        if($cart['expiry'] < time()){
+        if (!$cart) {
+            return;
+        }
+        if (isset($cart['expiry']) && $cart['expiry'] < time()) {
             session()->forget('cart');
         }
     }

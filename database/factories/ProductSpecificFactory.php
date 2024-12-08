@@ -1,14 +1,13 @@
 <?php
 
 namespace Database\Factories;
-use App\Models\Variation;
-
+use App\Models\ProductSpecific;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Variation>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ProductSpecific>
  */
-class VariationFactory extends Factory
+class ProductSpecificFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,9 +17,8 @@ class VariationFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
-            'price' => fake()->randomFloat(2, 1, 100),
-            'image' => fake()->imageUrl(),
+            'name' => null,
+            'value' => null,
             'product_id' => null, // Set to null by default
         ];
     }

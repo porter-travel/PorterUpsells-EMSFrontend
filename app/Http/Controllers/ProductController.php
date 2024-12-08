@@ -14,8 +14,6 @@ class ProductController extends Controller
     public function show($hotel_id, $item_id, Request $request)
     {
 
-//        var_dump($request->session()->all());
-
         if (is_numeric($hotel_id)) {
             $hotel = Hotel::find($hotel_id);
         } else {
@@ -29,7 +27,6 @@ class ProductController extends Controller
             return [$specific->name => $this->parseSpecificsValue($specific->value)];
         })->toArray();
 
-//        dd($specifics);
 
         $have_details = true;
 
@@ -37,19 +34,9 @@ class ProductController extends Controller
             $specifics['on_arrival'] = true;
         }
 
-//        var_dump($have_details);
-
-//        if(!isset($specifics['on_arrival']) || !isset($specifics['on_departure']) || !isset($specifics['during_stay'])){
-//            $have_details = false;
-//        }
-
-//        var_dump($have_details);
-
         if (isset($specifics['on_arrival']) && $specifics['on_arrival'] && !$request->session()->get('arrival_date')) {
             $have_details = false;
         }
-
-//        var_dump($have_details);
 
         if (isset($specifics['on_departure']) && $specifics['on_departure'] && !$request->session()->get('departure_date')) {
             $have_details = false;
@@ -59,6 +46,7 @@ class ProductController extends Controller
             $have_details = false;
         }
 
+
         if (isset($specifics['on_departure']) && $specifics['on_departure'] && isset($specifics['on_arrival']) && $specifics['on_arrival']) {
             $date_picker_title = 'To add this product, first let us know the dates of your stay';
         } elseif (isset($specifics['during_stay']) && $specifics['during_stay']) {
@@ -66,14 +54,11 @@ class ProductController extends Controller
         } elseif (isset($specifics['on_arrival']) && $specifics['on_arrival']) {
             $date_picker_title = 'To add this product, let us know the date of your arrival';
         } elseif (isset($specifics['on_departure']) && $specifics['on_departure']) {
+            dd('here');
             $date_picker_title = 'To add this product, let us know the date of your departure';
         }  else {
             $date_picker_title = 'To add this product, let us know the dates of your stay';
         }
-
-//        var_dump($specifics);
-//        var_dump($request->session()->all());
-//        var_dump($have_details);
 
         $cart = session()->get('cart');
 
@@ -286,12 +271,12 @@ class ProductController extends Controller
             foreach ($request->specifics as $name => $specific) {
                 $ps = ProductSpecific::where('product_id', $product->id)->where('name', $name)->first();
                 if ($ps) {
-                    $ps->value = $specific;
+                    $ps->value = $specific ?: 0;
                     $ps->save();
                 } else {
                     $product->specifics()->create([
                         'name' => $name,
-                        'value' => $specific
+                        'value' => $specific ?: 0
                     ]);
                 }
             }
