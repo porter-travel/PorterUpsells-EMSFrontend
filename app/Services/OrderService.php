@@ -41,7 +41,6 @@ class OrderService
                 return $order->items->min('date');
             });
 
-//        dd($orders->toArray());
 
         // Prepare the result array
         $output = [];
@@ -49,10 +48,10 @@ class OrderService
 
             $orderArr = [
                 'id' => $order['id'],
-                'room' => $order['booking']['room'],
-                'name' => $order['booking']['name'],
-                'arrival_date' => $order['booking']['arrival_date'],
-                'booking_ref' => $order['booking']['booking_ref'],
+                'room' => $order['booking'] ?  $order['booking']['room'] : '',
+                'name' => $order['booking'] ? $order['booking']['name'] : '',
+                'arrival_date' => $order['booking'] ? $order['booking']['arrival_date'] : '',
+                'booking_ref' => $order['booking'] ? $order['booking']['booking_ref'] : '',
                 'items' => [],
                 'status' => $order['status'],
             ];
