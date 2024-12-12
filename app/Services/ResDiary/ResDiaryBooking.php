@@ -63,6 +63,7 @@ class ResDiaryBooking
     private static function formatCartDataToBookingData($cartData)
     {
         $cartData = [
+            'ChannelCode' => 'ENHANCEMYSTAY',
             'VisitDate' => $cartData['date'],
             'PartySize' => $cartData['quantity'],
             'VisitTime' => $cartData['cart_item_meta']['arrival_time'],
