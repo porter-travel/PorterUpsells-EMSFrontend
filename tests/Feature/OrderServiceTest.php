@@ -96,7 +96,7 @@ class OrderServiceTest extends TestCase
 
         $orderArray = $service->generateOrderArrayForEmailAndAdminView($hotel->id, $startDate, $endDate);
 
-        dd($orderArray);
+//        dd($orderArray);
 
 
 

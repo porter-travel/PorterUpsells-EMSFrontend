@@ -54,7 +54,7 @@ class ProductController extends Controller
         } elseif (isset($specifics['on_arrival']) && $specifics['on_arrival']) {
             $date_picker_title = 'To add this product, let us know the date of your arrival';
         } elseif (isset($specifics['on_departure']) && $specifics['on_departure']) {
-            dd('here');
+//            dd('here');
             $date_picker_title = 'To add this product, let us know the date of your departure';
         }  else {
             $date_picker_title = 'To add this product, let us know the dates of your stay';
