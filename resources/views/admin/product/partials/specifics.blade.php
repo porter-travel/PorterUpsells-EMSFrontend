@@ -54,7 +54,7 @@
     }
 </style>
 
-<div class="flex items-start mt-8 border-grey border rounded-2xl p-6 bg-[#fafafa]">
+<div class="flex flex-wrap items-start mt-8 border-grey border rounded-2xl p-6 bg-[#fafafa]">
     <div class="lg:basis-1/5 pr-4">
         <ul>
             <li data-target="availability-tab"
@@ -83,7 +83,7 @@
 
     <div class="lg:basis-4/5">
         <div class="settings-tab" id="availability-tab">
-            <div class="flex">
+            <div class="flex flex-wrap">
                 <div class="lg:basis-1/2 basis-full">
                     <h4 class="font-bold pb-4">Availability</h4>
                     <div class="flex items-center justify-start">
@@ -133,7 +133,12 @@
                                         style="width: 0; height: 0; opacity: 0"
                                         type="checkbox"
                                         name="specifics[available_{{$day}}]" value="1"
-                                        id="{{$day}}" @checked($product->specifics['available_' . $day])
+                                        id="{{$day}}"
+                                        @if($method == 'create')
+                                        checked
+                                        @else
+                                        @checked($product->specifics['available_' . $day])
+                                        @endif
                                     >
                                     <span class="w-[29px] h-[29px] border border-darkGrey rounded mr-2 relative"></span>
                                     <span></span>
