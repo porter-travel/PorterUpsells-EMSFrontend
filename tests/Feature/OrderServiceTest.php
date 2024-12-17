@@ -84,6 +84,7 @@ class OrderServiceTest extends TestCase
             'product_id' => $product->id,
             'variation_id' => $variation->id,
             'quantity' => 1,
+            'date' => $booking->arrival_date,
         ]);
 
 
@@ -96,10 +97,7 @@ class OrderServiceTest extends TestCase
 
         $orderArray = $service->generateOrderArrayForEmailAndAdminView($hotel->id, $startDate, $endDate);
 
-//        dd($orderArray);
-
-
-
+        $this->assertCount(1, $orderArray);
 
     }
 }

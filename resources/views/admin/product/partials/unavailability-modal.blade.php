@@ -42,7 +42,7 @@
                     </label>
 
                     <div class=" mt-6 ">
-                        <x-secondary-button type="submit" class="w-1/2 justify-center">Save</x-secondary-button>
+                        <x-primary-button type="submit" class="w-1/2 justify-center">Save</x-primary-button>
                     </div>
 
                 </div>

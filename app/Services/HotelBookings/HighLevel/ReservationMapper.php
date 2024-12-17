@@ -1,5 +1,5 @@
 <?php
-namespace App\Services\HotelBookings\Highlevel;
+namespace App\Services\HotelBookings\HighLevel;
 
 use App\Services\HotelBookings\ValueObjects\HotelDates;
 use App\Services\HotelBookings\Entities\Reservation;
@@ -7,7 +7,7 @@ use App\Services\HotelBookings\Entities\Reservation;
 class ReservationMapper
 {
 
-    
+
     static function mapReservation(object $reservationObject) : Reservation
     {
         $HotelDates = new HotelDates($reservationObject->arrive,$reservationObject->depart);
@@ -20,7 +20,7 @@ class ReservationMapper
         $Reservation->hotelId = $reservationObject->hotel;
         $Reservation->checkedInString = $reservationObject->checked_in;
         return $Reservation;
-        
+
     }
-   
+
 }
