@@ -74,5 +74,10 @@ class Hotel extends Model
         return $this->hasMany(OrdersResdiary::class);
     }
 
+    public function calendarBookings()
+    {
+        return $this->hasMany(CalendarBooking::class);
+
+    }
 
 }

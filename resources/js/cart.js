@@ -31,9 +31,14 @@ if (form) {
         axios.post('/cart/add', {formObj})
             .then(function (response) {
                 console.log(response.data);
-                document.getElementById('cartCount').innerText = response.data.cart.cartCount;
-                document.getElementById('success').classList.remove('hidden');
-                document.getElementById('success').classList.add('block')
+                if(response.data.error) {
+                    alert(response.data.message);
+                }
+                else {
+                    document.getElementById('cartCount').innerText = response.data.cart.cartCount;
+                    document.getElementById('success').classList.remove('hidden');
+                    document.getElementById('success').classList.add('block')
+                }
             })
             .catch(function (error) {
                 console.log(error);
@@ -80,18 +85,19 @@ if (cartProductQuantity) {
 
             // Extract the href attribute
             const url = '/cart/update/' + this.getAttribute('name');
-
-            // Make a POST request using Axios
-            axios.post(url, {quantity: this.value})
-                .then(response => {
-                    // Handle successful response if needed
-                    console.log(response);
-                    updateTotals(response.data[0]);
-                })
-                .catch(error => {
-                    // Handle error if needed
-                    console.error('Error making POST request:', error);
-                });
+            setTimeout(() => {
+                // Make a POST request using Axios
+                axios.post(url, {quantity: this.value})
+                    .then(response => {
+                        // Handle successful response if needed
+                        console.log(response);
+                        updateTotals(response.data[0]);
+                    })
+                    .catch(error => {
+                        // Handle error if needed
+                        console.error('Error making POST request:', error);
+                    });
+            }, 100);
         });
     });
 }

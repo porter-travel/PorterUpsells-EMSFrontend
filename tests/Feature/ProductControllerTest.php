@@ -235,6 +235,7 @@ class ProductControllerTest extends TestCase
             'price' => 150.00,
             'hotel_id' => $hotel->id,
             'image' => $image,
+            'type' => 'calendar'
         ];
 
         $response = $this->actingAs($user)->post(route('product.store'), $data);
@@ -245,6 +246,7 @@ class ProductControllerTest extends TestCase
             'description' => $data['description'],
             'price' => $data['price'],
             'hotel_id' => $hotel->id,
+            'type' => $data['type']
         ]);
 
         // Assert the image was stored

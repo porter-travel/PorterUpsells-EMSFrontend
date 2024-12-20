@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Intervals;
 use App\Models\Connection;
 use App\Models\Hotel;
+use App\Models\Product;
 use App\Models\ProductSpecific;
 use App\Models\Variation;
 use App\Services\ResDiary\CreateBooking;
@@ -29,6 +31,8 @@ class CartController extends Controller
         } else {
             $hotel = Hotel::where('slug', $hotel_id)->first();
         }
+
+//        dd($data);
         return view('cart.show', ['data' => $data, 'hotel' => $hotel])->with('hotel_id', $hotel_id);
     }
 
@@ -43,6 +47,8 @@ class CartController extends Controller
         $arrival_time = $items['arrival_time'] ?? null;
         $product_name = $items['product_name'];
         $product_type = $items['product_type'];
+
+        $max_qty = $items['max_qty'] ?? null;
 
         if (!is_array($items['dates[]'])) {
             $dates = array($items['dates[]']);
@@ -67,14 +73,26 @@ class CartController extends Controller
 
         }
 
+        $productObj = Product::find($product_id);
+        $productType = $productObj->type;
+
+        if($productType == 'calendar') {
+            $cartItemMeta['arrival_time'] = $items['arrival_time'];
+            $interval =  Intervals::wordsToMinutes($productObj->specifics->where('name', 'time_intervals')->first()->value);
+            $cartItemMeta['end_time'] = date('H:i', strtotime($items['arrival_time']) + $interval);
+        }
+
         if (!$product) {
 
             abort(404);
         }
 
         $cartID = $product_id . '-' . $id;
+        if(!is_array($items['dates[]'])){
+            $cartID = $product_id . '-' . $id . '-' . $items['dates[]'];
+        }
         if ($arrival_time) {
-            $cartID = $product_id . '-' . $id . '-' . $arrival_time;
+            $cartID .=  '-' . $arrival_time;
         }
 
         $cart = session()->get('cart');
@@ -94,7 +112,8 @@ class CartController extends Controller
                     "date" => $date,
                     "product_type" => $product_type,
                     "arrival_time" => $arrival_time,
-                    "cart_item_meta" => $cartItemMeta
+                    "cart_item_meta" => $cartItemMeta,
+                    "max_qty" => $max_qty
                 ];
             }
             $cart = $this->calculateCartTotals($cart);
@@ -108,6 +127,11 @@ class CartController extends Controller
         foreach ($dates as $date) {
             if (isset($cart[$cartID])) {
                 $cart[$cartID]['quantity'] += $quantity;
+                if($max_qty){
+                    if($cart[$cartID]['quantity'] > $max_qty){
+                        return json_encode(['error' => true, 'message' => 'You can only add ' . $max_qty . ' of this item to your cart']);
+                    }
+                }
                 $cart = $this->calculateCartTotals($cart);
                 session()->put('cart', $cart);
                 return json_encode(['message' => 'Product added to cart successfully!', 'cart' => $cart]);
@@ -127,7 +151,8 @@ class CartController extends Controller
                 "date" => $date,
                 "product_type" => $product_type,
                 "arrival_time" => $arrival_time,
-                "cart_item_meta" => $cartItemMeta
+                "cart_item_meta" => $cartItemMeta,
+                "max_qty" => $max_qty
             ];
         }
         $cart = $this->calculateCartTotals($cart);
@@ -140,8 +165,7 @@ class CartController extends Controller
             }
         }
         session()->put('cart', $cart);
-
-
+//        dd($cart);
         return json_encode(['message' => 'Product added to cart successfully!', 'cart' => $cart]);
     }
 

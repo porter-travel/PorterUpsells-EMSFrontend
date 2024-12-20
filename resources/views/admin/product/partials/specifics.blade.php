@@ -60,19 +60,23 @@
             <li data-target="availability-tab"
                 class="settings-button text-lg mb-2 px-4 py-2 bg-grey rounded-full cursor-pointer active">Availability
             </li>
-            <li data-target="storage-tab"
-                class="settings-button text-lg mb-2 px-4 py-2 bg-grey rounded-full cursor-pointer">Storage / Quality
-            </li>
+            @if($type == 'standard')
+                <li data-target="storage-tab"
+                    class="settings-button text-lg mb-2 px-4 py-2 bg-grey rounded-full cursor-pointer">Storage / Quality
+                </li>
+            @endif
             <li data-target="notice-tab"
                 class="settings-button text-lg mb-2 px-4 py-2 bg-grey rounded-full cursor-pointer">Notice Period
             </li>
-            @foreach($hotel->connections as $connection)
-                @if($connection->key == 'resdiary_microsite_name')
-                    <li data-target="resdiary-tab"
-                        class="settings-button text-lg mb-2 px-4 py-2 bg-grey rounded-full cursor-pointer">Resdiary
-                    </li>
-                @endif
-            @endforeach
+            @if($type == 'restaurant')
+                @foreach($hotel->connections as $connection)
+                    @if($connection->key == 'resdiary_microsite_name')
+                        <li data-target="resdiary-tab"
+                            class="settings-button text-lg mb-2 px-4 py-2 bg-grey rounded-full cursor-pointer">Resdiary
+                        </li>
+                    @endif
+                @endforeach
+            @endif
             @if($method == 'update')
                 <li data-target="unavailability-tab"
                     class="settings-button text-lg mb-2 px-4 py-2 bg-grey rounded-full cursor-pointer">Unavailability
@@ -84,72 +88,9 @@
     <div class="lg:basis-4/5">
         <div class="settings-tab" id="availability-tab">
             <div class="flex flex-wrap">
-                <div class="lg:basis-1/2 basis-full">
-                    <h4 class="font-bold pb-4">Availability</h4>
-                    <div class="flex items-center justify-start">
-                        <input type="hidden" name="specifics[on_arrival]" value="0">
+               @include('admin.product.partials/availability-pickers')
+               @include('admin.product.partials/available-days')
 
-                        <x-fancy-checkbox
-                            label="Available on date of arrival"
-                            name="specifics[on_arrival]"
-                            :isChecked="isset($product->specifics['on_arrival']) ? $product->specifics['on_arrival'] : true"
-                        />
-
-                    </div>
-                    <div class="flex items-center justify-start">
-                        <input type="hidden" name="specifics[during_stay]" value="0">
-
-                        <x-fancy-checkbox
-                            label="Available during stay"
-                            name="specifics[during_stay]"
-                            :isChecked="isset($product->specifics['during_stay']) ? $product->specifics['during_stay'] : false"
-                        />
-
-
-                    </div>
-                    <div class="flex items-center justify-start">
-                        <input type="hidden" name="specifics[on_departure]" value="0">
-
-                        <x-fancy-checkbox
-                            label="Available on date of departure"
-                            name="specifics[on_departure]"
-                            :isChecked="isset($product->specifics['on_departure']) ? $product->specifics['on_departure'] : false"
-                        />
-
-                    </div>
-                </div>
-                <div class="lg:basis-1/2 basis-full">
-                    <h4 class="font-bold pb-4">Available Days</h4>
-                    <ul class="flex flex-wrap">
-                        @php
-                            $days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-                        @endphp
-                        @foreach($days as $day)
-                            <li class="basis-full sm:basis-1/2 md:basis-1/3 ">
-                                <label
-                                    class="border border-black bg-[#F7F7F7] rounded p-2 flex items-center mr-2 mb-2 basis-1/3 fancy-checkbox">
-                                    <input type="hidden" name="specifics[available_{{$day}}]" value="0">
-                                    <input
-                                        style="width: 0; height: 0; opacity: 0"
-                                        type="checkbox"
-                                        name="specifics[available_{{$day}}]" value="1"
-                                        id="{{$day}}"
-                                        @if($method == 'create')
-                                        checked
-                                        @else
-                                        @checked($product->specifics['available_' . $day])
-                                        @endif
-                                    >
-                                    <span class="w-[29px] h-[29px] border border-darkGrey rounded mr-2 relative"></span>
-                                    <span></span>
-                                    <span class="relative">
-                        <span class="font-bold">{{ucfirst($day)}}</span>
-                    </span>
-                                </label>
-                            </li>
-                        @endforeach
-                    </ul>
-                </div>
             </div>
         </div>
         <div class="settings-tab hidden" id="storage-tab">
@@ -210,7 +151,8 @@
                 <div class="flex items-center justify-between">
                     <h4 class="font-bold py-b">Periods of Unavailability</h4>
 
-                    <a class="flex items-center px-8 py-2 bg-mint rounded-full" id="triggerUnavailabilityModal" href="#">
+                    <a class="flex items-center px-8 py-2 bg-mint rounded-full" id="triggerUnavailabilityModal"
+                       href="#">
                         <img src="/img/icons/plus.svg" alt="add" class="mr-2">
                         Add New</a>
                 </div>

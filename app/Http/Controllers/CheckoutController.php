@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\ConfigTest;
 use App\Mail\OrderConfirmation;
 use App\Models\Booking;
+use App\Models\CalendarBooking;
 use App\Models\Connection;
 use App\Models\Hotel;
 use App\Models\Order;
@@ -249,9 +250,10 @@ class CheckoutController extends Controller
 
                 $this->createResDiaryBooking($order, $session);
 
+                $this->createCalendarBooking($order, $session);
+
 
                 Mail::to($session->customer_details->email, $session->metadata->name)->send(new OrderConfirmation($order));
-//                Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($session)));
 
 
                 //Cancel any Scheduled Emails for the customer
@@ -373,6 +375,35 @@ class CheckoutController extends Controller
                 $accessToken = Connection::where('key', 'resdiary_access_token')->where('hotel_id', $hotel->id)->first()->value;
                 $microSiteName = Connection::where('key', 'resdiary_microsite_name')->where('hotel_id', $hotel->id)->first()->value;
                 ResDiaryBooking::createBooking($accessToken, $microSiteName, $bookingData, $hotel->id);
+            }
+        }
+    }
+
+    private function createCalendarBooking($order, $session)
+    {
+        $hotel_id = $order->hotel_id;
+        if (is_numeric($hotel_id)) {
+            $hotel = Hotel::find($hotel_id);
+        } else {
+            $hotel = Hotel::where('slug', $hotel_id)->first();
+        }
+        foreach ($order->items as $item) {
+            if ($item->product->type == 'calendar') {
+                $calendarBooking = new CalendarBooking();
+                $calendarBooking->order_id = $order->id;
+                $calendarBooking->product_id = $item->product_id;
+                $calendarBooking->variation_id = $item->variation_id;
+                $calendarBooking->name = $session->customer_details->name;
+                $calendarBooking->email = $session->customer_details->email;
+                $calendarBooking->mobile = $session->customer_details->phone;
+                $calendarBooking->room_number = $session->metadata->room_number ?? null;
+                $calendarBooking->date = $item->date;
+                $calendarBooking->start_time = $item->meta->where('key', 'arrival_time')->first()->value;
+                $calendarBooking->end_time = $item->meta->where('key', 'end_time')->first()->value;
+                $calendarBooking->status = $session->payment_status == 'paid' ? 'confirmed' : 'pending';
+                $calendarBooking->hotel_id = $hotel->id;
+                $calendarBooking->qty = $item->quantity;
+                $calendarBooking->save();
             }
         }
     }

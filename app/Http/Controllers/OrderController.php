@@ -50,7 +50,7 @@ class OrderController extends Controller
         $service = new OrderService();
 
         $output = $service->generateOrderArrayForEmailAndAdminView($hotel_id, $startDate, $endDate);
-
+//dd($output);
 
         return view('admin.orders.listItemsForPicking',
             [

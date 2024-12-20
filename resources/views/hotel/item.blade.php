@@ -67,6 +67,7 @@
                 @endif
                 @if(isset($specifics['resdiary_promotion_id']) && $specifics['resdiary_promotion_id']) data-resdiary-promotion-id="{{$specifics['resdiary_promotion_id']}}"
                 @endif
+                @if($type == 'calendar') data-calendar @endif
 
 
                 id="addToCart" action="/cart/add" method="post">
@@ -87,15 +88,22 @@
                         <div>
 
                             @csrf
-                            <input type="hidden" name="product_id" value="{{$product->id}}">
+                            <input type="hidden" data-product-id name="product_id" value="{{$product->id}}">
                             <input type="hidden" name="hotel_id" value="{{$hotel_id}}">
                             <input type="hidden" name="product_name" value="{{$product->name}}">
+
+                            <input id="maxQtyInput" type="hidden" name="max_qty" value=""/>
                             @if(isset($specifics['resdiary_promotion_id']) && $specifics['resdiary_promotion_id'])
-                                <input name="resdiary_promotion_id" value="{{$specifics['resdiary_promotion_id']}}" type="hidden">
+                                <input name="resdiary_promotion_id" value="{{$specifics['resdiary_promotion_id']}}"
+                                       type="hidden">
                             @endif
                             <div @if(is_countable($variations) && count($variations) <= 1) style="display: none"
                                  @endif class="mt-4">
-                                @if(is_countable($variations) && count($variations) <= 1)
+                                @if($type == 'calendar')
+                                    <input type="hidden" name="product_type" value="calendar">
+                                @elseif($type == 'restaurant')
+                                    <input type="hidden" name="product_type" value="restaurant">
+                                @elseif(is_countable($variations) && count($variations) <= 1)
                                     <input type="hidden" name="product_type" value="simple">
                                 @else
                                     <input type="hidden" name="product_type" value="variable">
@@ -106,7 +114,6 @@
                                         <option value="{{$variation->id}}">{{$variation->name}} -
                                             <x-money-display :amount="$variation->price"
                                                              :currency="$hotel->user->currency"></x-money-display>
-
                                         </option>
                                     @endforeach
                                 </select>
@@ -120,7 +127,7 @@
                                                    :value="__('Quantity')"/>
                                 @endif
                                 <div class="w-[100px]">
-                                    <x-number-input :key="'quantity'" :quantity="1"/>
+                                    <x-number-input :id="'quantity'" :key="'quantity'" :quantity="1"/>
                                 </div>
                             </div>
 
@@ -141,6 +148,14 @@
                                 <div class="flex">
                                     <div class="basis-full sm:basis-1/2 md:basis-1/3 pr-2">
                                         <div id="resdiary_time_selector"></div>
+                                    </div>
+                                </div>
+                            @endif
+
+                            @if($type == 'calendar')
+                                <div class="flex">
+                                    <div class="basis-full sm:basis-1/2 md:basis-1/3 pr-2">
+                                        <div id="calendar_product_time_selector"></div>
                                     </div>
                                 </div>
                             @endif

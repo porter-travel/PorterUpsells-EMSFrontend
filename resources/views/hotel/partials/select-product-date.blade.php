@@ -9,9 +9,10 @@
                     class="border border-black bg-[#F7F7F7] rounded p-2 flex items-center mr-2 mb-2 basis-1/3 fancy-checkbox">
                     <input
                         data-stay-date-selector
+                        data-day-of-the-week="{{\Carbon\Carbon::parse($date['date'])->format('l')}}"
                         style="width: 0; height: 0; opacity: 0"
                         name="dates[]"
-                        @if(isset($specifics['requires_resdiary_booking']) && $specifics['requires_resdiary_booking'])
+                        @if((isset($specifics['requires_resdiary_booking']) && $specifics['requires_resdiary_booking']) || $type == 'calendar')
                         type="radio"
                         @else
                         type="checkbox"
@@ -29,7 +30,7 @@
                     <span></span>
                     <span class="relative">
                 <span class="font-bold">Day {{$i}}</span>
-                ({{ \Carbon\Carbon::parse($date['date'])->format('jS M') }})
+                ({{ \Carbon\Carbon::parse($date['date'])->format('D, jS M') }})
             </span>
                 </label>
             </li>

@@ -75,7 +75,7 @@
                                     </div>
                                     <div class="md:w-[20%]">
                                         <div class="w-[100px] text-black">
-                                            <x-number-input :key="$key" :quantity="$item['quantity']"/>
+                                            <x-number-input :key="$key" :max="$item['max_qty']" :quantity="$item['quantity']"/>
                                         </div>
                                         <a class="remove-from-cart ml-4 absolute bottom-0 md:hidden" data-key="{{$key}}"
                                            href="/cart/remove/{{$key}}">

@@ -6,6 +6,7 @@ import './date-validation.js';
 import './order-status-update.js'
 import './unavailability.js'
 import './resdiary-functions.js'
+import './calendar-product-functions.js'
 import Alpine from 'alpinejs';
 
 window.Alpine = Alpine;

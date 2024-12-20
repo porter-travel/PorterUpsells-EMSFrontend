@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-hotel-admin-layout :hotel="$hotel">
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <div class="flex items-center justify-start">
@@ -39,22 +39,36 @@
                 <div class="py-6 text-gray-900">
                     <div class="mb-6 flex items-center justify-between">
                         <h2 class="font-extrabold open-sans text-2xl text-black leading-tight uppercase">Products</h2>
-                        <a href="/admin/hotel/{{$hotel->id}}/product/create"
-                           class="flex items-center px-8 py-2 bg-mint rounded-full">
-                            <svg class="mr-2" width="30" height="30" viewBox="0 0 30 30" fill="none"
-                                 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                                <rect width="30" height="30" fill="url(#pattern0_5476_1518)"/>
-                                <defs>
-                                    <pattern id="pattern0_5476_1518" patternContentUnits="objectBoundingBox" width="1"
-                                             height="1">
-                                        <use xlink:href="#image0_5476_1518" transform="scale(0.0111111)"/>
-                                    </pattern>
-                                    <image id="image0_5476_1518" width="90" height="90"
-                                           xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAD2klEQVR4nO2dSY9NURDHf4mhW0xb3S1B8AUMK4QItlggMQWNDYkp7VnaGVbSia9hXBA+ABHSho0NNobQupsVkubIkSK89H3p1ufcqntf/ZLa3Lz3UvV/N+fUqVvnXHAcx3Ecx3Ecx3HGzRRgJdALXASuAU+BF8Aw8E1sWK49lc9ckO+skN9wxmA+cBy4CXwGwiTtE3ADOAb00ObMAPYAd4HvCcQtslHgDrAb6KSNmCV32puM4hbZB+AsMJcaMw3oA4YUBG626MMp8alWrAGeGRC42Z4DG6gBcUy8DPwwIGqRRd/6gQ4qykLgvgEhwzjtEbCEirEhUZoWSraYFq6nImwFvhgQLfynxcXQDoxzOHNOHEqyGMMhjLJFFgfaIoWEYm/HGHFc+2pAnJBhGNmEEZZWdOILE5ggF2uL3CFpUai5PdTOsy8bECGUZHFRo7astrziC4ktxrq2bJGnAk8MBB9KtmdlF6L6lDKAPqBL7LRcK9uPE2WJPFup1Hl6DF8aCn4MSk09OxrBBbmLm5mn5EusZWcve75VCq4IDV/eyaO4bOxVCiy08EnLn505hY4PUl1ofmlwK5fIPcpFoyI0i05ZWhmOKwYVWvil6dPRHELH5hYXmn80uJJa5NhiNeJC03yjjaRuP1upfDeHFr5p+7U8pdAHDQRUhLZf+0nIRQMBFaHt1zkSct1AQEWEOk2IFkqiRWj7NUBCXmUodWqRusT6MqVzHzOWOrVoJCybJiPVv9+FHVKVWGObhTmhu7FDj0WhUw0dDexwxuLQkXIybCjf2d3ig8nJ0NM7yknvfMFCOQsWX4JTzhK8N9F4FiZhRWj7tS+l0F4mpVDoZSmF9sI/5RT+kb3VPnSQbyL8TdxW7ELzjwZHciX63m7AH5FHpV6ShXhKgGcd5G2gQY59cKHJ3xLWqXT8Q2jhUy2bHLWa0ENBISpVqXOidpIaN6I3MpY6J1oWnUlJnFII8NtfJdbUpc6JWExzS90s9FghyNBum4Uiq337W3n0G7jLQkl2CUU6ZPtuqLk9AKajzGLZmB5qaiPAIoywruKnzoQCi1nNRoyxuYYHo2zDKIdqctTPqPSEm2ZLxYeRrxaP+Gl19M+nik5866gYC4B7BsQL47SHFo70mUye3W98BflDFiPqeXKq5foTA6I2W/RpFTVjqhwqMmhA4EGpwkWfastMCfK1gsDv5aDuObQRncAu4Hbmhc6oPEjd2W5Hz49Fl2xgvypvo5isuMPyW0dytgRUnSnSz3YAOC/dQAPyKpChv14PMiTXBuQz52UXa/yuvx7EcRzHcRzHcRyHcfITiV5ZbaaGSxIAAAAASUVORK5CYII="/>
-                                </defs>
-                            </svg>
+                        <details class="relative z-10">
+                            <summary
+                                class="flex items-center px-12 py-2 bg-mint rounded-full cursor-pointer">
+                                <svg class="mr-2" width="30" height="30" viewBox="0 0 30 30" fill="none"
+                                     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                    <rect width="30" height="30" fill="url(#pattern0_5476_1518)"/>
+                                    <defs>
+                                        <pattern id="pattern0_5476_1518" patternContentUnits="objectBoundingBox"
+                                                 width="1"
+                                                 height="1">
+                                            <use xlink:href="#image0_5476_1518" transform="scale(0.0111111)"/>
+                                        </pattern>
+                                        <image id="image0_5476_1518" width="90" height="90"
+                                               xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAD2klEQVR4nO2dSY9NURDHf4mhW0xb3S1B8AUMK4QItlggMQWNDYkp7VnaGVbSia9hXBA+ABHSho0NNobQupsVkubIkSK89H3p1ufcqntf/ZLa3Lz3UvV/N+fUqVvnXHAcx3Ecx3Ecx3HGzRRgJdALXASuAU+BF8Aw8E1sWK49lc9ckO+skN9wxmA+cBy4CXwGwiTtE3ADOAb00ObMAPYAd4HvCcQtslHgDrAb6KSNmCV32puM4hbZB+AsMJcaMw3oA4YUBG626MMp8alWrAGeGRC42Z4DG6gBcUy8DPwwIGqRRd/6gQ4qykLgvgEhwzjtEbCEirEhUZoWSraYFq6nImwFvhgQLfynxcXQDoxzOHNOHEqyGMMhjLJFFgfaIoWEYm/HGHFc+2pAnJBhGNmEEZZWdOILE5ggF2uL3CFpUai5PdTOsy8bECGUZHFRo7astrziC4ktxrq2bJGnAk8MBB9KtmdlF6L6lDKAPqBL7LRcK9uPE2WJPFup1Hl6DF8aCn4MSk09OxrBBbmLm5mn5EusZWcve75VCq4IDV/eyaO4bOxVCiy08EnLn505hY4PUl1ofmlwK5fIPcpFoyI0i05ZWhmOKwYVWvil6dPRHELH5hYXmn80uJJa5NhiNeJC03yjjaRuP1upfDeHFr5p+7U8pdAHDQRUhLZf+0nIRQMBFaHt1zkSct1AQEWEOk2IFkqiRWj7NUBCXmUodWqRusT6MqVzHzOWOrVoJCybJiPVv9+FHVKVWGObhTmhu7FDj0WhUw0dDexwxuLQkXIybCjf2d3ig8nJ0NM7yknvfMFCOQsWX4JTzhK8N9F4FiZhRWj7tS+l0F4mpVDoZSmF9sI/5RT+kb3VPnSQbyL8TdxW7ELzjwZHciX63m7AH5FHpV6ShXhKgGcd5G2gQY59cKHJ3xLWqXT8Q2jhUy2bHLWa0ENBISpVqXOidpIaN6I3MpY6J1oWnUlJnFII8NtfJdbUpc6JWExzS90s9FghyNBum4Uiq337W3n0G7jLQkl2CUU6ZPtuqLk9AKajzGLZmB5qaiPAIoywruKnzoQCi1nNRoyxuYYHo2zDKIdqctTPqPSEm2ZLxYeRrxaP+Gl19M+nik5866gYC4B7BsQL47SHFo70mUye3W98BflDFiPqeXKq5foTA6I2W/RpFTVjqhwqMmhA4EGpwkWfastMCfK1gsDv5aDuObQRncAu4Hbmhc6oPEjd2W5Hz49Fl2xgvypvo5isuMPyW0dytgRUnSnSz3YAOC/dQAPyKpChv14PMiTXBuQz52UXa/yuvx7EcRzHcRzHcRyHcfITiV5ZbaaGSxIAAAAASUVORK5CYII="/>
+                                    </defs>
+                                </svg>
+                                Add a Product
+                            </summary>
+                            <div
+                                class="content absolute bg-mint w-full top-[20px] pt-12 pb-4 rounded-b-[20px] -z-10">
+                                <ul class="list-none">
+                                    <li class="pl-12 border-b border-darkGrey py-2"><a href="/admin/hotel/{{$hotel->id}}/product/create/standard">Standard Product</a></li>
+                                    <li class="pl-12 border-b border-darkGrey py-2"><a href="/admin/hotel/{{$hotel->id}}/product/create/restaurant">Restaurant
+                                            Booking</a></li>
+                                    <li class="pl-12 border-b border-darkGrey py-2"><a href="/admin/hotel/{{$hotel->id}}/product/create/calendar">Calendar
+                                            Product</a></li>
 
-                            Add a Product</a>
+                                </ul>
+                            </div>
+                        </details>
                     </div>
                     @if(count($hotel->products) > 0)
 
@@ -197,17 +211,18 @@
                             <input type="file" name="featured_image" id="featured_image">
                         </div>
                         <div>
-                        <x-primary-button class="mt-4">Update</x-primary-button>
+                            <x-primary-button class="mt-4">Update</x-primary-button>
                         </div>
                     </form>
 
-                    <form class="border-t border-[#C4C4C4] mt-4 pt-4 " method="post" action="/admin/hotel/{{$hotel->id}}/update">
+                    <form class="border-t border-[#C4C4C4] mt-4 pt-4 " method="post"
+                          action="/admin/hotel/{{$hotel->id}}/update">
 
                         @include('admin.hotel.partials.colour-scheme', ['hotel' => $hotel])
-<div class="text-right">
-                        <x-primary-button class=" mt-4">Update
-                        </x-primary-button>
-</div>
+                        <div class="text-right">
+                            <x-primary-button class=" mt-4">Update
+                            </x-primary-button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -244,4 +259,4 @@
             }, 3000);
         }
     </script>
-</x-app-layout>
+</x-hotel-admin-layout>

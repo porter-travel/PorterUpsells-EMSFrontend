@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-hotel-admin-layout :hotel="$hotel">
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Add New Product') }}
@@ -13,11 +13,12 @@
                     <form enctype="multipart/form-data" method="post" action="/admin/product/store">
                         @csrf
                         <input type="hidden" name="hotel_id" value="{{$hotel->id}}">
+                        <input type="hidden" name="type" value="{{$type}}">
 
                         @include('admin.product.partials.core-fields', ['product' => new \App\Models\Product()])
 
 
-                        @include('admin.product.partials.specifics', ['method' => 'create'])
+                        @include('admin.product.partials.specifics', ['method' => 'create', 'type' => $type])
 
 
                         <div id="variantContainer">
@@ -37,9 +38,6 @@
 
                             <div id="variations-list" class="hidden">
                             </div>
-
-
-
                         </div>
 
                         <x-primary-button class="w-full justify-center mt-4">Add Product</x-primary-button>
@@ -51,4 +49,4 @@
     </div>
 
 
-</x-app-layout>
+</x-hotel-admin-layout>
