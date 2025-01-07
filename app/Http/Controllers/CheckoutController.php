@@ -11,6 +11,7 @@ use App\Models\Hotel;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderItemMeta;
+use App\Models\Product;
 use App\Models\User;
 use App\Services\ResDiary\ResDiaryBooking;
 use Illuminate\Http\Request;
@@ -379,7 +380,7 @@ class CheckoutController extends Controller
         }
     }
 
-    private function createCalendarBooking($order, $session)
+    public function createCalendarBooking($order, $session)
     {
         $hotel_id = $order->hotel_id;
         if (is_numeric($hotel_id)) {
@@ -403,8 +404,38 @@ class CheckoutController extends Controller
                 $calendarBooking->status = $session->payment_status == 'paid' ? 'confirmed' : 'pending';
                 $calendarBooking->hotel_id = $hotel->id;
                 $calendarBooking->qty = $item->quantity;
+                $calendarBooking->slot = $this->getAvailableSlotsForCalendarProduct($hotel->id, $item->product_id, $item->date, $calendarBooking->start_time, $calendarBooking->end_time);
+//                $calendarBooking->slot
                 $calendarBooking->save();
             }
         }
     }
+
+    public function getAvailableSlotsForCalendarProduct($hotel_id, $product_id, $date, $start_time, $end_time)
+    {
+        $product = Product::find($product_id);
+        $specifics = $product->specifics;
+        $concurrent_availability = (int) $specifics->where('name', 'concurrent_availability')->first()->value;
+
+        $bookings = CalendarBooking::where('hotel_id', $hotel_id)
+            ->where('product_id', $product_id)
+            ->where('date', $date)
+            ->where('start_time', '<=', $start_time)
+            ->where('end_time', '>=', $end_time)
+            ->get();
+
+        // Extract the slots from the bookings
+        $usedSlots = $bookings->pluck('slot')->toArray();
+
+        // Find the lowest available slot
+        for ($slot = 1; $slot <= $concurrent_availability; $slot++) {
+            if (!in_array($slot, $usedSlots)) {
+                return $slot; // Return the first available slot
+            }
+        }
+
+        // If no slots are available, return null or handle as needed
+        return null;
+    }
+
 }

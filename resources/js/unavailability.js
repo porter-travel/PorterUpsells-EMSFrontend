@@ -6,7 +6,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const errorContainer = document.createElement('div');
     errorContainer.style.color = 'red';
     errorContainer.style.marginTop = '10px';
-    form.appendChild(errorContainer);
+    if(!form)
+        return;
 
     form.addEventListener('submit', function (event) {
         event.preventDefault(); // Prevent the form from submitting normally

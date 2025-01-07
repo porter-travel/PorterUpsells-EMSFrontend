@@ -73,10 +73,14 @@ Route::middleware(['auth', 'verified'])->group(function(){
     Route::post('admin/hotel/{id}/store-booking', [\App\Http\Controllers\BookingController::class, 'store'] )->name('booking.store');
     Route::get('admin/hotel/{id}/list-bookings', [\App\Http\Controllers\BookingController::class, 'list'] )->name('bookings.list');
     Route::post('admin/booking/{booking_id}/update', [\App\Http\Controllers\BookingController::class, 'updateBooking'] )->name('booking.update');
+    Route::post('admin/hotel/{hotel_id}/fetch-bookings-by-date', [\App\Http\Controllers\BookingController::class, 'fetchBookingsByDate'] )->name('booking.fetch-by-date');
+
 
     Route::get('admin/hotel/{id}/calendar', [\App\Http\Controllers\CalendarBookingController::class, 'list'] )->name('calendar.list');
     Route::get('admin/hotel/{id}/calendar/product-grid', [\App\Http\Controllers\CalendarBookingController::class, 'listProductGrid'] )->name('calendar.list-product-grid');
     Route::get('admin/hotel/{hotel_id}/calendar/{product_id}', [\App\Http\Controllers\CalendarBookingController::class, 'listBookingsForProduct'] )->name('calendar.list-bookings-for-product');
+    Route::post('admin/hotel/{hotel_id}/calendar/{product_id}/store-booking', [\App\Http\Controllers\CalendarBookingController::class, 'storeBooking'] )->name('calendar.store-booking');
+    Route::post('admin/calendar/{product_id}/get-future-availability-on-same-day', ['\App\Http\Controllers\CalendarBookingController', 'getFutureAvailabilityOnSameDayForProduct'])->name('calendar.get-future-availability-on-same-day');
 
     Route::post('/admin/hotel/{id}/email/send-customer-email', [\App\Http\Controllers\CustomerEmailController::class, 'send'] )->name('email.send');
 

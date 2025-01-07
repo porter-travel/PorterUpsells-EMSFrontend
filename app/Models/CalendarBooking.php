@@ -9,6 +9,23 @@ class CalendarBooking extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'order_id',
+        'product_id',
+        'variation_id',
+        'name',
+        'email',
+        'mobile',
+        'room_number',
+        'date',
+        'start_time',
+        'end_time',
+        'status',
+        'hotel_id',
+        'qty',
+        'slot',
+    ];
+
     public function product()
     {
         return $this->hasOne(Product::class);
