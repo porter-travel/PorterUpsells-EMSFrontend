@@ -9,6 +9,7 @@
         "aws/aws-sdk-php": "^3.304",
         "cviebrock/eloquent-sluggable": "^11.0",
         "laravel/framework": "^11.0",
+        "laravel/socialite": "^5.16",
         "laravel/tinker": "^2.9",
         "league/flysystem-aws-s3-v3": "^3.0",
         "mailersend/laravel-driver": "^2.4",
@@ -19,6 +20,7 @@
     "require-dev": {
         "fakerphp/faker": "^1.23",
         "laravel/breeze": "^2.0",
+        "laravel/dusk": "^8.2",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.26",
         "mockery/mockery": "^1.6",
@@ -60,7 +62,8 @@
         "test": [
             "vendor/phpunit/phpunit/phpunit"
         ],
-        "start": "php -S 0.0.0.0:8081 -t public"
+        "start": "php -S 0.0.0.0:8081 -t public",
+        "reset-dev": "php artisan migrate:fresh --seed"
     },
     "extra": {
         "laravel": {

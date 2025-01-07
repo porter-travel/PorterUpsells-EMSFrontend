@@ -13,7 +13,12 @@
 
             <p class="md:text-4xl text-xl font-bold open-sans hotel-text-color">Your Cart</p>
 
+
+
             <div></div>
+        </div>
+        <div class="bg-pink w-[200px] mx-auto rounded mt-4 text-center">
+            <p class="inline-block ">Cart Expires in <span id="cartCountdown" data-expiry="{{isset($data['cart']['expiry']) ? $data['cart']['expiry'] : ''}}"></span></p>
         </div>
 
         <div class=" flex flex-wrap rounded-3xl mx-auto py-4">
@@ -53,6 +58,9 @@
                                                 @endif
 
                                                 <p>Date: {{ \Carbon\Carbon::parse($item['date'])->format('jS M') }}</p>
+                                                @if($item['arrival_time'])
+                                                    <p>Time: {{$item['arrival_time']}}</p>
+                                                @endif
                                                 <p class=" md:hidden">
                                                     <x-money-display :amount="$item['price']"
                                                                                        :currency="$hotel->user->currency"></x-money-display>
@@ -67,7 +75,7 @@
                                     </div>
                                     <div class="md:w-[20%]">
                                         <div class="w-[100px] text-black">
-                                            <x-number-input :key="$key" :quantity="$item['quantity']"/>
+                                            <x-number-input :key="$key" :max="$item['max_qty']" :quantity="$item['quantity']"/>
                                         </div>
                                         <a class="remove-from-cart ml-4 absolute bottom-0 md:hidden" data-key="{{$key}}"
                                            href="/cart/remove/{{$key}}">

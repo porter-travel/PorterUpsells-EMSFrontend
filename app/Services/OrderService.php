@@ -28,18 +28,20 @@ class OrderService
 
     public function generateOrderArrayForEmailAndAdminView($hotel_id, $startDate, $endDate){
         $orders = Order::where('hotel_id', $hotel_id)
-            ->where('status', '!=', 'pending') // Exclude orders with status "pending"
+
+            ->where('payment_status', '!=', 'pending') // Exclude pending payment orders
             ->whereHas('items', function ($query) use ($startDate, $endDate) {
                 $query->whereDate('date', '>=', $startDate->toDateString())
                     ->whereDate('date', '<=', $endDate->toDateString());
             })
             ->with(['items' => function ($query) {
                 $query->orderBy('date', 'asc');
-            }, 'items.product', 'items.product.specifics', 'booking'])
+            }, 'items.product', 'items.product.specifics', 'booking','items.meta'])
             ->get()
             ->sortBy(function ($order) {
                 return $order->items->min('date');
             });
+
 
         // Prepare the result array
         $output = [];
@@ -47,10 +49,10 @@ class OrderService
 
             $orderArr = [
                 'id' => $order['id'],
-                'room' => $order['booking']['room'],
-                'name' => $order['booking']['name'],
-                'arrival_date' => $order['booking']['arrival_date'],
-                'booking_ref' => $order['booking']['booking_ref'],
+                'room' => $order['booking'] ?  $order['booking']['room'] : '',
+                'name' => $order['booking'] ? $order['booking']['name'] : '',
+                'arrival_date' => $order['booking'] ? $order['booking']['arrival_date'] : '',
+                'booking_ref' => $order['booking'] ? $order['booking']['booking_ref'] : '',
                 'items' => [],
                 'status' => $order['status'],
             ];
@@ -62,6 +64,7 @@ class OrderService
                     'image' => $item['product']['image'],
                     'date' => $item['date'],
                     'product_type' => $item['product_type'],
+                    'meta' => $item['meta']->toArray()
                 ];
 
             }

@@ -1,6 +1,7 @@
 <?php
 
 namespace Database\Factories;
+use App\Models\User; // Ensure this matches your actual User model namespace
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;

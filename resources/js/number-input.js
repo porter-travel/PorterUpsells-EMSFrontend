@@ -20,6 +20,9 @@ numberInputs.forEach(input => {
 
     // Add click event listener to the plus button
     plusButton.addEventListener('click', () => {
+        if(parseInt(inputField.value) >= parseInt(inputField.max)) {
+            return;
+        }
         // Increment the value of the input field
         inputField.value = parseInt(inputField.value) + 1;
         triggerChangeEvent(inputField);
@@ -35,5 +38,15 @@ numberInputs.forEach(input => {
             triggerChangeEvent(inputField);
 
         }
+    });
+
+    inputField.addEventListener('blur', () => {
+        if (parseInt(inputField.value) > parseInt(inputField.max)) {
+            inputField.value = parseInt(inputField.max);
+        }
+        if (parseInt(inputField.value) < parseInt(inputField.min)) {
+            inputField.value = parseInt(inputField.min);
+        }
+        triggerChangeEvent(inputField);
     });
 });

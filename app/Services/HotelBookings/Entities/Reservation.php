@@ -24,6 +24,9 @@ class Reservation
     /** @var string $roomNumber */
     var $roomNumber;
 
+    /** @var string $checkedInString */
+    var $checkedInString;
+    
     function __construct(HotelDates $HotelDates)
     {
         $this->HotelDates = $HotelDates;

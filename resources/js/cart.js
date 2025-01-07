@@ -31,9 +31,14 @@ if (form) {
         axios.post('/cart/add', {formObj})
             .then(function (response) {
                 console.log(response.data);
-                document.getElementById('cartCount').innerText = response.data.cart.cartCount;
-                document.getElementById('success').classList.remove('hidden');
-                document.getElementById('success').classList.add('block')
+                if(response.data.error) {
+                    alert(response.data.message);
+                }
+                else {
+                    document.getElementById('cartCount').innerText = response.data.cart.cartCount;
+                    document.getElementById('success').classList.remove('hidden');
+                    document.getElementById('success').classList.add('block')
+                }
             })
             .catch(function (error) {
                 console.log(error);
@@ -80,18 +85,19 @@ if (cartProductQuantity) {
 
             // Extract the href attribute
             const url = '/cart/update/' + this.getAttribute('name');
-
-            // Make a POST request using Axios
-            axios.post(url, {quantity: this.value})
-                .then(response => {
-                    // Handle successful response if needed
-                    console.log(response);
-                    updateTotals(response.data[0]);
-                })
-                .catch(error => {
-                    // Handle error if needed
-                    console.error('Error making POST request:', error);
-                });
+            setTimeout(() => {
+                // Make a POST request using Axios
+                axios.post(url, {quantity: this.value})
+                    .then(response => {
+                        // Handle successful response if needed
+                        console.log(response);
+                        updateTotals(response.data[0]);
+                    })
+                    .catch(error => {
+                        // Handle error if needed
+                        console.error('Error making POST request:', error);
+                    });
+            }, 100);
         });
     });
 }
@@ -121,3 +127,40 @@ function updateTotals(data) {
     }
 }
 
+// Get the expiry time from the data attribute
+const countdownElement = document.getElementById('cartCountdown');
+if(countdownElement) {
+    const targetTimestamp = parseInt(countdownElement.dataset.expiry); // Assuming it's in Unix timestamp format (seconds)
+
+// Check if the timestamp is valid
+    if (!isNaN(targetTimestamp)) {
+        // Convert Unix timestamp to milliseconds
+        const targetTime = targetTimestamp * 1000;
+
+        function updateCountdown() {
+            const currentTime = new Date().getTime(); // Current time in milliseconds
+            const timeLeft = targetTime - currentTime; // Time remaining in milliseconds
+
+            if (timeLeft <= 0) {
+                clearInterval(interval); // Stop the countdown
+                countdownElement.textContent = "Expired";
+                return;
+            }
+
+            // Calculate days, hours, minutes, and seconds
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+            // Display the countdown in the span
+            countdownElement.textContent = `${minutes}m ${seconds}s`;
+        }
+
+        // Update every second
+        const interval = setInterval(updateCountdown, 1000);
+        updateCountdown(); // Initial call to display immediately
+    } else {
+        countdownElement.textContent = "Invalid expiry time";
+    }
+
+
+}

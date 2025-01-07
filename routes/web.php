@@ -40,6 +40,10 @@ Route::get('/dashboard', [\App\Http\Controllers\AdminController::class, 'dashboa
 Route::get('/fulfilment/{key}', [\App\Http\Controllers\FulfilmentController::class, 'fulfilment'])->name('fulfilment');
 Route::post('/fulfil-order/', [\App\Http\Controllers\FulfilmentController::class, 'fulfilOrder'])->name('fulfil-order');
 
+Route::post('/resdiary/get-availability', [\App\Http\Controllers\ResDiaryController::class, 'getAvailability'])->name('resdiary.get-availability');
+
+Route::post('/get-times-available-for-calendar-products', [\App\Http\Controllers\ProductController::class, 'getTimesAvailableForCalendarProducts'])->name('get-times-available-for-calendar-products');
+
 
 Route::get('/view-customer-email', function(){
     $hotel = Hotel::find(1);
@@ -55,7 +59,7 @@ Route::middleware(['auth', 'verified'])->group(function(){
     Route::get('admin/hotel/{id}/edit', [\App\Http\Controllers\HotelController::class, 'edit'] )->name('hotel.edit');
     Route::post('admin/hotel/{id}/update', [\App\Http\Controllers\HotelController::class, 'update'] )->name('hotel.update');
 
-    Route::get('admin/hotel/{id}/product/create', [\App\Http\Controllers\ProductController::class, 'create'] )->name('product.create');
+    Route::get('admin/hotel/{id}/product/create/{type?}', [\App\Http\Controllers\ProductController::class, 'create'] )->name('product.create');
     Route::get('admin/hotel/{hotel_id}/product/{product_id}/edit', [\App\Http\Controllers\ProductController::class, 'edit'] )->name('product.edit');
 
     Route::get('admin/hotel/{hotel_id}/orders', [\App\Http\Controllers\OrderController::class, 'listOrdersByHotel'] )->name('orders.list');
@@ -69,6 +73,14 @@ Route::middleware(['auth', 'verified'])->group(function(){
     Route::post('admin/hotel/{id}/store-booking', [\App\Http\Controllers\BookingController::class, 'store'] )->name('booking.store');
     Route::get('admin/hotel/{id}/list-bookings', [\App\Http\Controllers\BookingController::class, 'list'] )->name('bookings.list');
     Route::post('admin/booking/{booking_id}/update', [\App\Http\Controllers\BookingController::class, 'updateBooking'] )->name('booking.update');
+    Route::post('admin/hotel/{hotel_id}/fetch-bookings-by-date', [\App\Http\Controllers\BookingController::class, 'fetchBookingsByDate'] )->name('booking.fetch-by-date');
+
+
+    Route::get('admin/hotel/{id}/calendar', [\App\Http\Controllers\CalendarBookingController::class, 'list'] )->name('calendar.list');
+    Route::get('admin/hotel/{id}/calendar/product-grid', [\App\Http\Controllers\CalendarBookingController::class, 'listProductGrid'] )->name('calendar.list-product-grid');
+    Route::get('admin/hotel/{hotel_id}/calendar/{product_id}', [\App\Http\Controllers\CalendarBookingController::class, 'listBookingsForProduct'] )->name('calendar.list-bookings-for-product');
+    Route::post('admin/hotel/{hotel_id}/calendar/{product_id}/store-booking', [\App\Http\Controllers\CalendarBookingController::class, 'storeBooking'] )->name('calendar.store-booking');
+    Route::post('admin/calendar/{product_id}/get-future-availability-on-same-day', ['\App\Http\Controllers\CalendarBookingController', 'getFutureAvailabilityOnSameDayForProduct'])->name('calendar.get-future-availability-on-same-day');
 
     Route::post('/admin/hotel/{id}/email/send-customer-email', [\App\Http\Controllers\CustomerEmailController::class, 'send'] )->name('email.send');
 
@@ -87,6 +99,10 @@ Route::middleware(['auth', 'verified'])->group(function(){
 
     Route::post('/admin/product/{id}/unavailability/store', [\App\Http\Controllers\UnavailabilityController::class, 'store'])->name('unavailability.store');
     Route::get('/admin/unavailability/{id}/delete', [\App\Http\Controllers\UnavailabilityController::class, 'delete'])->name('unavailability.delete');
+
+    Route::get('/resdiary/install', [\App\Http\Controllers\ResDiaryController::class, 'install'])->name('resdiary.install');
+    Route::get('/resdiary/callback', [\App\Http\Controllers\ResDiaryController::class, 'callback'])->name('resdiary.callback');
+    Route::post('/resdiary/set-hotel', [\App\Http\Controllers\ResDiaryController::class, 'setHotel'])->name('resdiary.set-hotel');
 
 });
 

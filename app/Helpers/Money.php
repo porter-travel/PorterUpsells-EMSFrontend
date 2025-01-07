@@ -24,6 +24,10 @@ class Money{
             'eur' => '€'
         ];
 
+        if(!array_key_exists($code, $symbols)){
+            return '';
+        }
+
         return $symbols[$code];
     }
 

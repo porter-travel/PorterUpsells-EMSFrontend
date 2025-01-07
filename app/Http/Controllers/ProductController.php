@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Intervals;
+use App\Models\CalendarBooking;
 use App\Models\Hotel;
 use App\Models\Product;
 use App\Models\ProductSpecific;
@@ -13,8 +15,6 @@ class ProductController extends Controller
 {
     public function show($hotel_id, $item_id, Request $request)
     {
-
-//        var_dump($request->session()->all());
 
         if (is_numeric($hotel_id)) {
             $hotel = Hotel::find($hotel_id);
@@ -29,7 +29,6 @@ class ProductController extends Controller
             return [$specific->name => $this->parseSpecificsValue($specific->value)];
         })->toArray();
 
-//        dd($specifics);
 
         $have_details = true;
 
@@ -37,27 +36,18 @@ class ProductController extends Controller
             $specifics['on_arrival'] = true;
         }
 
-//        var_dump($have_details);
-
-//        if(!isset($specifics['on_arrival']) || !isset($specifics['on_departure']) || !isset($specifics['during_stay'])){
-//            $have_details = false;
-//        }
-
-//        var_dump($have_details);
-
         if (isset($specifics['on_arrival']) && $specifics['on_arrival'] && !$request->session()->get('arrival_date')) {
             $have_details = false;
         }
-
-//        var_dump($have_details);
 
         if (isset($specifics['on_departure']) && $specifics['on_departure'] && !$request->session()->get('departure_date')) {
             $have_details = false;
         }
 
-        if(isset($specifics['during_stay']) && $specifics['during_stay'] && !$request->session()->get('arrival_date') && !$request->session()->get('departure_date')){
+        if (isset($specifics['during_stay']) && $specifics['during_stay'] && !$request->session()->get('arrival_date') && !$request->session()->get('departure_date')) {
             $have_details = false;
         }
+
 
         if (isset($specifics['on_departure']) && $specifics['on_departure'] && isset($specifics['on_arrival']) && $specifics['on_arrival']) {
             $date_picker_title = 'To add this product, first let us know the dates of your stay';
@@ -66,14 +56,11 @@ class ProductController extends Controller
         } elseif (isset($specifics['on_arrival']) && $specifics['on_arrival']) {
             $date_picker_title = 'To add this product, let us know the date of your arrival';
         } elseif (isset($specifics['on_departure']) && $specifics['on_departure']) {
+//            dd('here');
             $date_picker_title = 'To add this product, let us know the date of your departure';
-        }  else {
+        } else {
             $date_picker_title = 'To add this product, let us know the dates of your stay';
         }
-
-//        var_dump($specifics);
-//        var_dump($request->session()->all());
-//        var_dump($have_details);
 
         $cart = session()->get('cart');
 
@@ -104,14 +91,19 @@ class ProductController extends Controller
             'dateArray' => $dateArray,
             'specifics' => $specifics,
             'have_details' => $have_details,
-            'date_picker_title' => $date_picker_title
+            'date_picker_title' => $date_picker_title,
+            'type' => $product->type
         ]);
     }
 
-    public function create($hotel_id)
+    public function create($hotel_id, $type = null)
     {
         $hotel = Hotel::find($hotel_id);
-        return view('admin.product.create', ['hotel' => $hotel]);
+
+        if ($type == null) {
+            $type = 'standard';
+        }
+        return view('admin.product.create', ['hotel' => $hotel, 'type' => $type]);
     }
 
     public function edit($hotel_id, $product_id)
@@ -129,7 +121,7 @@ class ProductController extends Controller
 
 
 //        dd($product);
-        return view('admin.product.edit', ['hotel' => $hotel, 'product' => $product]);
+        return view('admin.product.edit', ['hotel' => $hotel, 'product' => $product, 'type' => $product->type]);
     }
 
     private function parseSpecificsValue($value)
@@ -161,6 +153,7 @@ class ProductController extends Controller
         $product->price = $request->price;
         $product->hotel_id = $request->hotel_id;
         $product->image = $url;
+        $product->type = $request->type;
         $product->save();
 
         if (isset($request->variants)) {
@@ -189,10 +182,12 @@ class ProductController extends Controller
 
         if (isset($request->specifics)) {
             foreach ($request->specifics as $name => $specific) {
-                $product->specifics()->create([
-                    'name' => $name,
-                    'value' => $specific
-                ]);
+                if ($specific != null) {
+                    $product->specifics()->create([
+                        'name' => $name,
+                        'value' => $specific
+                    ]);
+                }
             }
         }
 
@@ -286,18 +281,74 @@ class ProductController extends Controller
             foreach ($request->specifics as $name => $specific) {
                 $ps = ProductSpecific::where('product_id', $product->id)->where('name', $name)->first();
                 if ($ps) {
-                    $ps->value = $specific;
+                    $ps->value = $specific ?: 0;
                     $ps->save();
                 } else {
                     $product->specifics()->create([
                         'name' => $name,
-                        'value' => $specific
+                        'value' => $specific ?: 0
                     ]);
                 }
             }
         }
 
         return redirect()->route('product.edit', ['hotel_id' => $request->hotel_id, 'product_id' => $request->product_id]);
+
+    }
+
+    public function getTimesAvailableForCalendarProducts(Request $request)
+    {
+        $product_id = $request->product_id;
+        $day = strtolower($request->day);
+        $date = $request->date;
+        $product = Product::find($product_id);
+        $concurrentAvailability = $product->specifics->where('name', "concurrent_availability")->first()->value;
+
+        $existingBookings = CalendarBooking::where('product_id', $product_id)->where('date', $date)->get();
+
+
+        $product = Product::find($product_id);
+        $interval = $product->specifics->where('name', "time_intervals")->first()->value;
+        $startTime = $product->specifics->where('name', "start_time_{$day}")->first()->value;
+        $endTime = $product->specifics->where('name', "end_time_{$day}")->first()->value;
+
+        $start = strtotime($startTime);
+        $end = strtotime($endTime);
+        $availableTimes = [];
+
+        $step = Intervals::wordsToMinutes($interval);
+
+        // Generate times
+        for ($time = $start; $time + $step <= $end; $time += $step) {
+            $availableTimes[] = ['qty' => (int)$concurrentAvailability, 'time' => date('H:i', $time)];
+        }
+
+        $bookings = [];
+        if (count($existingBookings) > 0) {
+            foreach ($existingBookings as $booking) {
+//                dd($booking->start_time);
+                $bookings[] = date('H:i', strtotime($booking->start_time));
+            }
+        }
+
+        foreach ($bookings as $booking){
+//            dd($booking);
+            foreach ($availableTimes as $key => $time){
+                if ($time['time'] == $booking){
+                    $availableTimes[$key]['qty'] = $availableTimes[$key]['qty'] - 1;
+                }
+            }
+        }
+
+        foreach ($availableTimes as $key => $time){
+            if ($time['qty'] == 0){
+                unset($availableTimes[$key]);
+            }
+        }
+        //Reset the keys on the $availableTimes Array
+        $availableTimes = array_values($availableTimes);
+
+        return response($availableTimes);
 
     }
 
@@ -321,7 +372,7 @@ class ProductController extends Controller
             $noticeDay = null;
         }
 
-        if($departureDate && ($noticeDay > $departureDate)){
+        if ($departureDate && ($noticeDay > $departureDate)) {
             return ['error' => 'You must book this product at least ' . $noticePeriod . ' days before your stay'];
         }
 
@@ -358,7 +409,7 @@ class ProductController extends Controller
 
 //        dd($unavailabilities->toArray());
 
-        $unavailable_ranges = array_map(function($range) {
+        $unavailable_ranges = array_map(function ($range) {
             return [
                 'from' => new \DateTime($range['start_at']),
                 'to' => new \DateTime($range['end_at']),
@@ -406,7 +457,7 @@ class ProductController extends Controller
                 $status = 'unavailable';
             }
 
-            if(isset($specifics['during_stay']) && !$specifics['during_stay'] && $key != 0 && $key != count((array)$period) - 1){
+            if (isset($specifics['during_stay']) && !$specifics['during_stay'] && $key != 0 && $key != count((array)$period) - 1) {
                 $status = 'unavailable';
             }
 
@@ -427,7 +478,8 @@ class ProductController extends Controller
         return $dates;
     }
 
-    function checkDayOfWeek($date, $specifics) {
+    function checkDayOfWeek($date, $specifics)
+    {
         // Check if any day keys are present in the specifics array
         $days = [
             'available_monday',

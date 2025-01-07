@@ -12,6 +12,16 @@ class Hotel extends Model
     use HasFactory;
     use Sluggable, SluggableScopeHelpers;
 
+    protected $fillable = [
+        'name',
+        'address',
+        'logo',
+        'user_id',
+        'slug',
+        'featured_image',
+
+    ];
+
     /**
      * Return the sluggable configuration array for this model.
      *
@@ -54,5 +64,20 @@ class Hotel extends Model
         return $this->products()->where('status', 'active')->get();
     }
 
+    public function connections()
+    {
+        return $this->hasMany(Connection::class);
+    }
+
+    public function resdiaryOrders()
+    {
+        return $this->hasMany(OrdersResdiary::class);
+    }
+
+    public function calendarBookings()
+    {
+        return $this->hasMany(CalendarBooking::class);
+
+    }
 
 }

@@ -29,5 +29,11 @@ class Product extends Model
         return $this->hasMany(Unavailability::class);
     }
 
+    public function calendarBookings()
+    {
+        return $this->belongsToMany(CalendarBooking::class);
+
+    }
+
 
 }

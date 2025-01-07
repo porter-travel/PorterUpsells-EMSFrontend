@@ -22,5 +22,13 @@ Schedule::command('emails:send-scheduled')
     ->description('Send scheduled emails.');
 
 Schedule::command('bookings:fetch')
-    ->dailyAt('20:00')
+    ->hourly()
     ->description('Check for new bookings.');
+
+Schedule::command('bookings:refresh')
+    ->everyTenMinutes()
+    ->description('Refresh bookings to updated checkin.');
+
+Schedule::command('resdiary:refresh-tokens')
+    ->everyThirtyMinutes()
+    ->description('Refresh ResDiary tokens.');

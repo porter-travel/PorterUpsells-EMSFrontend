@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\ConfigTest;
+use App\Models\Connection;
 use App\Models\Hotel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -39,11 +40,11 @@ class HotelController extends Controller
                 'email_address' => $email_address,
             ]);
 
+
             // Call the createSession method from AnotherController
             return app(WelcomeController::class)->createSession($newRequest);
         }
 
-//        dd($hotel);
         return redirect()->route('hotel.dashboard', ['id' => $hotel->slug]);
     }
 
@@ -51,13 +52,6 @@ class HotelController extends Controller
 
     function dashboard(Request $request, $id)
     {
-
-//        Mail::to('alex@gluestudio.co.uk')->send(new ConfigTest(json_encode([])));
-
-//        var_dump($request->session()->all());
-//        $data['name'] = $request->session()->get('name');
-//        $data['booking_ref'] = $request->session()->get('booking_ref');
-//        $data['arrival_date'] = $request->session()->get('arrival_date');
         $data = $request->session()->all();
 
         $cart = session()->get('cart');
@@ -68,8 +62,8 @@ class HotelController extends Controller
             $hotel = Hotel::where('slug', $id)->first();
         }
 
-        $products = $hotel->activeProducts();
 
+        $products = $hotel->activeProducts();
 //        $data['days_until_arrival'] = (strtotime($data['arrival_date']) - strtotime(date('Y-m-d'))) / (60 * 60 * 24);
 
         return view('hotel.dashboard', ['data' => $data, 'hotel' => $hotel, 'products' => $products, 'cart' => $cart])->with('id', $id);
@@ -101,7 +95,6 @@ class HotelController extends Controller
             $featuredImageUrl = Storage::disk('s3')->url($featuredImageFilePath);
             $hotel->featured_image = $featuredImageUrl;
         }
-
         $hotel->save();
         return redirect()->route('hotel.edit', ['id' => $hotel->id]);
     }
@@ -109,14 +102,22 @@ class HotelController extends Controller
     public function edit(Request $request, $id)
     {
         $hotel = \App\Models\Hotel::find($id);
+        $resdiary_microsite_name = Connection::where('hotel_id', $hotel->id)->where('key', 'resdiary_microsite_name')->first();
+        if(!$resdiary_microsite_name){
+            $resdiary_microsite_name = '';
+        } else {
+            $resdiary_microsite_name = $resdiary_microsite_name->value;
+        }
+
         if ($hotel->user_id != auth()->user()->id && auth()->user()->role != 'superadmin'){
             return redirect()->route('dashboard');
         }
-        return view('admin.hotel.edit', ['hotel' => $hotel]);
+        return view('admin.hotel.edit', ['hotel' => $hotel, 'resdiary_microsite_name' => $resdiary_microsite_name]);
     }
 
     public function update(Request $request, $id)
     {
+//        dd($request);
         $hotel = \App\Models\Hotel::find($id);
 
         if ($request->name) {
@@ -133,7 +134,16 @@ class HotelController extends Controller
 
         if ($request->id_for_integration) {
             $hotel->id_for_integration = $request->id_for_integration;
+        } else {
+            $hotel->id_for_integration = null;
         }
+
+        if($request->integration_name){
+            $hotel->integration_name = $request->integration_name;
+        } else {
+            $hotel->integration_name = null;
+        }
+
 
         if ($request->page_background_color) {
             $hotel->page_background_color = $request->page_background_color;
@@ -176,6 +186,18 @@ class HotelController extends Controller
         }
 
         $hotel->save();
+
+        if ($request->resdiary_microsite_name) {
+            Connection::updateOrCreate(
+                [
+                    'hotel_id' => $hotel->id,
+                    'key' => 'resdiary_microsite_name'
+                ],
+                [
+                    'value' => $request->resdiary_microsite_name
+                ]
+            );
+        }
         return redirect()->route('hotel.edit', ['id' => $hotel->id]);
     }
 }
