@@ -28,6 +28,7 @@ class OrderService
 
     public function generateOrderArrayForEmailAndAdminView($hotel_id, $startDate, $endDate){
         $orders = Order::where('hotel_id', $hotel_id)
+
             ->where('payment_status', '!=', 'pending') // Exclude pending payment orders
             ->whereHas('items', function ($query) use ($startDate, $endDate) {
                 $query->whereDate('date', '>=', $startDate->toDateString())
