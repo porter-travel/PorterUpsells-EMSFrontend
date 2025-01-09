@@ -1,6 +1,13 @@
 <?php
 
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\FulfilmentController;
+use App\Http\Controllers\HotelController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ResDiaryController;
 use App\Http\Controllers\WelcomeController;
 use App\Models\Hotel;
 use Illuminate\Support\Facades\Route;
@@ -9,7 +16,17 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/hotel/{id}/welcome', [\App\Http\Controllers\HotelController::class, 'welcome'] )->name('hotel.welcome');
+Route::get('/about', function () {
+    return view('about');
+});
+
+Route::get('/contact', function () {
+    return view('contact');
+});
+
+Route::post('/submit-contact-form',[WelcomeController::class, 'submit_form'] )->name('welcome.submit-form');
+
+Route::get('/hotel/{id}/welcome', [HotelController::class, 'welcome'] )->name('hotel.welcome');
 
 Route::post('/createSession', [WelcomeController::class, 'createSession']);
 
@@ -19,30 +36,30 @@ Route::get('/hotel/{id}/dashboard', function($id){
 
 Route::post('/set-user-stay-dates', [WelcomeController::class, 'setUserStayDates']);
 
-Route::get('/hotel/{id}/', [\App\Http\Controllers\HotelController::class, 'dashboard'] )->name('hotel.dashboard');
+Route::get('/hotel/{id}/', [HotelController::class, 'dashboard'] )->name('hotel.dashboard');
 
-Route::get('/hotel/{hotel_id}/item/{item_id}', [\App\Http\Controllers\ProductController::class, 'show'] )->name('hotel.item');
+Route::get('/hotel/{hotel_id}/item/{item_id}', [ProductController::class, 'show'] )->name('hotel.item');
 
-Route::get('/hotel/{hotel_id}/cart', [\App\Http\Controllers\CartController::class, 'show'] )->name('cart.show');
+Route::get('/hotel/{hotel_id}/cart', [CartController::class, 'show'] )->name('cart.show');
 
-Route::post('/cart/add', [\App\Http\Controllers\CartController::class, 'addToCart'] )->name('cart.add');
-Route::post('/cart/remove/{id}', [\App\Http\Controllers\CartController::class, 'removeFromCart'] )->name('cart.remove');
-Route::post('/cart/update/{id}', [\App\Http\Controllers\CartController::class, 'updateCartQty'] )->name('cart.update');
+Route::post('/cart/add', [CartController::class, 'addToCart'] )->name('cart.add');
+Route::post('/cart/remove/{id}', [CartController::class, 'removeFromCart'] )->name('cart.remove');
+Route::post('/cart/update/{id}', [CartController::class, 'updateCartQty'] )->name('cart.update');
 
-Route::get('/checkout/initiate/{hotel_id}', [\App\Http\Controllers\CheckoutController::class, 'initiateCheckout'] )->name('checkout.initiate');
-Route::get('/checkout/complete', [\App\Http\Controllers\CheckoutController::class, 'checkoutComplete'] )->name('checkout.complete');
-Route::get('/checkout/cancelled', [\App\Http\Controllers\CheckoutController::class, 'checkoutCancelled'] )->name('checkout.cancelled');
+Route::get('/checkout/initiate/{hotel_id}', [CheckoutController::class, 'initiateCheckout'] )->name('checkout.initiate');
+Route::get('/checkout/complete', [CheckoutController::class, 'checkoutComplete'] )->name('checkout.complete');
+Route::get('/checkout/cancelled', [CheckoutController::class, 'checkoutCancelled'] )->name('checkout.cancelled');
 
-Route::post('/checkout/stripe/checkoutSessionWebhook', [\App\Http\Controllers\CheckoutController::class, 'checkoutSessionWebhook'] )->name('checkout.webhook');
+Route::post('/checkout/stripe/checkoutSessionWebhook', [CheckoutController::class, 'checkoutSessionWebhook'] )->name('checkout.webhook');
 
-Route::get('/dashboard', [\App\Http\Controllers\AdminController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [AdminController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/fulfilment/{key}', [\App\Http\Controllers\FulfilmentController::class, 'fulfilment'])->name('fulfilment');
-Route::post('/fulfil-order/', [\App\Http\Controllers\FulfilmentController::class, 'fulfilOrder'])->name('fulfil-order');
+Route::get('/fulfilment/{key}', [FulfilmentController::class, 'fulfilment'])->name('fulfilment');
+Route::post('/fulfil-order/', [FulfilmentController::class, 'fulfilOrder'])->name('fulfil-order');
 
-Route::post('/resdiary/get-availability', [\App\Http\Controllers\ResDiaryController::class, 'getAvailability'])->name('resdiary.get-availability');
+Route::post('/resdiary/get-availability', [ResDiaryController::class, 'getAvailability'])->name('resdiary.get-availability');
 
-Route::post('/get-times-available-for-calendar-products', [\App\Http\Controllers\ProductController::class, 'getTimesAvailableForCalendarProducts'])->name('get-times-available-for-calendar-products');
+Route::post('/get-times-available-for-calendar-products', [ProductController::class, 'getTimesAvailableForCalendarProducts'])->name('get-times-available-for-calendar-products');
 
 
 Route::get('/view-customer-email', function(){
@@ -51,23 +68,23 @@ Route::get('/view-customer-email', function(){
     return view('email.customer-email', ['hotel' => $hotel]);
 });
 Route::middleware(['auth', 'verified'])->group(function(){
-    Route::get('/dashboard', [\App\Http\Controllers\AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 
-    Route::post('admin/hotel/create', [\App\Http\Controllers\HotelController::class, 'store'] )->name('hotel.store');
-    Route::get('admin/hotel/create', [\App\Http\Controllers\HotelController::class, 'create'] )->name('hotel.create');
+    Route::post('admin/hotel/create', [HotelController::class, 'store'] )->name('hotel.store');
+    Route::get('admin/hotel/create', [HotelController::class, 'create'] )->name('hotel.create');
 
-    Route::get('admin/hotel/{id}/edit', [\App\Http\Controllers\HotelController::class, 'edit'] )->name('hotel.edit');
-    Route::post('admin/hotel/{id}/update', [\App\Http\Controllers\HotelController::class, 'update'] )->name('hotel.update');
+    Route::get('admin/hotel/{id}/edit', [HotelController::class, 'edit'] )->name('hotel.edit');
+    Route::post('admin/hotel/{id}/update', [HotelController::class, 'update'] )->name('hotel.update');
 
-    Route::get('admin/hotel/{id}/product/create/{type?}', [\App\Http\Controllers\ProductController::class, 'create'] )->name('product.create');
-    Route::get('admin/hotel/{hotel_id}/product/{product_id}/edit', [\App\Http\Controllers\ProductController::class, 'edit'] )->name('product.edit');
+    Route::get('admin/hotel/{id}/product/create/{type?}', [ProductController::class, 'create'] )->name('product.create');
+    Route::get('admin/hotel/{hotel_id}/product/{product_id}/edit', [ProductController::class, 'edit'] )->name('product.edit');
 
     Route::get('admin/hotel/{hotel_id}/orders', [\App\Http\Controllers\OrderController::class, 'listOrdersByHotel'] )->name('orders.list');
     Route::get('admin/hotel/{hotel_id}/order-pick-list', [\App\Http\Controllers\OrderController::class, 'listOrderItemsForPicking'] )->name('orders.listItemsForPicking');
 
     Route::post('admin/order-item/{id}/update', [\App\Http\Controllers\OrderItemController::class, 'update'] )->name('orderItem.update');
-    Route::post('admin/product/store', [\App\Http\Controllers\ProductController::class, 'store'] )->name('product.store');
-    Route::post('admin/product/update', [\App\Http\Controllers\ProductController::class, 'update'] )->name('product.update');
+    Route::post('admin/product/store', [ProductController::class, 'store'] )->name('product.store');
+    Route::post('admin/product/update', [ProductController::class, 'update'] )->name('product.update');
 
     Route::get('admin/hotel/{id}/create-booking', [\App\Http\Controllers\BookingController::class, 'create'] )->name('booking.create');
     Route::post('admin/hotel/{id}/store-booking', [\App\Http\Controllers\BookingController::class, 'store'] )->name('booking.store');
@@ -100,9 +117,9 @@ Route::middleware(['auth', 'verified'])->group(function(){
     Route::post('/admin/product/{id}/unavailability/store', [\App\Http\Controllers\UnavailabilityController::class, 'store'])->name('unavailability.store');
     Route::get('/admin/unavailability/{id}/delete', [\App\Http\Controllers\UnavailabilityController::class, 'delete'])->name('unavailability.delete');
 
-    Route::get('/resdiary/install', [\App\Http\Controllers\ResDiaryController::class, 'install'])->name('resdiary.install');
-    Route::get('/resdiary/callback', [\App\Http\Controllers\ResDiaryController::class, 'callback'])->name('resdiary.callback');
-    Route::post('/resdiary/set-hotel', [\App\Http\Controllers\ResDiaryController::class, 'setHotel'])->name('resdiary.set-hotel');
+    Route::get('/resdiary/install', [ResDiaryController::class, 'install'])->name('resdiary.install');
+    Route::get('/resdiary/callback', [ResDiaryController::class, 'callback'])->name('resdiary.callback');
+    Route::post('/resdiary/set-hotel', [ResDiaryController::class, 'setHotel'])->name('resdiary.set-hotel');
 
 });
 

@@ -20,9 +20,9 @@
                             <li class="mr-4 text-xl">
                                 <a href="{{route('bookings.list', ['id' => $hotel->id])}}">Guests</a>
                             </li>
-{{--                            <li class="mr-4 text-xl">--}}
-{{--                                <a href="{{route('calendar.list-product-grid', ['id' => $hotel->id])}}">Calendar</a>--}}
-{{--                            </li>--}}
+                            <li class="mr-4 text-xl">
+                                <a href="{{route('calendar.list-product-grid', ['id' => $hotel->id])}}">Calendar</a>
+                            </li>
                         </ul>
                     </div>
                 </div>
