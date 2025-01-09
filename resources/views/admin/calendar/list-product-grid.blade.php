@@ -23,6 +23,12 @@
                                 </a>
                             </div>
                         @endforeach
+                    @else
+                        <div class="w-full text-center p-4">
+                            <p class="text-lg">No products found</p>
+                            <p class="mb-8">You will need to create a product which utilises the calendar function before accessing this part of the portal.</p>
+                            <a href="{{route('product.create', ['id' => $hotel->id, 'type' => 'calendar'])}}"><x-primary-button>Create a calendar product</x-primary-button></a>
+                        </div>
                     @endif
                 </div>
             </div>

@@ -82,8 +82,14 @@ class CalendarBookingController extends Controller
         $hotel = Hotel::find($hotel_id);
 
         $products = $hotel->products->where('type', 'calendar');
+        if($products->isEmpty()){
+            return view('admin.calendar.list-product-grid', [
+                'hotel' => $hotel,
+                'products' => $products
+            ]);
+        }
+        return $this->listBookingsForProduct($hotel_id, $products->first()->id, $request);
 
-        return view('admin.calendar.list-product-grid', ['products' => $products, 'hotel' => $hotel]);
 
     }
 
@@ -96,6 +102,8 @@ class CalendarBookingController extends Controller
         $availability = $product->specifics->where('name', 'concurrent_availability')->first()->value;
         $hotel = Hotel::find($hotel_id);
         $date = Carbon::now()->startOfDay();
+        $products = $hotel->products->where('type', 'calendar');
+
         if ($request->has('date')) {
             $date = Carbon::createFromFormat('Y-m-d', $request->input('date'));
         }
@@ -128,6 +136,7 @@ class CalendarBookingController extends Controller
 
         $availableTimes = $this->mapBookingsToTimes($bookings, $availableTimes);
 
+
         return view('admin.calendar.list-bookings-for-product', [
             'product' => $product,
             'specifics' => $specifics,
@@ -137,7 +146,8 @@ class CalendarBookingController extends Controller
             'hotel' => $hotel,
             'bookings' => $bookings,
             'date' => $date->format('Y-m-d'),
-            'variations' => $variations
+            'variations' => $variations,
+            'products' => $products
         ]);
     }
 
@@ -325,5 +335,16 @@ class CalendarBookingController extends Controller
 
 
         return redirect()->route('calendar.list-bookings-for-product', ['hotel_id' => $hotel_id, 'product_id' => $product_id, 'date' => $date->format('Y-m-d')]);
+    }
+
+    public function updateBooking(Request $request)
+    {
+        $booking = CalendarBooking::find($request->booking_id);
+        $booking->name = $request->name;
+        $booking->email = $request->email;
+        $booking->mobile = $request->phone;
+        $booking->room_number = $request->room;
+        $booking->save();
+        return redirect()->back();
     }
 }

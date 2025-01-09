@@ -97,6 +97,8 @@ Route::middleware(['auth', 'verified'])->group(function(){
     Route::get('admin/hotel/{id}/calendar/product-grid', [\App\Http\Controllers\CalendarBookingController::class, 'listProductGrid'] )->name('calendar.list-product-grid');
     Route::get('admin/hotel/{hotel_id}/calendar/{product_id}', [\App\Http\Controllers\CalendarBookingController::class, 'listBookingsForProduct'] )->name('calendar.list-bookings-for-product');
     Route::post('admin/hotel/{hotel_id}/calendar/{product_id}/store-booking', [\App\Http\Controllers\CalendarBookingController::class, 'storeBooking'] )->name('calendar.store-booking');
+    Route::post('admin/update-booking', [\App\Http\Controllers\CalendarBookingController::class, 'updateBooking'] )->name('calendar.update-booking');
+    Route::post('admin/delete-booking', [\App\Http\Controllers\CalendarBookingController::class, 'deleteBooking'] )->name('calendar.delete-booking');
     Route::post('admin/calendar/{product_id}/get-future-availability-on-same-day', ['\App\Http\Controllers\CalendarBookingController', 'getFutureAvailabilityOnSameDayForProduct'])->name('calendar.get-future-availability-on-same-day');
 
     Route::post('/admin/hotel/{id}/email/send-customer-email', [\App\Http\Controllers\CustomerEmailController::class, 'send'] )->name('email.send');
