@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Us | Enhance My Stay</title>
     <link rel="stylesheet" href="/fe/styles.css">
-    <script src="/fe/scripts.js" defer></script>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://www.google.com/recaptcha/api.js"></script>
 
