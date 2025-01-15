@@ -78,6 +78,7 @@ Route::middleware(['auth', 'verified'])->group(function(){
 
     Route::get('admin/hotel/{id}/product/create/{type?}', [ProductController::class, 'create'] )->name('product.create');
     Route::get('admin/hotel/{hotel_id}/product/{product_id}/edit', [ProductController::class, 'edit'] )->name('product.edit');
+    Route::post('admin/hotel/{hotel_id}/product/{product_id}/delete', [ProductController::class, 'softDeleteProduct'] )->name('product.delete');
 
     Route::get('admin/hotel/{hotel_id}/orders', [\App\Http\Controllers\OrderController::class, 'listOrdersByHotel'] )->name('orders.list');
     Route::get('admin/hotel/{hotel_id}/order-pick-list', [\App\Http\Controllers\OrderController::class, 'listOrderItemsForPicking'] )->name('orders.listItemsForPicking');

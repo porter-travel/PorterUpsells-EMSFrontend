@@ -96,6 +96,7 @@ class CalendarBookingController extends Controller
     public function listBookingsForProduct($hotel_id, $product_id, Request $request)
     {
         $product = Product::find($product_id);
+//        dd($product);
         $variations = $product->variations;
         $specifics = $product->specifics;
         $interval = $product->specifics->where('name', 'time_intervals')->first()->value;

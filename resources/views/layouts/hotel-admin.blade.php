@@ -12,7 +12,7 @@
 
                         <ul class="flex items-center justify-start">
                             <li class="mr-4 text-xl">
-                                <a href="{{route('hotel.edit', ['id' => $hotel->id])}}">Dashboard</a>
+                                <a href="{{route('hotel.edit', ['id' => $hotel->id])}}">Manage Property</a>
                             </li>
                             <li class="mr-4 text-xl">
                                 <a href="{{route('orders.listItemsForPicking', ['hotel_id' => $hotel->id])}}">Orders</a>
