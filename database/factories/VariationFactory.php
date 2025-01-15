@@ -1,6 +1,7 @@
 <?php
 
 namespace Database\Factories;
+use App\Models\Variation;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -20,6 +21,7 @@ class VariationFactory extends Factory
             'name' => fake()->name(),
             'price' => fake()->randomFloat(2, 1, 100),
             'image' => fake()->imageUrl(),
+            'product_id' => null, // Set to null by default
         ];
     }
 }

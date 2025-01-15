@@ -111,4 +111,22 @@ class BookingController extends Controller
         return response()->json(['message' => 'Booking updated successfully']);
     }
 
+    public function fetchBookingsByDate($hotel_id, Request $request)
+    {
+        $hotel = Hotel::find($hotel_id);
+
+        if ($hotel->user_id != auth()->user()->id && auth()->user()->role != 'superadmin') {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $date = Carbon::createFromFormat('Y-m-d', $request->date);
+
+        $bookings = $hotel->bookings()
+            ->where('arrival_date', '<=', $date)
+            ->where('departure_date', '>=', $date)
+            ->select(['name', 'room'])->get();
+
+        return response()->json($bookings);
+    }
+
 }

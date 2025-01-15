@@ -33,6 +33,9 @@
                                 @endif
 
                                 <p>Date: {{ \Carbon\Carbon::parse($item['date'])->format('jS M') }}</p>
+                                @if($item['arrival_time'])
+                                    <p>Time: {{$item['arrival_time']}}</p>
+                                @endif
                                 <p class="cart-product-subtotal text-xl font-bold">
                                     <x-money-display :amount="$item['price'] * $item['quantity']"
                                                      :currency="$hotel->user->currency"></x-money-display>

@@ -74,5 +74,8 @@ class Order extends Model
         return $this->belongsTo(Booking::class);
     }
 
+    public function resdiary(){
+        return $this->hasOne(OrderResdiary::class);
+    }
 
 }

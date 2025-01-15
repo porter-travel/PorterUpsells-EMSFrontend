@@ -1,7 +1,7 @@
 <?php
 
 return [
-    "HighlevelBookingsAPI" =>
+    "highlevel" =>
     [
         "username" => "portertravel@example.com",
         "password" => "Password1234?",

@@ -1,8 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
+{{--        <h2 class="font-semibold text-xl text-gray-800 leading-tight">--}}
+{{--            {{ __('Dashboard') }}--}}
+{{--        </h2>--}}
 
         @if($user->stripe_account_active)
             <a href="/admin/hotel/create">Add New Hotel</a>
@@ -42,9 +42,11 @@
 
                         @endif
                     @else
-                        <h2 class="text-2xl mb-6">We just need to setup your payment account, and then you can start adding hotels.</h2>
+                        <h2 class="text-2xl grandstander">Get Paid</h2>
+                    <p class="text-large">To start receiving payouts, please share your business details (key legal and financial information) plus the account details where you wish to receive funds</p>
+                    <p class="text-large mb-6"><strong>Payout Schedule:</strong> Daily - 7 day rolling basis</p>
                         <a href="{{route('profile.edit')}}">
-                            <x-primary-button>Click Here</x-primary-button>
+                            <x-primary-button>Complete Information</x-primary-button>
                         </a>
                     @endif
                 </div>

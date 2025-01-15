@@ -15,4 +15,10 @@ class Variation extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+    public function calendarBookings()
+    {
+        return $this->belongsToMany(CalendarBooking::class);
+
+    }
 }

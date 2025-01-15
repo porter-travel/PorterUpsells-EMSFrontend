@@ -2,8 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Intervals;
+use App\Models\Connection;
 use App\Models\Hotel;
+use App\Models\Product;
+use App\Models\ProductSpecific;
 use App\Models\Variation;
+use App\Services\ResDiary\CreateBooking;
+use App\Services\ResDiary\ResDiaryBooking;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
@@ -16,6 +22,8 @@ class CartController extends Controller
 
         $this->removeFromCartIfProductFromWrongHotel();
 
+        $this->deleteCartIfExpired();
+
 
         $data['cart'] = session()->get('cart');
         if (is_numeric($hotel_id)) {
@@ -23,6 +31,8 @@ class CartController extends Controller
         } else {
             $hotel = Hotel::where('slug', $hotel_id)->first();
         }
+
+//        dd($data);
         return view('cart.show', ['data' => $data, 'hotel' => $hotel])->with('hotel_id', $hotel_id);
     }
 
@@ -34,8 +44,11 @@ class CartController extends Controller
         $quantity = $items['quantity'];
         $product_id = $items['product_id'];
         $hotel_id = $items['hotel_id'];
+        $arrival_time = $items['arrival_time'] ?? null;
         $product_name = $items['product_name'];
         $product_type = $items['product_type'];
+
+        $max_qty = $items['max_qty'] ?? null;
 
         if (!is_array($items['dates[]'])) {
             $dates = array($items['dates[]']);
@@ -45,9 +58,41 @@ class CartController extends Controller
 
         $product = Variation::find($id);
 
+        $cartItemMeta = [];
+
+        $requiresResDiaryBooking = ProductSpecific::where('product_id', $product_id)->where('name', 'requires_resdiary_booking')->first();
+
+        if ($requiresResDiaryBooking && $requiresResDiaryBooking->value == 1) {
+
+            if (!$items['resdiary_promotion_id']) {
+                return json_encode(['error' => 'Promotion ID is required for ResDiary bookings']);
+            }
+
+            $cartItemMeta['resdiary_promotion_id'] = $items['resdiary_promotion_id'];
+            $cartItemMeta['arrival_time'] = $items['arrival_time'];
+
+        }
+
+        $productObj = Product::find($product_id);
+        $productType = $productObj->type;
+
+        if($productType == 'calendar') {
+            $cartItemMeta['arrival_time'] = $items['arrival_time'];
+            $interval =  Intervals::wordsToMinutes($productObj->specifics->where('name', 'time_intervals')->first()->value);
+            $cartItemMeta['end_time'] = date('H:i', strtotime($items['arrival_time']) + $interval);
+        }
+
         if (!$product) {
 
             abort(404);
+        }
+
+        $cartID = $product_id . '-' . $id;
+        if(!is_array($items['dates[]'])){
+            $cartID = $product_id . '-' . $id . '-' . $items['dates[]'];
+        }
+        if ($arrival_time) {
+            $cartID .=  '-' . $arrival_time;
         }
 
         $cart = session()->get('cart');
@@ -55,7 +100,7 @@ class CartController extends Controller
 
             $cart = [];
             foreach ($dates as $date) {
-                $cart[$date . '-' . $id] = [
+                $cart[$cartID] = [
                     'product_id' => $product_id,
                     'variation_id' => $id,
                     'hotel_id' => $hotel_id,
@@ -65,10 +110,14 @@ class CartController extends Controller
                     "price" => $product->price,
                     "image" => $product->image,
                     "date" => $date,
-                    "product_type" => $product_type
+                    "product_type" => $product_type,
+                    "arrival_time" => $arrival_time,
+                    "cart_item_meta" => $cartItemMeta,
+                    "max_qty" => $max_qty
                 ];
             }
             $cart = $this->calculateCartTotals($cart);
+            $cart['expiry'] = time() + 3600;
             session()->put('cart', $cart);
 
             return json_encode(['message' => 'Product added to cart successfully!', 'cart' => $cart]);
@@ -76,8 +125,13 @@ class CartController extends Controller
 
 //        dd($cart);
         foreach ($dates as $date) {
-            if (isset($cart[$date . '-' . $id])) {
-                $cart[$date . '-' . $id]['quantity'] += $quantity;
+            if (isset($cart[$cartID])) {
+                $cart[$cartID]['quantity'] += $quantity;
+                if($max_qty){
+                    if($cart[$cartID]['quantity'] > $max_qty){
+                        return json_encode(['error' => true, 'message' => 'You can only add ' . $max_qty . ' of this item to your cart']);
+                    }
+                }
                 $cart = $this->calculateCartTotals($cart);
                 session()->put('cart', $cart);
                 return json_encode(['message' => 'Product added to cart successfully!', 'cart' => $cart]);
@@ -85,7 +139,7 @@ class CartController extends Controller
         }
 
         foreach ($dates as $date) {
-            $cart[$date . '-' . $id] = [
+            $cart[$cartID] = [
                 'product_id' => $product_id,
                 'variation_id' => $id,
                 'hotel_id' => $hotel_id,
@@ -95,11 +149,14 @@ class CartController extends Controller
                 "price" => $product->price,
                 "image" => $product->image,
                 "date" => $date,
-                "product_type" => $product_type
-
+                "product_type" => $product_type,
+                "arrival_time" => $arrival_time,
+                "cart_item_meta" => $cartItemMeta,
+                "max_qty" => $max_qty
             ];
         }
         $cart = $this->calculateCartTotals($cart);
+        $cart['expiry'] = time() + 3600;
 
         $cartCount = 0;
         foreach ($cart as $item) {
@@ -108,7 +165,7 @@ class CartController extends Controller
             }
         }
         session()->put('cart', $cart);
-
+//        dd($cart);
         return json_encode(['message' => 'Product added to cart successfully!', 'cart' => $cart]);
     }
 
@@ -134,10 +191,14 @@ class CartController extends Controller
 
         if (is_numeric($hotel_id)) {
             $hotel = Hotel::find($hotel_id);
-            $hotel_id = $hotel->slug;
+
+            if(isset($hotel->slug)){
+                $hotel_id = $hotel->slug;
+            }
         }
 
         if(is_array($cart)) {
+
             foreach ($cart as $key => $item) {
                 if (is_array($item) && $item['hotel_id'] != $hotel_id) {
                     unset($cart[$key]);
@@ -183,11 +244,13 @@ class CartController extends Controller
     private function calculateTotal($cart)
     {
         $total = 0;
-        if(is_array($cart)) {
-            foreach ($cart as $item) {
-                if (is_array($item))
-                    $total += $item['price'] * $item['quantity'];
-            }
+
+        if (!$cart) {
+            return 0;
+        }
+        foreach ($cart as $item) {
+            if (is_array($item))
+                $total += $item['price'] * $item['quantity'];
         }
         return $total;
     }
@@ -195,6 +258,9 @@ class CartController extends Controller
     private function calculateTotalWithTax($cart)
     {
         $total = 0;
+        if (!$cart) {
+            return 0;
+        }
         foreach ($cart as $item) {
             if (is_array($item))
                 $total += $item['price'] * $item['quantity'];
@@ -205,10 +271,25 @@ class CartController extends Controller
     private function calculateTax($cart)
     {
         $total = 0;
+
+        if (!$cart) {
+            return 0;
+        }
         foreach ($cart as $item) {
             if (is_array($item))
                 $total += $item['price'] * $item['quantity'];
         }
         return $total * 0.2;
+    }
+
+    private function deleteCartIfExpired()
+    {
+        $cart = session()->get('cart');
+        if (!$cart) {
+            return;
+        }
+        if (isset($cart['expiry']) && $cart['expiry'] < time()) {
+            session()->forget('cart');
+        }
     }
 }

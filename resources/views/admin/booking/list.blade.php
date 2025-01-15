@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-hotel-admin-layout :hotel="$hotel">
     <x-slot name="header">
         <div class="flex items-center justify-between">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -155,4 +155,4 @@
         });
 
     </script>
-</x-app-layout>
+</x-hotel-admin-layout>

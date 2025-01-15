@@ -51,7 +51,7 @@
                    class="text-black">View
                     Cart
                     <img src="/img/icons/cart.svg" alt="cart" class="w-4 h-4 ml-2">
-                    @if($cart && $cart['cartCount'] > 0)
+                    @if($cart && isset($cart['cartCount']) && $cart['cartCount'] > 0)
                         <span
                             class="hotel-accent-color text-black rounded-full px-2 py-1 ml-2 absolute right-0 top-0 translate-x-full -translate-y-1/2 text-xs">{{$cart['cartCount']}}</span>
                     @endif

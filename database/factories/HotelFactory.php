@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
+use App\Models\Hotel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Hotel>
- */
 class HotelFactory extends Factory
 {
+    protected $model = Hotel::class;
+
     /**
      * Define the model's default state.
      *
@@ -20,7 +20,7 @@ class HotelFactory extends Factory
             'name' => fake()->company(),
             'address' => fake()->address(),
             'logo' => fake()->imageUrl(),
-            'user_id' => 1,
+            'user_id' => null, // Set to null by default
         ];
     }
 }

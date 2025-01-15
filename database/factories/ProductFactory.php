@@ -1,6 +1,7 @@
 <?php
 
 namespace Database\Factories;
+use App\Models\Product;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -21,6 +22,7 @@ class ProductFactory extends Factory
             'description' => fake()->sentence(),
             'price' => fake()->randomFloat(2, 1, 100),
             'image' => fake()->imageUrl(),
+            'hotel_id' => null, // Set to null by default
         ];
     }
 }
