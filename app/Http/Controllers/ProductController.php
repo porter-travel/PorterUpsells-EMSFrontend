@@ -145,7 +145,6 @@ class ProductController extends Controller
         // If you need to generate a URL to the uploaded file
         $url = Storage::disk('s3')->url($filePath);
 
-
         $product = new Product();
         $product->status = $request->status;
         $product->name = $request->name;
@@ -155,6 +154,7 @@ class ProductController extends Controller
         $product->image = $url;
         $product->type = $request->type;
         $product->save();
+
 
         if (isset($request->variants)) {
             foreach ($request->variants as $variant) {
@@ -177,6 +177,7 @@ class ProductController extends Controller
                 'image' => $url
             ]);
         }
+
 
 //        dd($request->specifics);
 
