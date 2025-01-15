@@ -45,7 +45,7 @@
                     class="w-full"
                     type="number"
                     name="specifics[concurrent_availability]"
-                    :value="isset($product->specifics['concurrent_availability']) ? $product->specifics['concurrent_availability'] : null"
+                    :value="isset($product->specifics['concurrent_availability']) ? $product->specifics['concurrent_availability'] : 1"
                     placeholder="1"></x-text-input>
             </div>
 

@@ -182,7 +182,9 @@ class ProductControllerTest extends TestCase
                 'size' => 'large',
                 'color' => 'red',
             ],
+            'type' => 'standard'
         ];
+
 
         $response = $this->actingAs($user)->post(route('product.store'), $data);
 

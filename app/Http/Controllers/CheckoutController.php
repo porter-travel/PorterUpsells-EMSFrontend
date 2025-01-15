@@ -23,6 +23,7 @@ use App\Helpers\Money;
 
 class CheckoutController extends Controller
 {
+
     public function initiateCheckout($hotel_id)
     {
 

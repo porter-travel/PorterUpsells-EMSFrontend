@@ -5,12 +5,16 @@ use App\Models\Hotel;
 use App\Models\OrderResdiary;
 use App\Models\User;
 use App\Services\ResDiary\ResDiaryBooking;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Mockery;
 use Tests\TestCase;
 
 class ResDiaryBookingTest extends TestCase
 {
+
+    use RefreshDatabase;
+
     public function test_createBooking_formatsCartDataCorrectlyAndMakesApiCall()
     {
 

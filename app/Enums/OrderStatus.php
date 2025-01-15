@@ -11,8 +11,6 @@ class OrderStatus extends Enum
     const COMPLETE = 'complete';
     const FULFILLED = 'fulfilled';
     const CANCELLED = 'cancelled';
-    const PENDING = 'pending';
-
 
     public static function getValues(): array
     {
@@ -21,7 +19,6 @@ class OrderStatus extends Enum
             self::COMPLETE,
             self::FULFILLED,
             self::CANCELLED,
-            self::PENDING
         ];
     }
 }

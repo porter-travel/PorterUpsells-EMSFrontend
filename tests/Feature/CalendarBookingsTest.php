@@ -41,6 +41,7 @@ class CalendarBookingsTest extends TestCase
         //Create a Product
 
         $product = Product::factory()->create(['hotel_id' => $hotel->id, 'name' => 'Original Product', 'price' => 100, 'type' => 'calendar']);
+        $product->specifics()->create(['name' => 'concurrent_availability', 'value' => '4']);
         $image = UploadedFile::fake()->image('product.jpg');
         $variant = $product->variations()->create(['image' => $image, 'name' => 'Original Variant', 'price' => 50]);
 
