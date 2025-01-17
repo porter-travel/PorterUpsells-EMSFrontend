@@ -18,7 +18,7 @@
                         <input type="hidden" name="product_id" value="{{$product->id}}">
                         <input type="hidden" name="hotel_id" value="{{$hotel->id}}">
 
-                        @include('admin.product.partials.core-fields')
+                        @include('admin.product.partials.core-fields', ['method' => 'update', 'product' => $product])
 
 
                         @include('admin.product.partials.specifics', ['method' => 'update'])

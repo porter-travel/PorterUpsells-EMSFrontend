@@ -82,7 +82,7 @@ class CalendarBookingController extends Controller
         $hotel = Hotel::find($hotel_id);
 
         $products = $hotel->products->where('type', 'calendar');
-        if($products->isEmpty()){
+        if ($products->isEmpty()) {
             return view('admin.calendar.list-product-grid', [
                 'hotel' => $hotel,
                 'products' => $products
@@ -135,6 +135,8 @@ class CalendarBookingController extends Controller
             ->with([])
             ->get();
 
+        $bookings = $this->processBookingsIntoGroups($bookings->toArray());
+
         $availableTimes = $this->mapBookingsToTimes($bookings, $availableTimes);
 
 
@@ -147,9 +149,67 @@ class CalendarBookingController extends Controller
             'hotel' => $hotel,
             'bookings' => $bookings,
             'date' => $date->format('Y-m-d'),
+            'tomorrow' => $date->copy()->addDay()->format('Y-m-d'),
+            'yesterday' => $date->copy()->subDay()->format('Y-m-d'),
             'variations' => $variations,
             'products' => $products
         ]);
+    }
+
+    public function deleteBooking(Request $request)
+    {
+        $booking = CalendarBooking::find($request->booking_id);
+        $hotel = Hotel::find($booking->hotel_id);
+
+        if ($hotel->user_id != auth()->user()->id && auth()->user()->role != 'superadmin') {
+            return redirect()->route('dashboard');
+        }
+
+        $childBookings = $booking->childBookings();
+
+        if(is_countable($childBookings)){
+            foreach($childBookings as $childBooking){
+                $childBooking->delete();
+            }
+        }
+
+        $booking->delete();
+        return redirect()->back();
+    }
+
+    private function processBookingsIntoGroups($bookings) {
+        // Group child bookings by parent_booking_id
+        $parentChildGroups = [];
+        foreach ($bookings as $key => $booking) {
+            if ($booking['parent_booking_id'] !== null) {
+                $parentChildGroups[$booking['parent_booking_id']][] = $booking;
+//                unset($bookings[$key]); // Remove child bookings
+            }
+        }
+
+        // Update parent bookings with the latest end_time and count children
+        foreach ($bookings as &$parentBooking) {
+            $parentId = $parentBooking['id'];
+            if (isset($parentChildGroups[$parentId])) {
+                $latestEndTime = $parentBooking['end_time'];
+                $childrenCount = 0;
+
+                foreach ($parentChildGroups[$parentId] as $childBooking) {
+                    $childrenCount++;
+                    if ($childBooking['end_time'] > $latestEndTime) {
+                        $latestEndTime = $childBooking['end_time'];
+                    }
+                }
+
+                $parentBooking['end_time'] = $latestEndTime;
+                $parentBooking['bookings_count'] = $childrenCount + 1; // Include the parent in the count
+            } else {
+                $parentBooking['bookings_count'] = 1; // No children, count only the parent
+            }
+        }
+
+        // Reindex the array and return
+        return array_values($bookings);
     }
 
     public function mapBookingsToTimes($bookings, $timeSlots)
@@ -310,9 +370,16 @@ class CalendarBookingController extends Controller
                 $bookings[] = $booking;
             }
 
+            $parent_booking_id = null;
 // Save all bookings
-            foreach ($bookings as $booking) {
+            foreach ($bookings as $key => $booking) {
+                if ($key > 0) {
+                    $booking->parent_booking_id = $parent_booking_id;
+                }
                 $booking->save();
+                if ($key == 0) {
+                    $parent_booking_id = $booking->id;
+                }
             }
         } else {
             $booking = new CalendarBooking([

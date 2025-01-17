@@ -31,30 +31,44 @@
             </div>
         </div>
     </x-slot>
-    <div class="py-12">
+    <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <div class="flex items-center justify-between">
                         <form method="get">
-                            <div class="flex items-center pb-6">
+                            <p class="font-bold pb-2">Date</p>
+                            <div class="flex items-center justify-center pb-12">
+                                <a href="?date={{$yesterday}}"><svg width="6" height="11" viewBox="0 0 6 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M-2.40413e-07 5.5L6 11L6 0L-2.40413e-07 5.5Z" fill="black"/>
+                                    </svg>
+                                </a>
                                 <div class="mx-4">
-                                    <label>Date
-                                        <input type="date" name="date" value="{{$date}}"></label>
+                                    <label><span class=" sr-only block">Date</span>
+                                        <input onchange="this.form.submit();" type="date" name="date" value="{{$date}}"></label>
                                 </div>
-                                <div>
-                                    <x-secondary-button type="submit">Filter</x-secondary-button>
-                                </div>
+                                <a href="?date={{$tomorrow}}"><svg width="6" height="11" viewBox="0 0 6 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M6 5.5L-4.80825e-07 0L0 11L6 5.5Z" fill="black"/>
+                                    </svg>
+                                </a>
                             </div>
                         </form>
+
+                        <div>
+
+
+                        </div>
 
 
                     </div>
                     <div class="flex h-[85vh] relative">
 
                         @if($availableTimes)
+                            <div style="width: {{(count($availableTimes) * 16.66667)}}%" class="absolute  px-2 py-1 top-0 -translate-y-full bg-grey rounded-tl-2xl border-l border-r border-t border-darkGrey">
+                                Times
+                            </div>
                         <div
-                            class="h-[85vh] border border-darkGrey rounded-l-2xl overflow-hidden basis-1/12 bg-[#f7f7f7] px-1">
+                            class="h-[85vh] border border-darkGrey rounded-bl-2xl overflow-hidden basis-1/12 bg-[#f7f7f7] px-1">
                             @foreach($availableTimes[0] as $key => $slot)
                                 @if($key != 0)
                                     <div
@@ -67,41 +81,48 @@
                             @endforeach
                         </div>
                         @foreach($availableTimes as $key => $availability)
-                            <div class="h-[85vh] w-1/6 basis-1/6">
+
+                            <div class="h-[85vh] w-1/6 basis-1/6 relative">
+                                <div @if($key == array_key_first($availableTimes)) style="box-shadow: -1px 0 0 #000;" @endif class="absolute px-2 py-1 top-0 -translate-y-full  bg-grey w-full  border-r border-t border-darkGrey  @if($key == array_key_last($availableTimes)) rounded-tr-2xl @else  @endif">
+                                    Slot {{$key + 1}}
+                                </div>
                                 <div
-                                    class="h-full border border-darkGrey border-l-0 flex flex-col items-start justify-between @if($key == array_key_last($availableTimes)) rounded-r-2xl @endif">
+                                    class="h-full border border-darkGrey border-l-0 flex flex-col items-start justify-between @if($key == array_key_last($availableTimes)) rounded-br-2xl @endif">
                                     @foreach($availability as $slotKey => $slot)
-                                        <div class="relative w-full cursor-pointer"
-                                             style="height: {{100 / count($availableTimes[0])}}%">
+                                        @if($slot['booking'] && $slot['booking']['parent_booking_id'])
+                                            @continue
+                                        @endif
+                                        <div class="relative w-full cursor-pointer "
+                                             style="height: {{(100 / count($availableTimes[0])) * ($slot['booking'] ? $slot['booking']['bookings_count'] : 1)}}%">
 
                                             @if(!empty($slot['booking']))
                                                 <div
                                                     data-time="{{$slot['time']}}"
                                                     data-slot="{{$key}}"
-                                                    data-end-time="{{$slot['booking']->end_time}}"
-                                                    data-booking-id="{{$slot['booking']->id}}"
-                                                    data-name="{{$slot['booking']->name}}"
-                                                    data-room="{{$slot['booking']->room_number}}"
-                                                    data-email="{{$slot['booking']->email}}"
-                                                    data-phone="{{$slot['booking']->mobile}}"
+                                                    data-end-time="{{$slot['booking']['end_time']}}"
+                                                    data-booking-id="{{$slot['booking']['id']}}"
+                                                    data-name="{{$slot['booking']['name']}}"
+                                                    data-room="{{$slot['booking']['room_number']}}"
+                                                    data-email="{{$slot['booking']['email']}}"
+                                                    data-phone="{{$slot['booking']['mobile']}}"
                                                     class="h-full p-1 mx-1 modifyModalBookingTrigger">
-                                                    @if($slot['booking']->name == '__block__')
+                                                    @if($slot['booking']['name'] == '__block__')
 
-                                                        <div class="mx-2 h-full bg-pink rounded-lg p-2">
+                                                        <div class="mx-2 h-full bg-pink rounded-lg p-2 overflow-hidden">
                                                             <p class="text-sm open-sans">BLOCK</p>
-                                                            <p>{{substr($slot['booking']->start_time, 0, -3)}}
-                                                                - {{substr($slot['booking']->end_time, 0, -3)}}</p>
+                                                            <p>{{substr($slot['booking']['start_time'], 0, -3)}}
+                                                                - {{substr($slot['booking']['end_time'], 0, -3)}}</p>
                                                         </div>
                                                     @else
 
-                                                        <div class="mx-2 h-full bg-lightBlue rounded-lg p-2">
-                                                            <p class="text-sm open-sans">{{$slot['booking']->name}}</p>
-                                                            @if($slot['booking']->room_number)
+                                                        <div class="mx-2 h-full bg-lightBlue rounded-lg p-2 overflow-hidden">
+                                                            <p class="text-sm open-sans">{{$slot['booking']['name']}}</p>
+                                                            @if($slot['booking']['room_number'])
                                                                 <p class="text-xs">
-                                                                    Room: {{$slot['booking']->room_number}}</p>
+                                                                    Room: {{$slot['booking']['room_number']}}</p>
                                                             @endif
-                                                            <p>{{substr($slot['booking']->start_time, 0, -3)}}
-                                                                - {{substr($slot['booking']->end_time, 0, -3)}}</p>
+                                                            <p>{{substr($slot['booking']['start_time'], 0, -3)}}
+                                                                - {{substr($slot['booking']['end_time'], 0, -3)}}</p>
                                                         </div>
                                                     @endif
                                                 </div>
@@ -126,7 +147,7 @@
                             </div>
 
                         @endforeach
-@else:
+@else
     <div class="w-full text-center">
         <p>No bookings available for this product on this date</p>
     </div>
@@ -142,7 +163,7 @@
 
     <div id="newBookingModalContainer" class="hidden fixed z-10 inset-0 overflow-y-auto">
         <div class="bg-black opacity-50 absolute inset-0"></div>
-        <div class="bg-white top-[50px] left-1/2 fixed transform -translate-x-1/2 w-1/2 p-4 rounded-lg shadow-lg">
+        <div class="bg-white top-[50px] left-1/2 fixed transform -translate-x-1/2 w-1/2 p-4 rounded-lg shadow-lg overflow-auto max-h-[80vh]">
             <div class="flex justify-between">
                 <h2 class="text-xl font-bold mb-6"><span id="modal_title_verb">New</span> Booking for {{$product->name}}
                 </h2>
@@ -206,7 +227,8 @@
                     <x-danger-button type="button" id="deleteBooking" class="hidden ">Delete</x-danger-button>
                 </div>
             </form>
-            <form id="deleteForm" class="hidden" action="{{route('calendar.delete-booking')}}">
+            <form method="post" id="deleteForm" class="hidden" action="{{route('calendar.delete-booking')}}">
+                @csrf
                 <div class="bg-pink my-4 rounded p-4">
                     <h3 class="text-xl">Are you sure you would like to delete this booking?</h3>
                     <p>This action cannot be undone and will cause the booking to be permanently deleted</p>

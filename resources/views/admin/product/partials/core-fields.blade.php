@@ -8,7 +8,7 @@
                          class="w-[64px] h-[64px] object-cover rounded-xl"/>
                 </div>
             @endif
-            <input type="file" name="image" id="image">
+            <input @if($method == 'create') required @endif type="file" name="image" id="image">
         </div>
     </div>
 

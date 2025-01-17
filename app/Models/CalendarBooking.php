@@ -45,4 +45,8 @@ class CalendarBooking extends Model
     {
         return $this->belongsTo(Hotel::class);
     }
+
+    public function childBookings(){
+        return CalendarBooking::where('parent_booking_id', $this->id)->get();
+    }
 }
