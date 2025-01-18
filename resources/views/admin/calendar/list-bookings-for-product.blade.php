@@ -348,6 +348,28 @@
 
                     deleteButton.classList.remove('hidden');
 
+                    axios.post('/admin/calendar/{{$product->id}}/get-future-availability-on-same-day', {
+                        date: '{{$date}}',
+                        hotel_id: '{{$hotel->id}}',
+                        slot: slot,
+                        start_time: startTime,
+                        end_time: endTime,
+                        booking_id: booking_id
+                    }).then(response => {
+                        const endTimeInput = document.getElementById('end_time');
+                        //Create an option for each available time
+                        console.log(endTimeInput);
+                        console.log(response.data)
+                        endTimeInput.innerHTML = '';
+                        response.data.forEach(time => {
+                            const option = document.createElement('option');
+                            option.value = time;
+                            option.innerText = time;
+                            endTimeInput.appendChild(option);
+                        });
+                        endTimeInput.value = endTime;
+                    });
+
                     const nameInput = document.getElementById('name');
                     nameInput.value = name;
 
@@ -374,11 +396,11 @@
                     startTimeInput.value = startTime;
                     startTimeInputReal.value = startTime;
 
-                    const endTimeInput = document.getElementById('end_time');
-                    endTimeInput.classList.add('hidden');
+                    // const endTimeInput = document.getElementById('end_time');
+                    // endTimeInput.classList.add('hidden');
                     const endTimeInputFake = document.getElementById('end_time_fake');
-                    endTimeInputFake.classList.remove('hidden');
-                    endTimeInputFake.value = endTime;
+                    endTimeInputFake.classList.add('hidden');
+                    // endTimeInputFake.value = endTime;
 
                     //set the action of the form to the update action
                     form.action = form.getAttribute('data-update-action');
