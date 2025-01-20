@@ -184,6 +184,10 @@
                     <div class="basis-1/2">
                         <x-input-label for="start_time">Start Time</x-input-label>
                         <x-text-input disabled id="start_time_fake"/>
+                        <select id="start_time_select"
+                                class="border-[#C4C4C4] focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm w-full">
+                            <option value="">Select</option>
+                        </select>
                         <input type="hidden" name="start_time" id="start_time"/>
                     </div>
                     <div class="basis-1/2">
@@ -277,6 +281,8 @@
             const storeButton = document.getElementById('store-button');
             const deleteButton = document.getElementById('deleteBooking');
             const deleteForm = document.getElementById('deleteForm');
+            const startTimeSelect = document.getElementById('start_time_select');
+            startTimeSelect.classList.add('hidden');
             bookingTriggers.forEach(trigger => {
                 trigger.addEventListener('click', async function () {
                     modal_title_verb.innerText = 'New';
@@ -290,6 +296,9 @@
                     slotInput.value = slot;
                     startTimeInput.value = startTime;
                     startTimeInputReal.value = startTime;
+
+                    startTimeSelect.classList.add('hidden');
+                    startTimeInput.classList.remove('hidden');
 
                     const endTimeInput = document.getElementById('end_time');
                     endTimeInput.classList.remove('hidden');
@@ -346,29 +355,17 @@
                     const email = this.getAttribute('data-email');
                     const phone = this.getAttribute('data-phone');
 
-                    deleteButton.classList.remove('hidden');
+                    startTimeInput.classList.add('hidden');
+                    startTimeSelect.classList.remove('hidden');
 
-                    axios.post('/admin/calendar/{{$product->id}}/get-future-availability-on-same-day', {
-                        date: '{{$date}}',
-                        hotel_id: '{{$hotel->id}}',
-                        slot: slot,
-                        start_time: startTime,
-                        end_time: endTime,
-                        booking_id: booking_id
-                    }).then(response => {
-                        const endTimeInput = document.getElementById('end_time');
-                        //Create an option for each available time
-                        console.log(endTimeInput);
-                        console.log(response.data)
-                        endTimeInput.innerHTML = '';
-                        response.data.forEach(time => {
-                            const option = document.createElement('option');
-                            option.value = time;
-                            option.innerText = time;
-                            endTimeInput.appendChild(option);
-                        });
-                        endTimeInput.value = endTime;
-                    });
+                    deleteButton.classList.remove('hidden');
+                    deleteForm.classList.add('hidden');
+
+
+                    getStartTimes(slot, startTime, endTime, booking_id);
+                    getEndTimes(slot, startTime, endTime, booking_id);
+
+
 
                     const nameInput = document.getElementById('name');
                     nameInput.value = name;
@@ -410,6 +407,67 @@
                     // Show the modal
                     newBookingModal.classList.remove('hidden');
                 });
+            });
+
+            function getStartTimes(slot, startTime, endTime, booking_id) {
+                axios.post('/admin/calendar/{{$product->id}}/get-future-availability-on-same-day', {
+                    date: '{{$date}}',
+                    hotel_id: '{{$hotel->id}}',
+                    slot: slot,
+                    end_time: endTime,
+                    booking_id: booking_id
+                }).then(response => {
+                    const startTimeInput = document.getElementById('start_time_select');
+                    //Create an option for each available time
+                    console.log(response.data)
+                    startTimeInput.innerHTML = '';
+                    response.data.forEach(time => {
+                        const option = document.createElement('option');
+                        option.value = time;
+                        option.innerText = time;
+                        startTimeInput.appendChild(option);
+                    });
+                    startTimeInput.value = startTime;
+                });
+            }
+
+            function getEndTimes(slot, startTime, endTime, booking_id) {
+                axios.post('/admin/calendar/{{$product->id}}/get-future-availability-on-same-day', {
+                    date: '{{$date}}',
+                    hotel_id: '{{$hotel->id}}',
+                    slot: slot,
+                    start_time: startTime,
+                    end_time: endTime,
+                    booking_id: booking_id
+                }).then(response => {
+                    const endTimeInput = document.getElementById('end_time');
+                    //Create an option for each available time
+                    console.log(endTimeInput);
+                    console.log(response.data)
+                    endTimeInput.innerHTML = '';
+                    response.data.forEach(time => {
+                        const option = document.createElement('option');
+                        option.value = time;
+                        option.innerText = time;
+                        endTimeInput.appendChild(option);
+                    });
+                    endTimeInput.value = endTime;
+                });
+            }
+
+            startTimeSelect.addEventListener('change', function () {
+                const startTime = document.getElementById('start_time');
+                startTime.value = this.value;
+                const startTimeFake = document.getElementById('start_time_fake');
+                startTimeFake.value = this.value;
+                const endTime = document.getElementById('end_time');
+                //Make the end time select required
+                endTime.setAttribute('required', 'required');
+
+                console.log('start_time', this.value);
+
+                console.log('end_time', document.getElementById('end_time').value);
+                getEndTimes(document.querySelector('input[name="slot"]').value, this.value, document.getElementById('end_time').value, document.querySelector('input[name="booking_id"]').value);
             });
 
             deleteButton.addEventListener('click', function () {

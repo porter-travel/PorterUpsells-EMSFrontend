@@ -255,7 +255,13 @@ class CalendarBookingController extends Controller
         $hotel_id = $product->hotel_id;
         $day = strtolower($date->dayName);
         $step = Intervals::wordsToMinutes($interval);
-        $startTime = $request->start_time;
+        if($request->start_time) {
+            $startTime = $request->start_time;
+            $only_exclude_booked_slots = false;
+        } else {
+            $only_exclude_booked_slots = true;
+            $startTime = $product->specifics->where('name', "start_time_{$day}")->first()->value;
+        }
         $endTime = $product->specifics->where('name', "end_time_{$day}")->first()->value;
         $start = strtotime($startTime);
         $end = strtotime($endTime);
@@ -294,11 +300,18 @@ class CalendarBookingController extends Controller
             if ($timeSlot['time'] == $startTime) {
                 unset($availableTimes[$slot][$key]);
             }
-            if ($removeItems) {
-                unset($availableTimes[$slot][$key]);
-            }
-            if ($timeSlot['booking'] != []) {
-                $removeItems = true;
+            if($only_exclude_booked_slots) {
+                if ($timeSlot['booking'] != []) {
+                    unset($availableTimes[$slot][$key]);
+                }
+            } else {
+                if ($removeItems) {
+                    unset($availableTimes[$slot][$key]);
+                }
+
+                if ($timeSlot['booking'] != []) {
+                    $removeItems = true;
+                }
             }
         }
 
