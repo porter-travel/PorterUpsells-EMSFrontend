@@ -240,6 +240,7 @@ class CalendarBookingController extends Controller
             $result[$slotIndex] = $slotData;
         }
 
+
         return $result;
     }
 
@@ -287,13 +288,15 @@ class CalendarBookingController extends Controller
             ->with([])
             ->get();
 
-
+//dd($availableTimes);
         $availableTimes = $this->mapBookingsToTimes($bookings, $availableTimes);
 //        dd($availability, $availableTimes, $bookings);
+
+//        dd($availableTimes);
         $removeItems = false;
         foreach ($availableTimes[$slot] as $key => $timeSlot) {
 
-            if (isset($request->booking_id) && $timeSlot['booking'] && ($timeSlot['booking']['id'] == $request->booking_id || $timeSlot['booking']['parent_booking_id'] == $request->booking_id)) {
+            if (!$removeItems && isset($request->booking_id) && $timeSlot['booking'] && ($timeSlot['booking']['id'] == $request->booking_id || $timeSlot['booking']['parent_booking_id'] == $request->booking_id)) {
                 continue;
             }
 
@@ -305,13 +308,15 @@ class CalendarBookingController extends Controller
                     unset($availableTimes[$slot][$key]);
                 }
             } else {
+
+
                 if ($removeItems) {
                     unset($availableTimes[$slot][$key]);
                 }
-
-                if ($timeSlot['booking'] != []) {
+                if ($timeSlot['booking'] != null) {
                     $removeItems = true;
                 }
+
             }
         }
 
@@ -320,6 +325,8 @@ class CalendarBookingController extends Controller
         foreach ($availableTimes[$slot] as $timeSlot) {
             $output[] = $timeSlot['time'];
         }
+
+//        dd($output);
 
         return $output;
     }
@@ -449,7 +456,6 @@ class CalendarBookingController extends Controller
             $availableTimes[] = ['time' => date('H:i', $time)];
         }
 
-
         if (count($availableTimes) > 1) {
 //        dd($availableTimes);
             $bookings = [];
@@ -474,8 +480,12 @@ class CalendarBookingController extends Controller
                     'slot' => $request->slot
                 ]);
 
+
+
                 $bookings[] = $booking;
             }
+
+//            dd($bookings);
 
             $parent_booking_id = null;
 // Save all bookings
@@ -504,6 +514,8 @@ class CalendarBookingController extends Controller
                 'status' => 'confirmed',
                 'slot' => $request->slot
             ]);
+
+//            dd($booking);
 
             $booking->save();
         }

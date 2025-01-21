@@ -181,7 +181,7 @@
                 <input type="hidden" name="booking_id" value="">
 
                 <div class="flex justify-start mb-2">
-                    <div class="basis-1/2">
+                    <div class="basis-1/2 pr-4">
                         <x-input-label for="start_time">Start Time</x-input-label>
                         <x-text-input disabled id="start_time_fake"/>
                         <select id="start_time_select"
@@ -190,7 +190,7 @@
                         </select>
                         <input type="hidden" name="start_time" id="start_time"/>
                     </div>
-                    <div class="basis-1/2">
+                    <div class="basis-1/2 pl-4">
                         <x-input-label for="end_time">End Time</x-input-label>
                         <select name="end_time" id="end_time"
                                 class="border-[#C4C4C4] focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm w-full">
