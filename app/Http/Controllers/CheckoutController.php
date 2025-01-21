@@ -391,23 +391,26 @@ class CheckoutController extends Controller
         }
         foreach ($order->items as $item) {
             if ($item->product->type == 'calendar') {
-                $calendarBooking = new CalendarBooking();
-                $calendarBooking->order_id = $order->id;
-                $calendarBooking->product_id = $item->product_id;
-                $calendarBooking->variation_id = $item->variation_id;
-                $calendarBooking->name = $session->customer_details->name;
-                $calendarBooking->email = $session->customer_details->email;
-                $calendarBooking->mobile = $session->customer_details->phone;
-                $calendarBooking->room_number = $session->metadata->room_number ?? null;
-                $calendarBooking->date = $item->date;
-                $calendarBooking->start_time = $item->meta->where('key', 'arrival_time')->first()->value;
-                $calendarBooking->end_time = $item->meta->where('key', 'end_time')->first()->value;
-                $calendarBooking->status = $session->payment_status == 'paid' ? 'confirmed' : 'pending';
-                $calendarBooking->hotel_id = $hotel->id;
-                $calendarBooking->qty = $item->quantity;
-                $calendarBooking->slot = $this->getAvailableSlotsForCalendarProduct($hotel->id, $item->product_id, $item->date, $calendarBooking->start_time, $calendarBooking->end_time);
+                for($i = 0; $i < $item->quantity; $i++) {
+
+                    $calendarBooking = new CalendarBooking();
+                    $calendarBooking->order_id = $order->id;
+                    $calendarBooking->product_id = $item->product_id;
+                    $calendarBooking->variation_id = $item->variation_id;
+                    $calendarBooking->name = $session->customer_details->name;
+                    $calendarBooking->email = $session->customer_details->email;
+                    $calendarBooking->mobile = $session->customer_details->phone;
+                    $calendarBooking->room_number = $session->metadata->room_number ?? null;
+                    $calendarBooking->date = $item->date;
+                    $calendarBooking->start_time = $item->meta->where('key', 'arrival_time')->first()->value;
+                    $calendarBooking->end_time = $item->meta->where('key', 'end_time')->first()->value;
+                    $calendarBooking->status = $session->payment_status == 'paid' ? 'confirmed' : 'pending';
+                    $calendarBooking->hotel_id = $hotel->id;
+                    $calendarBooking->qty = $item->quantity;
+                    $calendarBooking->slot = $this->getAvailableSlotsForCalendarProduct($hotel->id, $item->product_id, $item->date, $calendarBooking->start_time, $calendarBooking->end_time);
 //                $calendarBooking->slot
-                $calendarBooking->save();
+                    $calendarBooking->save();
+                }
             }
         }
     }
@@ -429,7 +432,7 @@ class CheckoutController extends Controller
         $usedSlots = $bookings->pluck('slot')->toArray();
 
         // Find the lowest available slot
-        for ($slot = 1; $slot <= $concurrent_availability; $slot++) {
+        for ($slot = 0; $slot <= $concurrent_availability; $slot++) {
             if (!in_array($slot, $usedSlots)) {
                 return $slot; // Return the first available slot
             }
