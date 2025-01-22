@@ -42,10 +42,11 @@
                     No. of spaces/items available concurrently:
                 </x-input-label>
                 <x-text-input
+                    required
                     class="w-full"
                     type="number"
                     name="specifics[concurrent_availability]"
-                    :value="isset($product->specifics['concurrent_availability']) ? $product->specifics['concurrent_availability'] : 1"
+                    value="{{isset($product->specifics['concurrent_availability']) ?? 1}}"
                     placeholder="1"></x-text-input>
             </div>
 
@@ -57,9 +58,9 @@
                     class="w-full"
                     type="number"
                     name="specifics[time_intervals]"
-                    :value="isset($product->specifics['time_intervals']) ? $product->specifics['time_intervals'] : null"
+                    required
                     >
-                    <option disabled selected>Please Select</option>
+                    <option value="" disabled selected>Please Select</option>
                     <option @selected(isset($product->specifics['time_intervals']) && $product->specifics['time_intervals'] == '30mins') value="30mins">30 Minutes</option>
                     <option @selected(isset($product->specifics['time_intervals']) && $product->specifics['time_intervals'] == '1hr') value="1hr">1 Hour</option>
                     <option @selected(isset($product->specifics['time_intervals']) && $product->specifics['time_intervals'] == '2hrs') value="2hrs">2 Hours</option>
@@ -95,19 +96,16 @@
                             <input
                                 style="width: 0; height: 0; opacity: 0"
                                 type="checkbox"
-                                name="specifics[available_{{$day}}]" value="1"
-                                id="{{$day}}"
-                                @if($method == 'create')
-                                    checked
-                            @else
+                                name="specifics[available_{{$day}}]"
+                                value="1"
+                                id="available_{{$day}}"
                                 @checked($product->specifics['available_' . $day])
-                                @endif
                             >
                             <span class="w-[29px] h-[29px] border border-darkGrey rounded mr-2 relative"></span>
                             <span></span>
                             <span class="relative">
-                        <span class="font-bold">{{ucfirst($day)}}</span>
-                    </span>
+                <span class="font-bold">{{ ucfirst($day) }}</span>
+            </span>
                         </label>
                     </div>
 
@@ -116,6 +114,7 @@
                             class="w-full"
                             type="time"
                             name="specifics[start_time_{{$day}}]"
+                            id="start_time_{{$day}}"
                             :value="isset($product->specifics['start_time_' . $day]) ? $product->specifics['start_time_' . $day] : null"
                             placeholder="00:00"
                         />
@@ -125,12 +124,41 @@
                             class="w-full"
                             type="time"
                             name="specifics[end_time_{{$day}}]"
+                            id="end_time_{{$day}}"
                             :value="isset($product->specifics['end_time_' . $day]) ? $product->specifics['end_time_' . $day] : null"
                             placeholder="00:00"
                         />
                     </div>
                 </li>
             @endforeach
+
+
+
         </ul>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const days = @json($days);
+
+            days.forEach(day => {
+                const checkbox = document.getElementById(`available_${day}`);
+                const startTime = document.getElementById(`start_time_${day}`);
+                const endTime = document.getElementById(`end_time_${day}`);
+
+                // Update required attributes based on checkbox state
+                const updateRequired = () => {
+                    const isChecked = checkbox.checked;
+                    startTime.required = isChecked;
+                    endTime.required = isChecked;
+                };
+
+                // Initialize on page load
+                updateRequired();
+
+                // Add event listener to checkbox
+                checkbox.addEventListener('change', updateRequired);
+            });
+        });
+    </script>
 @endif

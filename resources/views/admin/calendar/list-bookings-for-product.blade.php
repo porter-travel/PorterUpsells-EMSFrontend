@@ -31,30 +31,44 @@
             </div>
         </div>
     </x-slot>
-    <div class="py-12">
+    <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <div class="flex items-center justify-between">
                         <form method="get">
-                            <div class="flex items-center pb-6">
+                            <p class="font-bold pb-2">Date</p>
+                            <div class="flex items-center justify-center pb-12">
+                                <a href="?date={{$yesterday}}"><svg width="6" height="11" viewBox="0 0 6 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M-2.40413e-07 5.5L6 11L6 0L-2.40413e-07 5.5Z" fill="black"/>
+                                    </svg>
+                                </a>
                                 <div class="mx-4">
-                                    <label>Date
-                                        <input type="date" name="date" value="{{$date}}"></label>
+                                    <label><span class=" sr-only block">Date</span>
+                                        <input onchange="this.form.submit();" type="date" name="date" value="{{$date}}"></label>
                                 </div>
-                                <div>
-                                    <x-secondary-button type="submit">Filter</x-secondary-button>
-                                </div>
+                                <a href="?date={{$tomorrow}}"><svg width="6" height="11" viewBox="0 0 6 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M6 5.5L-4.80825e-07 0L0 11L6 5.5Z" fill="black"/>
+                                    </svg>
+                                </a>
                             </div>
                         </form>
+
+                        <div>
+
+
+                        </div>
 
 
                     </div>
                     <div class="flex h-[85vh] relative">
 
                         @if($availableTimes)
+                            <div style="width: {{(count($availableTimes) * 16.66667)}}%" class="absolute  px-2 py-1 top-0 -translate-y-full bg-grey rounded-tl-2xl border-l border-r border-t border-darkGrey">
+                                Times
+                            </div>
                         <div
-                            class="h-[85vh] border border-darkGrey rounded-l-2xl overflow-hidden basis-1/12 bg-[#f7f7f7] px-1">
+                            class="h-[85vh] border border-darkGrey rounded-bl-2xl overflow-hidden basis-1/12 bg-[#f7f7f7] px-1">
                             @foreach($availableTimes[0] as $key => $slot)
                                 @if($key != 0)
                                     <div
@@ -67,41 +81,48 @@
                             @endforeach
                         </div>
                         @foreach($availableTimes as $key => $availability)
-                            <div class="h-[85vh] w-1/6 basis-1/6">
+
+                            <div class="h-[85vh] w-1/6 basis-1/6 relative">
+                                <div @if($key == array_key_first($availableTimes)) style="box-shadow: -1px 0 0 #000;" @endif class="absolute px-2 py-1 top-0 -translate-y-full  bg-grey w-full  border-r border-t border-darkGrey  @if($key == array_key_last($availableTimes)) rounded-tr-2xl @else  @endif">
+                                    Slot {{$key + 1}}
+                                </div>
                                 <div
-                                    class="h-full border border-darkGrey border-l-0 flex flex-col items-start justify-between @if($key == array_key_last($availableTimes)) rounded-r-2xl @endif">
+                                    class="h-full border border-darkGrey border-l-0 flex flex-col items-start justify-between @if($key == array_key_last($availableTimes)) rounded-br-2xl @endif">
                                     @foreach($availability as $slotKey => $slot)
-                                        <div class="relative w-full cursor-pointer"
-                                             style="height: {{100 / count($availableTimes[0])}}%">
+                                        @if($slot['booking'] && $slot['booking']['parent_booking_id'])
+                                            @continue
+                                        @endif
+                                        <div class="relative w-full cursor-pointer "
+                                             style="height: {{(100 / count($availableTimes[0])) * ($slot['booking'] ? $slot['booking']['bookings_count'] : 1)}}%">
 
                                             @if(!empty($slot['booking']))
                                                 <div
                                                     data-time="{{$slot['time']}}"
                                                     data-slot="{{$key}}"
-                                                    data-end-time="{{$slot['booking']->end_time}}"
-                                                    data-booking-id="{{$slot['booking']->id}}"
-                                                    data-name="{{$slot['booking']->name}}"
-                                                    data-room="{{$slot['booking']->room_number}}"
-                                                    data-email="{{$slot['booking']->email}}"
-                                                    data-phone="{{$slot['booking']->mobile}}"
+                                                    data-end-time="{{$slot['booking']['end_time']}}"
+                                                    data-booking-id="{{$slot['booking']['id']}}"
+                                                    data-name="{{$slot['booking']['name']}}"
+                                                    data-room="{{$slot['booking']['room_number']}}"
+                                                    data-email="{{$slot['booking']['email']}}"
+                                                    data-phone="{{$slot['booking']['mobile']}}"
                                                     class="h-full p-1 mx-1 modifyModalBookingTrigger">
-                                                    @if($slot['booking']->name == '__block__')
+                                                    @if($slot['booking']['name'] == '__block__')
 
-                                                        <div class="mx-2 h-full bg-pink rounded-lg p-2">
+                                                        <div class="mx-2 h-full bg-pink rounded-lg p-2 overflow-hidden">
                                                             <p class="text-sm open-sans">BLOCK</p>
-                                                            <p>{{substr($slot['booking']->start_time, 0, -3)}}
-                                                                - {{substr($slot['booking']->end_time, 0, -3)}}</p>
+                                                            <p>{{substr($slot['booking']['start_time'], 0, -3)}}
+                                                                - {{substr($slot['booking']['end_time'], 0, -3)}}</p>
                                                         </div>
                                                     @else
 
-                                                        <div class="mx-2 h-full bg-lightBlue rounded-lg p-2">
-                                                            <p class="text-sm open-sans">{{$slot['booking']->name}}</p>
-                                                            @if($slot['booking']->room_number)
+                                                        <div class="mx-2 h-full bg-lightBlue rounded-lg p-2 overflow-hidden">
+                                                            <p class="text-sm open-sans">{{$slot['booking']['name']}}</p>
+                                                            @if($slot['booking']['room_number'])
                                                                 <p class="text-xs">
-                                                                    Room: {{$slot['booking']->room_number}}</p>
+                                                                    Room: {{$slot['booking']['room_number']}}</p>
                                                             @endif
-                                                            <p>{{substr($slot['booking']->start_time, 0, -3)}}
-                                                                - {{substr($slot['booking']->end_time, 0, -3)}}</p>
+                                                            <p>{{substr($slot['booking']['start_time'], 0, -3)}}
+                                                                - {{substr($slot['booking']['end_time'], 0, -3)}}</p>
                                                         </div>
                                                     @endif
                                                 </div>
@@ -126,7 +147,7 @@
                             </div>
 
                         @endforeach
-@else:
+@else
     <div class="w-full text-center">
         <p>No bookings available for this product on this date</p>
     </div>
@@ -142,7 +163,7 @@
 
     <div id="newBookingModalContainer" class="hidden fixed z-10 inset-0 overflow-y-auto">
         <div class="bg-black opacity-50 absolute inset-0"></div>
-        <div class="bg-white top-[50px] left-1/2 fixed transform -translate-x-1/2 w-1/2 p-4 rounded-lg shadow-lg">
+        <div class="bg-white top-[50px] left-1/2 fixed transform -translate-x-1/2 w-1/2 p-4 rounded-lg shadow-lg overflow-auto max-h-[80vh]">
             <div class="flex justify-between">
                 <h2 class="text-xl font-bold mb-6"><span id="modal_title_verb">New</span> Booking for {{$product->name}}
                 </h2>
@@ -160,12 +181,16 @@
                 <input type="hidden" name="booking_id" value="">
 
                 <div class="flex justify-start mb-2">
-                    <div class="basis-1/2">
+                    <div class="basis-1/2 pr-4">
                         <x-input-label for="start_time">Start Time</x-input-label>
                         <x-text-input disabled id="start_time_fake"/>
+                        <select id="start_time_select"
+                                class="border-[#C4C4C4] focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm w-full">
+                            <option value="">Select</option>
+                        </select>
                         <input type="hidden" name="start_time" id="start_time"/>
                     </div>
-                    <div class="basis-1/2">
+                    <div class="basis-1/2 pl-4">
                         <x-input-label for="end_time">End Time</x-input-label>
                         <select name="end_time" id="end_time"
                                 class="border-[#C4C4C4] focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm w-full">
@@ -206,7 +231,8 @@
                     <x-danger-button type="button" id="deleteBooking" class="hidden ">Delete</x-danger-button>
                 </div>
             </form>
-            <form id="deleteForm" class="hidden" action="{{route('calendar.delete-booking')}}">
+            <form method="post" id="deleteForm" class="hidden" action="{{route('calendar.delete-booking')}}">
+                @csrf
                 <div class="bg-pink my-4 rounded p-4">
                     <h3 class="text-xl">Are you sure you would like to delete this booking?</h3>
                     <p>This action cannot be undone and will cause the booking to be permanently deleted</p>
@@ -255,6 +281,8 @@
             const storeButton = document.getElementById('store-button');
             const deleteButton = document.getElementById('deleteBooking');
             const deleteForm = document.getElementById('deleteForm');
+            const startTimeSelect = document.getElementById('start_time_select');
+            startTimeSelect.classList.add('hidden');
             bookingTriggers.forEach(trigger => {
                 trigger.addEventListener('click', async function () {
                     modal_title_verb.innerText = 'New';
@@ -268,6 +296,9 @@
                     slotInput.value = slot;
                     startTimeInput.value = startTime;
                     startTimeInputReal.value = startTime;
+
+                    startTimeSelect.classList.add('hidden');
+                    startTimeInput.classList.remove('hidden');
 
                     const endTimeInput = document.getElementById('end_time');
                     endTimeInput.classList.remove('hidden');
@@ -324,7 +355,17 @@
                     const email = this.getAttribute('data-email');
                     const phone = this.getAttribute('data-phone');
 
+                    startTimeInput.classList.add('hidden');
+                    startTimeSelect.classList.remove('hidden');
+
                     deleteButton.classList.remove('hidden');
+                    deleteForm.classList.add('hidden');
+
+
+                    getStartTimes(slot, startTime, endTime, booking_id);
+                    getEndTimes(slot, startTime, endTime, booking_id);
+
+
 
                     const nameInput = document.getElementById('name');
                     nameInput.value = name;
@@ -352,11 +393,11 @@
                     startTimeInput.value = startTime;
                     startTimeInputReal.value = startTime;
 
-                    const endTimeInput = document.getElementById('end_time');
-                    endTimeInput.classList.add('hidden');
+                    // const endTimeInput = document.getElementById('end_time');
+                    // endTimeInput.classList.add('hidden');
                     const endTimeInputFake = document.getElementById('end_time_fake');
-                    endTimeInputFake.classList.remove('hidden');
-                    endTimeInputFake.value = endTime;
+                    endTimeInputFake.classList.add('hidden');
+                    // endTimeInputFake.value = endTime;
 
                     //set the action of the form to the update action
                     form.action = form.getAttribute('data-update-action');
@@ -366,6 +407,67 @@
                     // Show the modal
                     newBookingModal.classList.remove('hidden');
                 });
+            });
+
+            function getStartTimes(slot, startTime, endTime, booking_id) {
+                axios.post('/admin/calendar/{{$product->id}}/get-future-availability-on-same-day', {
+                    date: '{{$date}}',
+                    hotel_id: '{{$hotel->id}}',
+                    slot: slot,
+                    end_time: endTime,
+                    booking_id: booking_id
+                }).then(response => {
+                    const startTimeInput = document.getElementById('start_time_select');
+                    //Create an option for each available time
+                    console.log(response.data)
+                    startTimeInput.innerHTML = '';
+                    response.data.forEach(time => {
+                        const option = document.createElement('option');
+                        option.value = time;
+                        option.innerText = time;
+                        startTimeInput.appendChild(option);
+                    });
+                    startTimeInput.value = startTime;
+                });
+            }
+
+            function getEndTimes(slot, startTime, endTime, booking_id) {
+                axios.post('/admin/calendar/{{$product->id}}/get-future-availability-on-same-day', {
+                    date: '{{$date}}',
+                    hotel_id: '{{$hotel->id}}',
+                    slot: slot,
+                    start_time: startTime,
+                    end_time: endTime,
+                    booking_id: booking_id
+                }).then(response => {
+                    const endTimeInput = document.getElementById('end_time');
+                    //Create an option for each available time
+                    console.log(endTimeInput);
+                    console.log(response.data)
+                    endTimeInput.innerHTML = '';
+                    response.data.forEach(time => {
+                        const option = document.createElement('option');
+                        option.value = time;
+                        option.innerText = time;
+                        endTimeInput.appendChild(option);
+                    });
+                    endTimeInput.value = endTime;
+                });
+            }
+
+            startTimeSelect.addEventListener('change', function () {
+                const startTime = document.getElementById('start_time');
+                startTime.value = this.value;
+                const startTimeFake = document.getElementById('start_time_fake');
+                startTimeFake.value = this.value;
+                const endTime = document.getElementById('end_time');
+                //Make the end time select required
+                endTime.setAttribute('required', 'required');
+
+                console.log('start_time', this.value);
+
+                console.log('end_time', document.getElementById('end_time').value);
+                getEndTimes(document.querySelector('input[name="slot"]').value, this.value, document.getElementById('end_time').value, document.querySelector('input[name="booking_id"]').value);
             });
 
             deleteButton.addEventListener('click', function () {

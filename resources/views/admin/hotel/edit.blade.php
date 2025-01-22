@@ -60,7 +60,9 @@
                             <div
                                 class="content absolute bg-mint w-full top-[20px] pt-12 pb-4 rounded-b-[20px] -z-10">
                                 <ul class="list-none">
-                                    <li class="pl-12 border-b border-darkGrey py-2"><a href="/admin/hotel/{{$hotel->id}}/product/create/standard">Standard Product</a></li>
+                                    <li class="pl-12 border-b border-darkGrey py-2"><a
+                                            href="/admin/hotel/{{$hotel->id}}/product/create/standard">Standard
+                                            Product</a></li>
                                     <li class="pl-12 border-b border-darkGrey py-2">
                                         <a href="/admin/hotel/{{$hotel->id}}/product/create/restaurant">
                                             <span style="color: grey">Restaurant
@@ -69,7 +71,7 @@
                                     </li>
                                     <li class="pl-12 border-b border-darkGrey py-2">
                                         <a href="/admin/hotel/{{$hotel->id}}/product/create/calendar">
-                                        <span style="color: grey">Calendar Product (coming soon)</span>
+                                            <span style="color: grey">Calendar Product (coming soon)</span>
                                         </a>
                                     </li>
 
@@ -90,15 +92,37 @@
 
                                     <p class="mr-2 text-xl">{{$product->name}}</p>
                                 </a>
-
-                                <p class="mr-2">
+                                <div class="flex items-center justify-end">
+                                    <p class="mr-2">
                                     <span class="mr-4 py-2 px-4 rounded-full w-[100px] text-center inline-block
                                      @if($product->status == 'active') text-[#63B090] bg-[#D5F8E7] @elseif($product->status == 'inactive') text-[#C20000] bg-[#FFF5F5] @else text-darkGrey bg-grey @endif font-bold
                                      ">
                                     {{ucfirst($product->status)}}
                                         </span>
-                                    <x-money-display :amount="$product->price" :currency="auth()->user()->currency"/>
-                                </p>
+                                        <x-money-display :amount="$product->price"
+                                                         :currency="auth()->user()->currency"/>
+                                    </p>
+
+
+                                    <a class="launchProductDeleteModal" data-hotel-id="{{$hotel->id}}"
+                                       data-product-id="{{$product->id}}" data-product-name="{{$product->name}}"
+                                       href="#">
+                                        <svg width="36" height="36" viewBox="0 0 36 36" fill="none"
+                                             xmlns="http://www.w3.org/2000/svg"
+                                             xmlns:xlink="http://www.w3.org/1999/xlink">
+                                            <circle cx="18" cy="18" r="18" fill="#C20000"/>
+                                            <rect x="6" y="6" width="24" height="24" fill="url(#pattern0_5506_7)"/>
+                                            <defs>
+                                                <pattern id="pattern0_5506_7" patternContentUnits="objectBoundingBox"
+                                                         width="1" height="1">
+                                                    <use xlink:href="#image0_5506_7" transform="scale(0.0111111)"/>
+                                                </pattern>
+                                                <image id="image0_5506_7" width="90" height="90"
+                                                       xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAB40lEQVR4nO2cS2rDQBBEtYpz8ijnyWLQhfK5RRmBDAaHENszPVXd9UDglal+SK0RGvWyGGOMMcYYY4wxxpgbAJwAvAP4Po7990lFFRTyA3gB8IFbNgCvCzkS+f8IyRdWNf8/QvKEVc1/R0hK2RL5HwhJJVsi/3F3bnicNvNuLpP/WPY8S5shu4PkC2tE2H2N2YMtso080S5+40dJdJjszpJ3PpeA0Cv60ka2kY7t4pq3UXlHB28jZCtljboUu7cRhYzyhYA4W5qCQJipC0yFgSjLEBgKBEGGEGYWiiqSZxaMapJnFI6qkiMFoLrkCBGw5LBH4DbgP7neeN/LoLOvdrsQlL2lkUwse0snmVB2XslEsvNLJpBdR/JE2fUkT5BdV3KgbEsOkG3J11h0AHDrSCH5Qt0WAi/vUkqud2bDj+AlJOc/s8EjOa9s8EnOJ5tYch7ZfjkbgLcbBOANNAF4S1gA3uQYgLftBsCwFw4EGYbCVCCIsnSFsTAQZnoK5oJAnC1dIRDImOazXwhlHTWvQ/2je6l5HcpjJKTmdWzCg1Fk5nU08VE/EvM6modXZRpnliW/xIC+LPklRk5myS8xRDVLfomxwFnyH6uRfen3dRyr0me/EM9vjDHGGGOMMcYYswRyBpias+umnbidAAAAAElFTkSuQmCC"/>
+                                            </defs>
+                                        </svg>
+                                    </a>
+                                </div>
                             </div>
 
                         @endforeach
@@ -236,8 +260,55 @@
         </div>
     </div>
 
+    <div class="productDeleteModalContainer hidden fixed bg-black/50 inset-0 z-50">
+
+        <div class="fixed top-10 left-1/2 -translate-x-1/2 bg-white rounded-2xl p-8">
+            <form method="post" action="">
+                @csrf
+                <h4>Are you sure you want to delete <span id="productToDeleteName"></span></h4>
+                <div class="flex items-center justify-between">
+                    <x-secondary-button dusk="cancel-delete-product" class="mt-4">No</x-secondary-button>
+                    <x-danger-button dusk="confirm-delete-product" class="mt-4">Yes</x-danger-button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
 
     <script>
+
+        document.addEventListener("DOMContentLoaded", () => {
+            // Select all links with the class "launchProductDeleteModal"
+            const deleteLinks = document.querySelectorAll(".launchProductDeleteModal");
+            const modal = document.querySelector(".productDeleteModalContainer");
+            const productNameSpan = document.getElementById("productToDeleteName");
+            const form = modal.querySelector("form");
+            const cancelButton = modal.querySelector("[dusk='cancel-delete-product']");
+
+            deleteLinks.forEach(link => {
+                link.addEventListener("click", (event) => {
+                    event.preventDefault(); // Prevent the default link behavior
+
+                    // Extract data attributes
+                    const hotelId = link.getAttribute("data-hotel-id");
+                    const productId = link.getAttribute("data-product-id");
+                    const productName = link.getAttribute("data-product-name");
+
+                    // Update modal content and action
+                    modal.classList.remove("hidden");
+                    productNameSpan.textContent = productName;
+                    form.action = `/admin/hotel/${hotelId}/product/${productId}/delete`;
+                });
+            });
+
+            cancelButton.addEventListener("click", (event) => {
+                event.preventDefault(); // Prevent button default behavior
+                modal.classList.add("hidden");
+            });
+        });
+
+
         function copyToClipboard() {
             var copyText = document.getElementById("hotel-welcome-url");
             var confirmationText = document.getElementById("confirmation-text");

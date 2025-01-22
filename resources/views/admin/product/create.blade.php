@@ -15,7 +15,7 @@
                         <input type="hidden" name="hotel_id" value="{{$hotel->id}}">
                         <input type="hidden" name="type" value="{{$type}}">
 
-                        @include('admin.product.partials.core-fields', ['product' => new \App\Models\Product()])
+                        @include('admin.product.partials.core-fields', ['product' => new \App\Models\Product(), 'method' => 'create'])
 
 
                         @include('admin.product.partials.specifics', ['method' => 'create', 'type' => $type])

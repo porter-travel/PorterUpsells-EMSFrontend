@@ -82,7 +82,7 @@ class CalendarBookingController extends Controller
         $hotel = Hotel::find($hotel_id);
 
         $products = $hotel->products->where('type', 'calendar');
-        if($products->isEmpty()){
+        if ($products->isEmpty()) {
             return view('admin.calendar.list-product-grid', [
                 'hotel' => $hotel,
                 'products' => $products
@@ -96,6 +96,7 @@ class CalendarBookingController extends Controller
     public function listBookingsForProduct($hotel_id, $product_id, Request $request)
     {
         $product = Product::find($product_id);
+//        dd($product);
         $variations = $product->variations;
         $specifics = $product->specifics;
         $interval = $product->specifics->where('name', 'time_intervals')->first()->value;
@@ -134,6 +135,8 @@ class CalendarBookingController extends Controller
             ->with([])
             ->get();
 
+        $bookings = $this->processBookingsIntoGroups($bookings->toArray());
+
         $availableTimes = $this->mapBookingsToTimes($bookings, $availableTimes);
 
 
@@ -146,9 +149,68 @@ class CalendarBookingController extends Controller
             'hotel' => $hotel,
             'bookings' => $bookings,
             'date' => $date->format('Y-m-d'),
+            'tomorrow' => $date->copy()->addDay()->format('Y-m-d'),
+            'yesterday' => $date->copy()->subDay()->format('Y-m-d'),
             'variations' => $variations,
             'products' => $products
         ]);
+    }
+
+    public function deleteBooking(Request $request)
+    {
+        $booking = CalendarBooking::find($request->booking_id);
+        $hotel = Hotel::find($booking->hotel_id);
+
+        if ($hotel->user_id != auth()->user()->id && auth()->user()->role != 'superadmin') {
+            return redirect()->route('dashboard');
+        }
+
+        $childBookings = $booking->childBookings();
+
+        if (is_countable($childBookings)) {
+            foreach ($childBookings as $childBooking) {
+                $childBooking->delete();
+            }
+        }
+
+        $booking->delete();
+        return redirect()->back();
+    }
+
+    private function processBookingsIntoGroups($bookings)
+    {
+        // Group child bookings by parent_booking_id
+        $parentChildGroups = [];
+        foreach ($bookings as $key => $booking) {
+            if ($booking['parent_booking_id'] !== null) {
+                $parentChildGroups[$booking['parent_booking_id']][] = $booking;
+//                unset($bookings[$key]); // Remove child bookings
+            }
+        }
+
+        // Update parent bookings with the latest end_time and count children
+        foreach ($bookings as &$parentBooking) {
+            $parentId = $parentBooking['id'];
+            if (isset($parentChildGroups[$parentId])) {
+                $latestEndTime = $parentBooking['end_time'];
+                $childrenCount = 0;
+
+                foreach ($parentChildGroups[$parentId] as $childBooking) {
+                    $childrenCount++;
+                    if ($childBooking['end_time'] > $latestEndTime) {
+                        $latestEndTime = $childBooking['end_time'];
+                    }
+                }
+
+                $parentBooking['end_time'] = $latestEndTime;
+                $parentBooking['bookings_count'] = $childrenCount + 1; // Include the parent in the count
+            } else {
+                $parentBooking['bookings_count'] = 1; // No children, count only the parent
+            }
+        }
+
+        // Reindex the array and return
+        return array_values($bookings);
     }
 
     public function mapBookingsToTimes($bookings, $timeSlots)
@@ -178,6 +240,7 @@ class CalendarBookingController extends Controller
             $result[$slotIndex] = $slotData;
         }
 
+
         return $result;
     }
 
@@ -193,7 +256,13 @@ class CalendarBookingController extends Controller
         $hotel_id = $product->hotel_id;
         $day = strtolower($date->dayName);
         $step = Intervals::wordsToMinutes($interval);
-        $startTime = $request->start_time;
+        if($request->start_time) {
+            $startTime = $request->start_time;
+            $only_exclude_booked_slots = false;
+        } else {
+            $only_exclude_booked_slots = true;
+            $startTime = $product->specifics->where('name', "start_time_{$day}")->first()->value;
+        }
         $endTime = $product->specifics->where('name', "end_time_{$day}")->first()->value;
         $start = strtotime($startTime);
         $end = strtotime($endTime);
@@ -219,26 +288,45 @@ class CalendarBookingController extends Controller
             ->with([])
             ->get();
 
+//dd($availableTimes);
         $availableTimes = $this->mapBookingsToTimes($bookings, $availableTimes);
+//        dd($availability, $availableTimes, $bookings);
 
+//        dd($availableTimes);
         $removeItems = false;
         foreach ($availableTimes[$slot] as $key => $timeSlot) {
+
+            if (!$removeItems && isset($request->booking_id) && $timeSlot['booking'] && ($timeSlot['booking']['id'] == $request->booking_id || $timeSlot['booking']['parent_booking_id'] == $request->booking_id)) {
+                continue;
+            }
 
             if ($timeSlot['time'] == $startTime) {
                 unset($availableTimes[$slot][$key]);
             }
-            if ($removeItems) {
-                unset($availableTimes[$slot][$key]);
-            }
-            if ($timeSlot['booking'] != []) {
-                $removeItems = true;
+            if($only_exclude_booked_slots) {
+                if ($timeSlot['booking'] != []) {
+                    unset($availableTimes[$slot][$key]);
+                }
+            } else {
+
+
+                if ($removeItems) {
+                    unset($availableTimes[$slot][$key]);
+                }
+                if ($timeSlot['booking'] != null) {
+                    $removeItems = true;
+                }
+
             }
         }
+
 
         $output = [];
         foreach ($availableTimes[$slot] as $timeSlot) {
             $output[] = $timeSlot['time'];
         }
+
+//        dd($output);
 
         return $output;
     }
@@ -309,9 +397,16 @@ class CalendarBookingController extends Controller
                 $bookings[] = $booking;
             }
 
+            $parent_booking_id = null;
 // Save all bookings
-            foreach ($bookings as $booking) {
+            foreach ($bookings as $key => $booking) {
+                if ($key > 0) {
+                    $booking->parent_booking_id = $parent_booking_id;
+                }
                 $booking->save();
+                if ($key == 0) {
+                    $parent_booking_id = $booking->id;
+                }
             }
         } else {
             $booking = new CalendarBooking([
@@ -339,12 +434,100 @@ class CalendarBookingController extends Controller
 
     public function updateBooking(Request $request)
     {
-        $booking = CalendarBooking::find($request->booking_id);
-        $booking->name = $request->name;
-        $booking->email = $request->email;
-        $booking->mobile = $request->phone;
-        $booking->room_number = $request->room;
-        $booking->save();
+
+        $startTime = $request->input('start_time');
+        $endTime = $request->input('end_time');
+        $oldBooking = CalendarBooking::find($request->booking_id);
+        $product = Product::find($oldBooking->product_id);
+        $interval = $product->specifics->where('name', 'time_intervals')->first()->value;
+        $step = Intervals::wordsToMinutes($interval);
+        $start = strtotime($startTime);
+        $end = strtotime($endTime);
+        $availableTimes = [];
+        // Generate times
+
+
+        for ($time = $start; $time + $step <= $end; $time += $step) {
+            $availableTimes[] = ['time' => date('H:i', $time)];
+        }
+
+        // Add an extra step to the end of the list
+        if ($time < $end + $step) {
+            $availableTimes[] = ['time' => date('H:i', $time)];
+        }
+
+        if (count($availableTimes) > 1) {
+//        dd($availableTimes);
+            $bookings = [];
+
+            for ($i = 0; $i < count($availableTimes) - 1; $i++) {
+                $startTime = $availableTimes[$i]['time'];
+                $endTime = $availableTimes[$i + 1]['time'];
+
+                $booking = new CalendarBooking([
+                    'hotel_id' => $oldBooking->hotel_id,
+                    'product_id' => $oldBooking->product_id,
+                    'variation_id' => $oldBooking->variation_id,
+                    'date' => $oldBooking->date,
+                    'qty' => 1,
+                    'start_time' => $startTime,
+                    'end_time' => $endTime,
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'mobile' => $request->phone,
+                    'room_number' => $request->room,
+                    'status' => 'confirmed',
+                    'slot' => $request->slot
+                ]);
+
+
+
+                $bookings[] = $booking;
+            }
+
+//            dd($bookings);
+
+            $parent_booking_id = null;
+// Save all bookings
+            foreach ($bookings as $key => $booking) {
+                if ($key > 0) {
+                    $booking->parent_booking_id = $parent_booking_id;
+                }
+                $booking->save();
+                if ($key == 0) {
+                    $parent_booking_id = $booking->id;
+                }
+            }
+        } else {
+            $booking = new CalendarBooking([
+                'hotel_id' => $oldBooking->hotel_id,
+                'product_id' => $oldBooking->product_id,
+                'variation_id' => $oldBooking->variation_id,
+                'date' => $oldBooking->date,
+                'qty' => 1,
+                'start_time' => $startTime,
+                'end_time' => $endTime,
+                'name' => $request->name,
+                'email' => $request->email,
+                'mobile' => $request->phone,
+                'room_number' => $request->room,
+                'status' => 'confirmed',
+                'slot' => $request->slot
+            ]);
+
+//            dd($booking);
+
+            $booking->save();
+        }
+
+        $childBookings = $oldBooking->childBookings();
+        $childBookings->each(function($childBooking){
+            $childBooking->delete();
+        });
+        $oldBooking->delete();
+
+
+
         return redirect()->back();
     }
 }

@@ -36,7 +36,9 @@ class OrderService
             })
             ->with(['items' => function ($query) {
                 $query->orderBy('date', 'asc');
-            }, 'items.product', 'items.product.specifics', 'booking','items.meta'])
+            }, 'items.product' => function ($query) {
+                $query->withTrashed(); // Include soft-deleted products
+            }, 'items.product.specifics', 'booking','items.meta'])
             ->get()
             ->sortBy(function ($order) {
                 return $order->items->min('date');

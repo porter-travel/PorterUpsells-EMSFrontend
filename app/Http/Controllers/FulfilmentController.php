@@ -29,7 +29,9 @@ class FulfilmentController extends Controller
                 })
                 ->with(['items' => function ($query) {
                     $query->orderBy('date', 'asc');
-                }, 'items.product', 'items.product.specifics', 'booking'])
+                },        'items.product' => function ($query) {
+                    $query->withTrashed(); // Include soft-deleted products
+                }, 'items.product.specifics', 'booking'])
                 ->get()
                 ->sortBy(function ($order) {
                     return $order->items->min('date');

@@ -353,6 +353,21 @@ class ProductController extends Controller
 
     }
 
+    public function softDeleteProduct($hotel_id, $product_id)
+    {
+
+        $hotel = Hotel::find($hotel_id);
+        if ($hotel->user_id != auth()->user()->id && auth()->user()->role != 'superadmin') {
+            return redirect()->route('dashboard');
+        }
+
+
+        $product = Product::find($product_id);
+        $product->deleted_at = now();
+        $product->save();
+        return redirect()->route('hotel.edit', ['id' => $product->hotel_id]);
+    }
+
     private function getDatesInRange($arrivalDate, $departureDate, $specifics, $unavailabilities)
     {
 //var_dump($specifics);
