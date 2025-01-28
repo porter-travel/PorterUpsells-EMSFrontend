@@ -38,6 +38,8 @@ class HotelEmailController extends Controller
         } else {
             HotelEmail::createStandardTemplates($hotel->id);
             $email_content = HotelEmail::where('hotel_id', $hotel->id)->first();
+            $email_content->featured_products = json_decode($email_content->featured_products);
+
         }
         if ($user->role === 'superadmin' || $hotel->user_id === $user->id) {
             return view('admin.emails.customise', [
