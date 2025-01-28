@@ -36,6 +36,7 @@ class HotelEmailController extends Controller
             }
             $email_content->featured_products = $tmp;
         } else {
+            $email_content = new HotelEmail();
             $email_content->featured_products = [0, 0, 0, 0];
         }
         if ($user->role === 'superadmin' || $hotel->user_id === $user->id) {
