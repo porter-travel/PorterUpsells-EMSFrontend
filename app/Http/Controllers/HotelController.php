@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\TrackDashboardView;
 use App\Mail\ConfigTest;
 use App\Models\Connection;
 use App\Models\Hotel;
+use App\Models\HotelEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -52,6 +54,9 @@ class HotelController extends Controller
 
     function dashboard(Request $request, $id)
     {
+
+
+
         $data = $request->session()->all();
 
         $cart = session()->get('cart');
@@ -62,6 +67,7 @@ class HotelController extends Controller
             $hotel = Hotel::where('slug', $id)->first();
         }
 
+        TrackDashboardView::dispatch($hotel->id);
 
         $products = $hotel->activeProducts();
 //        $data['days_until_arrival'] = (strtotime($data['arrival_date']) - strtotime(date('Y-m-d'))) / (60 * 60 * 24);
@@ -96,6 +102,9 @@ class HotelController extends Controller
             $hotel->featured_image = $featuredImageUrl;
         }
         $hotel->save();
+
+        HotelEmail::createStandardTemplates($hotel->id);
+
         return redirect()->route('hotel.edit', ['id' => $hotel->id]);
     }
 

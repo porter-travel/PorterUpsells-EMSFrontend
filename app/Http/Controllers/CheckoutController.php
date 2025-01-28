@@ -79,8 +79,7 @@ class CheckoutController extends Controller
         $order->departure_date = $departure_date;
         $order->payment_status = 'pending';
         $order->subtotal = $cart['total'];
-        $order->total_tax = $cart['tax'];
-        $order->total = $cart['total_with_tax'];
+        $order->total = $cart['total'];
 
         $order->save();
 

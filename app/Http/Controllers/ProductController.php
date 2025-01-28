@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Intervals;
+use App\Jobs\TrackProductView;
 use App\Models\CalendarBooking;
 use App\Models\Hotel;
 use App\Models\Product;
@@ -16,11 +17,15 @@ class ProductController extends Controller
     public function show($hotel_id, $item_id, Request $request)
     {
 
+
+
         if (is_numeric($hotel_id)) {
             $hotel = Hotel::find($hotel_id);
         } else {
             $hotel = Hotel::where('slug', $hotel_id)->first();
         }
+
+        TrackProductView::dispatch($hotel->id, $item_id);
 
 
         $product = Product::find($item_id);
@@ -295,6 +300,19 @@ class ProductController extends Controller
 
         return redirect()->route('product.edit', ['hotel_id' => $request->hotel_id, 'product_id' => $request->product_id]);
 
+    }
+
+
+    public function listProductsAsJson($hotel_id)
+    {
+        $products = Product::where('hotel_id', $hotel_id)->get();
+        return response()->json($products);
+    }
+
+    public function getProductAsJson($product_id)
+    {
+        $product = Product::find($product_id);
+        return response()->json($product);
     }
 
     public function getTimesAvailableForCalendarProducts(Request $request)

@@ -5,6 +5,8 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\FulfilmentController;
 use App\Http\Controllers\HotelController;
+use App\Http\Controllers\HotelEmailController;
+use App\Http\Controllers\PerformanceController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResDiaryController;
@@ -37,9 +39,7 @@ Route::get('/hotel/{id}/dashboard', function($id){
 Route::post('/set-user-stay-dates', [WelcomeController::class, 'setUserStayDates']);
 
 Route::get('/hotel/{id}/', [HotelController::class, 'dashboard'] )->name('hotel.dashboard');
-
 Route::get('/hotel/{hotel_id}/item/{item_id}', [ProductController::class, 'show'] )->name('hotel.item');
-
 Route::get('/hotel/{hotel_id}/cart', [CartController::class, 'show'] )->name('cart.show');
 
 Route::post('/cart/add', [CartController::class, 'addToCart'] )->name('cart.add');
@@ -79,6 +79,8 @@ Route::middleware(['auth', 'verified'])->group(function(){
     Route::get('admin/hotel/{id}/product/create/{type?}', [ProductController::class, 'create'] )->name('product.create');
     Route::get('admin/hotel/{hotel_id}/product/{product_id}/edit', [ProductController::class, 'edit'] )->name('product.edit');
     Route::post('admin/hotel/{hotel_id}/product/{product_id}/delete', [ProductController::class, 'softDeleteProduct'] )->name('product.delete');
+    Route::post('admin/hotel/{hotel_id}/list-products-as-json', [ProductController::class, 'listProductsAsJson'] )->name('product.list-as-json');
+    Route::post('admin/product/{product_id}/get-as-json', [ProductController::class, 'getProductAsJson'] )->name('product.get-as-json');
 
     Route::get('admin/hotel/{hotel_id}/orders', [\App\Http\Controllers\OrderController::class, 'listOrdersByHotel'] )->name('orders.list');
     Route::get('admin/hotel/{hotel_id}/order-pick-list', [\App\Http\Controllers\OrderController::class, 'listOrderItemsForPicking'] )->name('orders.listItemsForPicking');
@@ -123,6 +125,11 @@ Route::middleware(['auth', 'verified'])->group(function(){
     Route::get('/resdiary/install', [ResDiaryController::class, 'install'])->name('resdiary.install');
     Route::get('/resdiary/callback', [ResDiaryController::class, 'callback'])->name('resdiary.callback');
     Route::post('/resdiary/set-hotel', [ResDiaryController::class, 'setHotel'])->name('resdiary.set-hotel');
+
+    Route::get('/admin/performance/{hotel_id?}', [PerformanceController::class, 'index'])->name('performance.index');
+
+    Route::get('/admin/hotel/{id}/email/customise', [HotelEmailController::class, 'show'])->name('email.customise');
+    Route::post('/admin/hotel/{hotel_id}/email/store-customisations', [HotelEmailController::class, 'storeCustomisations'])->name('email.store-customisations');
 
 });
 

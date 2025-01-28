@@ -25,7 +25,6 @@ class OrderFactory extends Factory
             'arrival_date' => date('Y-m-d'),
             'departure_date' => date('Y-m-d'),
             'subtotal' => 1000,
-            'total_tax' => 0,
             'room_number' => rand(1, 100),
             'booking_ref' => 'ABC' . rand(100, 999),
             'booking_id' => 1,
