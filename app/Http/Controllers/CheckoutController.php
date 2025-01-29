@@ -254,9 +254,20 @@ class CheckoutController extends Controller
 
                 $this->createCalendarBooking($order, $session);
 
+                $hotel_id = $order->hotel_id;
+                if (is_numeric($hotel_id)) {
+                    $hotel = Hotel::find($hotel_id);
+                } else {
+                    $hotel = Hotel::where('slug', $hotel_id)->first();
+                }
 
-                Mail::to($session->customer_details->email, $session->metadata->name)->send(new OrderConfirmation($order));
+                $bcc = $hotel->meta->where('hotel_id', $hotel->id)->where('key', 'email-recipients')->first()->value;
 
+                if($bcc) {
+                    Mail::to($session->customer_details->email, $session->metadata->name)->bcc($bcc)->send(new OrderConfirmation($order));
+                } else {
+                    Mail::to($session->customer_details->email, $session->metadata->name)->send(new OrderConfirmation($order));
+                }
 
                 //Cancel any Scheduled Emails for the customer
 
