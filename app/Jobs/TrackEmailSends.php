@@ -27,7 +27,7 @@ class TrackEmailSends implements ShouldQueue
      */
     public function handle(): void
     {
-        \DB::table('hotel_analytics')->updateOrInsert(
+        \DB::table('email_analytics')->updateOrInsert(
             [
                 'hotel_id' => $this->hotelId,
                 'sent_date' => now()->toDateString(),

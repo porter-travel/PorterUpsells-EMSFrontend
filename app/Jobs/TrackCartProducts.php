@@ -38,7 +38,7 @@ class TrackCartProducts implements ShouldQueue
      */
     public function handle(): void
     {
-        \DB::table('hotel_analytics')->updateOrInsert(
+        \DB::table('cart_analytics')->updateOrInsert(
             [
                 'hotel_id' => $this->hotelId,
                 'product_id' => $this->productId,
