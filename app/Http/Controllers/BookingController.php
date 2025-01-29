@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\TrackEmailSends;
 use App\Models\Booking;
 use App\Models\CustomerEmail;
 use App\Models\Hotel;
@@ -44,6 +45,7 @@ class BookingController extends Controller
                     $customer_email->scheduled_at = Carbon::now();
                     Mail::to($content['email_address'])->send(new \App\Mail\CustomerEmail($hotel, $content));
                     $customer_email->sent_at = Carbon::now();
+                    TrackEmailSends::dispatch($hotel->id);
                 }
 
                 $customer_email->save();

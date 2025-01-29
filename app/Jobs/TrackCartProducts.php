@@ -25,6 +25,10 @@ class TrackCartProducts implements ShouldQueue
     public function __construct($hotelId, $productId, $variantId)
     {
 
+        if(!is_numeric($hotelId)){
+            $hotelId = \App\Models\Hotel::where('slug', $hotelId)->first()->id;
+        }
+
         $this->hotelId = $hotelId;
 
         $this->productId = $productId;

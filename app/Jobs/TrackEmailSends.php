@@ -27,6 +27,9 @@ class TrackEmailSends implements ShouldQueue
      */
     public function handle(): void
     {
+
+        \Log::info("TrackEmailSends job started for hotel ID: {$this->hotelId}");
+
         \DB::table('email_analytics')->updateOrInsert(
             [
                 'hotel_id' => $this->hotelId,
