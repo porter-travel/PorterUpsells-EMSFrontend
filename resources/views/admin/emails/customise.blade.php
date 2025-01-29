@@ -23,26 +23,26 @@
                                 <x-fancy-checkbox dusk="pre-arrival-email"
 
 
-                                                  :isChecked="!empty($email_schedule) ? $email_schedule['email-schedule-2-day-pre-arrival'] : true"
+                                                  :isChecked="(!empty($email_schedule) && isset($email_schedule['email-schedule-2-day-pre-arrival'])) ? $email_schedule['email-schedule-2-day-pre-arrival'] : true"
 
                                                   name="hotel_meta[email-schedule-2-day-pre-arrival]"
                                                   label="2 days pre-arrival"/>
                             </div>
                             <div>
                                 <x-fancy-checkbox dusk="pre-arrival-email"
-                                                  :isChecked="!empty($email_schedule) ? $email_schedule['email-schedule-7-day-pre-arrival'] : true"
+                                                  :isChecked="(!empty($email_schedule) && isset($email_schedule['email-schedule-7-day-pre-arrival'])) ? $email_schedule['email-schedule-7-day-pre-arrival'] : true"
                                                   name="hotel_meta[email-schedule-7-day-pre-arrival]"
                                                   label="7 days pre-arrival"/>
                             </div>
                             <div>
                                 <x-fancy-checkbox dusk="pre-arrival-email"
-                                                  :isChecked="!empty($email_schedule) ? $email_schedule['email-schedule-14-day-pre-arrival'] : true"
+                                                  :isChecked="(!empty($email_schedule) && isset($email_schedule['email-schedule-14-day-pre-arrival'])) ? $email_schedule['email-schedule-14-day-pre-arrival'] : true"
                                                   name="hotel_meta[email-schedule-14-day-pre-arrival]"
                                                   label="14 days pre-arrival"/>
                             </div>
                             <div>
                                 <x-fancy-checkbox dusk="pre-arrival-email"
-                                                  :isChecked="!empty($email_schedule) ? $email_schedule['email-schedule-30-day-pre-arrival'] : true"
+                                                  :isChecked="(!empty($email_schedule) && isset($email_schedule['email-schedule-30-day-pre-arrival'])) ? $email_schedule['email-schedule-30-day-pre-arrival'] : true"
                                                   name="hotel_meta[email-schedule-30-day-pre-arrival]"
                                                   label="30 days pre-arrival"/>
                             </div>
