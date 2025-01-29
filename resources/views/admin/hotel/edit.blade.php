@@ -64,16 +64,17 @@
                                             href="/admin/hotel/{{$hotel->id}}/product/create/standard">Standard
                                             Product</a></li>
                                     <li class="pl-12 border-b border-darkGrey py-2">
+                                        <a href="/admin/hotel/{{$hotel->id}}/product/create/calendar">
+                                            Calendar Product
+                                        </a>
+                                    </li>
+                                    <li class="pl-12 border-b border-darkGrey py-2">
                                         <a href="/admin/hotel/{{$hotel->id}}/product/create/restaurant">
                                             <span style="color: grey">Restaurant
                                             Booking (coming soon)</span>
                                         </a>
                                     </li>
-                                    <li class="pl-12 border-b border-darkGrey py-2">
-                                        <a href="/admin/hotel/{{$hotel->id}}/product/create/calendar">
-                                            <span style="color: grey">Calendar Product (coming soon)</span>
-                                        </a>
-                                    </li>
+
 
                                 </ul>
                             </div>
