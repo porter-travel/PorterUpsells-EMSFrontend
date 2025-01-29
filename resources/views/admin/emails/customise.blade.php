@@ -142,7 +142,7 @@
                                                                         <td style="padding: 8px; vertical-align: top; position: relative">
                                                                             <a data-slot-id="{{$key}}"
                                                                                class=" featuredProductLink" href="#">
-                                                                                @if(is_numeric($product) && $product == 0)
+                                                                                @if((is_numeric($product) && ($product == 0 || $product == '0')) || $product == null)
                                                                                     <div
                                                                                         class=" flex pointer-events-none items-center justify-center border-darkGrey border rounded-2xl h-[150px] p-4">
                                                                                         <img src="/img/icons/plus.svg"
