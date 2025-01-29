@@ -168,13 +168,15 @@
 
                                                 @foreach($featured_products as $key => $product)
                                                     <td style="padding: 8px; vertical-align: top; position: relative">
-                                                        <a
-                                                            class=" featuredProductLink" href="{{env('APP_URL')}}/hotel/{{$hotel->slug}}/item/{{$product->id}}">
-                                                            @if($product == null || (is_numeric($product) && ($product == 0 || $product == '0')))
+                                                        @if($product == null || (is_numeric($product) && ($product == 0 || $product == '0')))
+                                                        @else
+                                                            <a
+                                                                class=" featuredProductLink"
+                                                                href="{{env('APP_URL')}}/hotel/{{$hotel->slug}}/item/{{$product->id}}">
 
-                                                            @else
                                                                 <div class="">
-                                                                    <div style="width: 156px; height: 156px; position: relative; overflow: hidden;">
+                                                                    <div
+                                                                        style="width: 156px; height: 156px; position: relative; overflow: hidden;">
                                                                         <img src="{{$product->image}}"
                                                                              alt="{{$product->name}}"
                                                                              style="width: 100%; height: 100%; display: block; object-fit: cover;"/>
@@ -182,10 +184,10 @@
                                                                     <p style="text-align: left">{{$product->name}}</p>
                                                                     <strong>{{Money::lookupCurrencySymbol($hotel->user->currency)}}{{Money::format($product->price)}}</strong>
                                                                 </div>
-                                                            @endif
 
 
-                                                        </a>
+                                                            </a>
+                                                        @endif
                                                     </td>
 
                                                 @endforeach
