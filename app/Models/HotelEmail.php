@@ -28,7 +28,7 @@ to give you the opportunity to personalise your hotel experience with us.
 Ready to enhance your stay? Click below to view our special upsell offers.";
 
         $email->button_text = "View Offers";
-        $email->featured_products = json_encode([]);
+        $email->featured_products = json_encode([0,0,0,0]);
         $email->additional_information = "If you have any questions or need assistance, please don’t hesitate to contact us at [hotel_email_address].";
         $email->email_type = "pre-arrival-email";
         $email->save();
