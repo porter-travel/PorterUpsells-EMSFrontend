@@ -59,6 +59,7 @@ class PerformanceService
                 )
                 ->groupBy('products.name') // Group by product name to aggregate
                 ->get()
+                ->sortByDesc('price') // Sort by price in descending order
                 ->map(function ($item) {
                     return [
                         'product_name' => $item->product_name,
@@ -66,9 +67,13 @@ class PerformanceService
                         'total_value' => number_format($item->price, 2), // Format the price
                     ];
                 })
-                ->sortByDesc('total_value') // Sort by total_value in descending order
+//                ->sortByDesc('total_value') // Sort by total_value in descending order
                 ->values(), // Reset collection keys for proper indexing
-
+            'customerAnalytics' => Order::whereIn('hotel_id', $hotelIds)
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->groupBy('email')
+                ->selectRaw('email, COUNT(*) as total_orders, SUM(subtotal) as total_value')
+                ->get()
         ];
     }
 

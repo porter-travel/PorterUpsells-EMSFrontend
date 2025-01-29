@@ -230,6 +230,7 @@ class CheckoutController extends Controller
                 ]);
 
                 Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($event)));
+                Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($session)));
 //                $line_items = $session->line_items;
 
 

@@ -39,6 +39,7 @@ class PerformanceController extends Controller
             $endDate
         );
 
+//        dd($analytics['customerAnalytics']->sortByDesc('total_value'));
 //        dd($analytics['productAnalytics']);
         // Return view
         return view('admin.performance.index', [
@@ -54,6 +55,7 @@ class PerformanceController extends Controller
             'totalSales' => $analytics['orders']->sum('subtotal'),
             'hotelOrders' => $analytics['hotelOrders'],
             'productAnalytics' => $analytics['productAnalytics'],
+            'customerAnalytics' => $analytics['customerAnalytics']->sortByDesc('total_value'),
             'hotels' => $hotels,
             'hotel' => $hotel,
             'startDate' => $startDate->format('Y-m-d'),

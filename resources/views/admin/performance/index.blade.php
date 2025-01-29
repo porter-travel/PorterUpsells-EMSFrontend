@@ -104,9 +104,9 @@
 
             <div>
 
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight my-8">Property Performance</h2>
                 @if(!$hotel && count($hotelOrders) > 0)
-                    <table id="hotelOrdersTableBody" class="w-full">
+                    <h2 class="font-semibold text-xl text-gray-800 leading-tight my-8">Property Performance</h2>
+                    <table id="hotelOrdersTableBody" class="w-full table-fixed">
                         <thead>
                         <tr>
                             <th
@@ -116,25 +116,26 @@
                                 Property <span class="sort-arrow"></span>
                             </th>
                             <th
-                                class="bg-darkGrey text-white text-left p-2 cursor-pointer"
+                                class="bg-darkGrey text-white text-right p-2 cursor-pointer"
                                 data-sort="total_orders"
                             >
                                 Total Orders <span class="sort-arrow"></span>
                             </th>
                             <th
-                                class="bg-darkGrey text-white text-left p-2 rounded-tr cursor-pointer"
+                                class="bg-darkGrey text-white text-right p-2 rounded-tr cursor-pointer"
                                 data-sort="total_value"
                             >
                                 Total Value <span class="sort-arrow"></span>
                             </th>
                         </tr>
                         </thead>
-                        <tbody >
+                        <tbody>
                         @foreach($hotelOrders as $hotelOrder)
                             <tr class="border border-darkGrey">
                                 <td class="p-2" data-key="hotel_name">{{$hotelOrder['hotel_name']}}</td>
-                                <td class="p-2" data-key="total_orders">{{$hotelOrder['total_orders']}}</td>
-                                <td class="p-2" data-key="total_value">£{{\App\Helpers\Money::format($hotelOrder['total_value'])}}</td>
+                                <td class="p-2 text-right" data-key="total_orders">{{$hotelOrder['total_orders']}}</td>
+                                <td class="p-2 text-right" data-key="total_value">
+                                    £{{\App\Helpers\Money::format($hotelOrder['total_value'])}}</td>
                             </tr>
                         @endforeach
                         </tbody>
@@ -144,9 +145,9 @@
 
             <div>
 
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight my-8">Product Performance</h2>
                 @if(count($productAnalytics) > 0)
-                    <table id="productOrdersTableBody" class="w-full">
+                    <h2 class="font-semibold text-xl text-gray-800 leading-tight my-8">Product Performance</h2>
+                    <table id="productOrdersTableBody" class="w-full table-fixed">
                         <thead>
                         <tr>
                             <th
@@ -156,25 +157,67 @@
                                 Product <span class="sort-arrow"></span>
                             </th>
                             <th
-                                class="bg-darkGrey text-white text-left p-2 cursor-pointer"
+                                class="bg-darkGrey text-white text-right p-2 cursor-pointer"
                                 data-sort="total_orders"
                             >
                                 Total Orders <span class="sort-arrow"></span>
                             </th>
                             <th
-                                class="bg-darkGrey text-white text-left p-2 rounded-tr cursor-pointer"
+                                class="bg-darkGrey text-white text-right p-2 rounded-tr cursor-pointer"
                                 data-sort="total_value"
                             >
                                 Total Value <span class="sort-arrow"></span>
                             </th>
                         </tr>
                         </thead>
-                        <tbody >
+                        <tbody>
                         @foreach($productAnalytics as $product)
                             <tr class="border border-darkGrey">
                                 <td class="p-2" data-key="hotel_name">{{$product['product_name']}}</td>
-                                <td class="p-2" data-key="total_orders">{{$product['quantity']}}</td>
-                                <td class="p-2" data-key="total_value">£{{$product['total_value']}}</td>
+                                <td class="p-2 text-right" data-key="total_orders">{{$product['quantity']}}</td>
+                                <td class="p-2 text-right" data-key="total_value">£{{$product['total_value']}}</td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                @endif
+            </div>
+
+
+
+            <div>
+
+                @if(count($customerAnalytics) > 0)
+                    <h2 class="font-semibold text-xl text-gray-800 leading-tight my-8">Customer Performance</h2>
+                    <table id="customerOrdersTableBody" class="w-full table-fixed">
+                        <thead>
+                        <tr>
+                            <th
+                                class="bg-darkGrey text-white text-left p-2 rounded-tl cursor-pointer"
+                                data-sort="hotel_name"
+                            >
+                                Product <span class="sort-arrow"></span>
+                            </th>
+                            <th
+                                class="bg-darkGrey text-white text-right p-2 cursor-pointer"
+                                data-sort="total_orders"
+                            >
+                                Total Orders <span class="sort-arrow"></span>
+                            </th>
+                            <th
+                                class="bg-darkGrey text-white text-right p-2 rounded-tr cursor-pointer"
+                                data-sort="total_value"
+                            >
+                                Total Value <span class="sort-arrow"></span>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($customerAnalytics as $customer)
+                            <tr class="border border-darkGrey">
+                                <td class="p-2" data-key="hotel_name">{{$customer->email}}</td>
+                                <td class="p-2 text-right" data-key="total_orders">{{$customer->total_orders}}</td>
+                                <td class="p-2 text-right" data-key="total_value">£{{$customer->total_value}}</td>
                             </tr>
                         @endforeach
                         </tbody>
@@ -264,9 +307,22 @@
             if (productOrdersTableBody) {
                 sortTable(productOrdersTableBody, productOrdersHeaders);
             }
+
+
+            // Product Orders Table Sorting
+            const customerOrdersTableBody = document.querySelector('#customerOrdersTableBody tbody');
+            const customerOrdersHeaders = document.querySelectorAll('#customerOrdersTableBody thead th[data-sort]');
+            console.log("Product Orders Headers:", customerOrdersHeaders); // Check if headers are selected
+
+            const defaultCustomerSortHeader = document.querySelector('#customerOrdersTableBody th[data-sort="total_value"]');
+            if (defaultCustomerSortHeader) {
+                defaultCustomerSortHeader.classList.add('descending');
+                defaultCustomerSortHeader.querySelector('.sort-arrow').textContent = ' ↓';
+            }
+            if (customerOrdersTableBody) {
+                sortTable(customerOrdersTableBody, customerOrdersHeaders);
+            }
         });
-
-
 
 
     </script>
