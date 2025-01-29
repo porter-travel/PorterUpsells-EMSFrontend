@@ -165,7 +165,7 @@
 
                                                                                 <input type="hidden"
                                                                                        name="hotel_email[featured-products][]"
-                                                                                       value="{{$product->id}}">
+                                                                                       value="{{$product ? $product->id : null}}">
                                                                             </a>
 
                                                                             <a href="#">
