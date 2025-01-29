@@ -170,7 +170,7 @@
                                                     <td style="padding: 8px; vertical-align: top; position: relative">
                                                         <a
                                                             class=" featuredProductLink" href="{{env('APP_URL')}}/hotel/{{$hotel->slug}}/item/{{$product->id}}">
-                                                            @if(is_numeric($product) && $product == 0)
+                                                            @if($product == null || (is_numeric($product) && ($product == 0 || $product == '0')))
 
                                                             @else
                                                                 <div class="">
