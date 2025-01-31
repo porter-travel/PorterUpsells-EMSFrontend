@@ -101,6 +101,7 @@ class CheckoutController extends Controller
                 $OrderItem->image = $item['image'];
                 $OrderItem->date = $item['date'];
                 $OrderItem->product_type = $item['product_type'];
+                $OrderItem->hotel_id = $the_hotel_id;
 
                 $OrderItem->save();
 

@@ -27,13 +27,23 @@ class TrackDashboardView implements ShouldQueue
      */
     public function handle()
     {
-        \DB::table('hotel_analytics')->updateOrInsert(
-            [
+        $existingRecord = \DB::table('hotel_analytics')
+            ->where('hotel_id', $this->hotelId)
+            ->where('view_date', now()->toDateString())
+            ->first();
+
+        if ($existingRecord) {
+            \DB::table('hotel_analytics')
+                ->where('hotel_id', $this->hotelId)
+                ->where('view_date', now()->toDateString())
+                ->increment('dashboard_views');
+        } else {
+            \DB::table('hotel_analytics')->insert([
                 'hotel_id' => $this->hotelId,
                 'view_date' => now()->toDateString(),
-            ],
-            ['dashboard_views' => \DB::raw('dashboard_views + 1')]
-        );
+                'dashboard_views' => 1,
+            ]);
+        }
     }
 
 }

@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Booking;
 use App\Models\CustomerEmail;
 use App\Models\Hotel;
+use App\Models\HotelEmail;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
@@ -31,6 +32,7 @@ class BookingControllerTest extends TestCase
         Mail::fake();
         $user = User::factory()->create();
         $hotel = Hotel::factory()->create(['user_id' => $user->id]);
+        HotelEmail::createStandardTemplates($hotel->id);
 
         $data = [
             'guest_name' => 'John Doe',

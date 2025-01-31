@@ -99,4 +99,9 @@ class Hotel extends Model
         return $this->hasMany(HotelEmail::class);
     }
 
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
 }

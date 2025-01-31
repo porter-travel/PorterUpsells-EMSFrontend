@@ -11,6 +11,8 @@ class HotelAnalytics extends Model
 
     protected $table = 'hotel_analytics';
 
+    protected $fillable = ['hotel_id', 'view_date', 'dashboard_views'];
+
     public function hotel()
     {
         return $this->belongsTo(Hotel::class);

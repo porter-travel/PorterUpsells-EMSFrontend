@@ -1,33 +1,19 @@
 <x-hotel-admin-layout :hotel="$hotel">
     <x-slot name="header">
         <div class="flex items-center justify-between">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Bookings for: ') . $hotel->name }}
-        </h2>
-        <a href="{{route('booking.create', ['id' => $hotel->id])}}" class="text-black font-bold border rounded-xl p-4 hover:bg-mint">Create Booking</a>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{ __('Bookings for: ') . $hotel->name }}
+            </h2>
+            <a href="{{route('booking.create', ['id' => $hotel->id])}}"
+               class="text-black font-bold border rounded-xl p-4 hover:bg-mint">Create Booking</a>
         </div>
     </x-slot>
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <form method="get">
-                        @csrf
-                        <div class="flex items-center pb-6">
-                            <div>
-                                <label>Start Date
-                                    <input type="date" name="start_date" value="{{$startDate}}"></label>
-                            </div>
+                    <x-date-filter-bar :startDate="$startDate" :endDate="$endDate" :exportLink="route('bookings.export-to-csv', $hotel->id)"/>
 
-                            <div class="mx-4">
-                                <label>End Date
-                                    <input type="date" name="end_date" value="{{$endDate}}"></label>
-                            </div>
-                            <div>
-                                <x-secondary-button type="submit">Filter</x-secondary-button>
-                            </div>
-                        </div>
-                    </form>
 
                     @if(count($bookings) > 0)
 
@@ -36,9 +22,9 @@
                                 <thead>
                                 <tr class="text-left bg-grey">
                                     <th class="p-2">Booking Ref</th>
-                                    <th class="p-2">Details</th>
-                                    <th class="p-2">Stay Dates</th>
                                     <th class="p-2">Room</th>
+                                    <th class="p-2">Stay Dates</th>
+                                    <th class="p-2">Details</th>
                                     <th class="p-2">Quick Link</th>
                                 </tr>
                                 </thead>
@@ -48,19 +34,26 @@
 
                                     <tr class="border">
                                         <td class="p-2">{{$booking->booking_ref}}</td>
-                                        <td class="p-2">{{$booking->name}}<br>{{$booking->email_address}}</td>
-                                        <td class="p-2"> {{\App\Helpers\Date::formatToDayAndMonth($booking->arrival_date)}} - {{\App\Helpers\Date::formatToDayAndMonth($booking->departure_date)}}</td>
                                         <td>
-                                            <form class="update-form flex" method="post" action="/admin/booking/{{$booking->id}}/update">
+                                            <form class="update-form flex" method="post"
+                                                  action="/admin/booking/{{$booking->id}}/update">
                                                 @csrf
                                                 <input name="room" class="w-20" value="{{$booking->room}}">
-                                                <button type="submit" class="update-room bg-grey border-r border-y rounded-tr rounded-br px-2">✓</button>
+                                                <button type="submit"
+                                                        class="update-room bg-grey border-r border-y rounded-tr rounded-br px-2">
+                                                    ✓
+                                                </button>
                                             </form>
                                         </td>
+                                        <td class="p-2"> {{\App\Helpers\Date::formatToDayAndMonth($booking->arrival_date)}}
+                                            - {{\App\Helpers\Date::formatToDayAndMonth($booking->departure_date)}}</td>
+                                        <td class="p-2">{{$booking->name}}<br>{{$booking->email_address}}</td>
+
                                         <td>
-                                        <input class=" w-0 p-0 opacity-0 booking-link" type="text" disabled
-                                               value="{{env('APP_URL')}}/hotel/{{$hotel->slug}}/welcome?name={{$booking->name}}&arrival_date={{$booking->arrival_date}}&departure_date={{$booking->departure_date}}&email_address={{$booking->email_address}}&booking_ref={{$booking->booking_ref}}">
-                                            <span class="copy-label cursor-pointer" onclick="copyToClipboard(this)">Copy</span>
+                                            <input class=" w-0 p-0 opacity-0 booking-link" type="text" disabled
+                                                   value="{{env('APP_URL')}}/hotel/{{$hotel->slug}}/welcome?name={{$booking->name}}&arrival_date={{$booking->arrival_date}}&departure_date={{$booking->departure_date}}&email_address={{$booking->email_address}}&booking_ref={{$booking->booking_ref}}">
+                                            <span class="copy-label cursor-pointer"
+                                                  onclick="copyToClipboard(this)">Copy</span>
 
                                         </td>
 

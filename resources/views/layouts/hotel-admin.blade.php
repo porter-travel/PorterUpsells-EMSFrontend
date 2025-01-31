@@ -15,7 +15,7 @@
                                 <a href="{{route('hotel.edit', ['id' => $hotel->id])}}">Manage Property</a>
                             </li>
                             <li class="mr-4 text-xl">
-                                <a href="{{route('orders.listItemsForPicking', ['hotel_id' => $hotel->id])}}">Orders</a>
+                                <a href="{{route('orders.listv2', ['hotel_id' => $hotel->id])}}">Orders</a>
                             </li>
                             <li class="mr-4 text-xl">
                                 <a href="{{route('bookings.list', ['id' => $hotel->id])}}">Guests</a>

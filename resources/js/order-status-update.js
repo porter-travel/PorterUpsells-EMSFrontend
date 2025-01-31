@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Handle success - you can show a message or update the UI as needed
                     console.log('Order status updated successfully:', response.data);
                     const tdElement = this.closest('td');
-                    tdElement.className = response.data.className;
+                    this.className = response.data.className;
                 })
                 .catch(error => {
                     // Handle error - you can show an error message

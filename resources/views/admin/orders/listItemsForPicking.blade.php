@@ -28,7 +28,7 @@
 
                                     <tr class="border">
                                         <td class="p-2">{{$order['booking_ref']}}</td>
-                                        <td class="p-2">{{date_create_from_format('Y-m-d', $order['arrival_date'])->format('d/m/Y')}}</td>
+                                        <td class="p-2">{{$order['arrival_date'] ?? date_create_from_format('Y-m-d', $order['arrival_date'])->format('d/m/Y')}}</td>
                                         <td class="p-2">{{$order['name']}}</td>
                                         {{--                                        <td class="p-2">{{$order->created_at}}</td>--}}
                                         <td class="p-2">
@@ -38,11 +38,11 @@
                                                 @if($item['product_type'] == 'variable')
                                                     <br><span class="text-sm">{{$item['variation_name']}}</span>
                                                 @endif
-                                            @foreach($item['meta'] as $meta)
-                                                @if($meta['key'] == 'arrival_time')
-                                                    <br><span class="text-sm">Time: {{$meta['value']}}</span>
-                                                @endif
-                                            @endforeach
+                                                @foreach($item['meta'] as $meta)
+                                                    @if($meta['key'] == 'arrival_time')
+                                                        <br><span class="text-sm">Time: {{$meta['value']}}</span>
+                                                    @endif
+                                                @endforeach
                                                 <br>
                                             @endforeach
                                         </td>

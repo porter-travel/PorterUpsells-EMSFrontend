@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Http\Controllers\CalendarBookingController;
 use App\Http\Controllers\CheckoutController;
+use App\Models\Booking;
 use App\Models\CalendarBooking;
 use App\Models\Hotel;
 use App\Models\Order;
@@ -48,8 +49,9 @@ class CalendarBookingsTest extends TestCase
         $product->specifics()->create(['name' => 'concurrent_availability', 'value' => '4']);
         $image = UploadedFile::fake()->image('product.jpg');
         $variant = $product->variations()->create(['image' => $image, 'name' => 'Original Variant', 'price' => 50]);
+        $booking = Booking::factory()->create(['hotel_id' => $hotel->id]);
 
-        $order = Order::factory()->create(['hotel_id' => $hotel->id]);
+        $order = Order::factory()->create(['hotel_id' => $hotel->id, 'booking_id' => $booking->id]);
         $orderItems = OrderItem::factory()->create(['order_id' => $order->id, 'product_id' => $product->id, 'variation_id' => $variant->id, 'product_type' => 'calendar']);
         $orderItems->meta()->create(['key' => 'arrival_time', 'value' => '09:00']);
         $orderItems->meta()->create(['key' => 'end_time', 'value' => '11:00']);
@@ -94,9 +96,10 @@ class CalendarBookingsTest extends TestCase
         $product->specifics()->create(['name' => 'time_intervals', 'value' => '2hrs']);
         $image = UploadedFile::fake()->image('product.jpg');
         $variant = $product->variations()->create(['image' => $image, 'name' => 'Original Variant', 'price' => 50]);
+        $booking = Booking::factory()->create(['hotel_id' => $hotel->id]);
 
 
-        $order = Order::factory()->create(['hotel_id' => $hotel->id]);
+        $order = Order::factory()->create(['hotel_id' => $hotel->id, 'booking_id' => $booking->id]);
         $orderItems = OrderItem::factory()->create(['order_id' => $order->id, 'product_id' => $product->id, 'variation_id' => $variant->id, 'product_type' => 'calendar']);
         $orderItems->meta()->create(['key' => 'arrival_time', 'value' => '09:00']);
         $orderItems->meta()->create(['key' => 'end_time', 'value' => '11:00']);
@@ -121,13 +124,13 @@ class CalendarBookingsTest extends TestCase
             'mobile' => '1234567890',
             'room_number' => null,
             'date' => date('Y-m-d'),
-            'start_time' => '09:00',
-            'end_time' => '11:00',
-            'slot' => 1,
+            'start_time' => '09:00:00',
+            'end_time' => '11:00:00',
+            'slot' => 0,
         ]);
 
-
-        $order = Order::factory()->create(['hotel_id' => $hotel->id]);
+$booking = Booking::factory()->create(['hotel_id' => $hotel->id]);
+        $order = Order::factory()->create(['hotel_id' => $hotel->id, 'booking_id' => $booking->id]);
         $orderItems = OrderItem::factory()->create(['order_id' => $order->id, 'product_id' => $product->id, 'variation_id' => $variant->id, 'product_type' => 'calendar']);
         $orderItems->meta()->create(['key' => 'arrival_time', 'value' => '09:00']);
         $orderItems->meta()->create(['key' => 'end_time', 'value' => '11:00']);
@@ -150,7 +153,7 @@ class CalendarBookingsTest extends TestCase
             'product_id' => $product->id,
             'variation_id' => $variant->id,
             'name' => 'Jane Doe',
-            'slot' => 2,]);
+            'slot' => 1,]);
     }
 
     public function test_getting_availability_for_product_on_same_day()

@@ -83,7 +83,10 @@ Route::middleware(['auth', 'verified'])->group(function(){
     Route::post('admin/product/{product_id}/get-as-json', [ProductController::class, 'getProductAsJson'] )->name('product.get-as-json');
 
     Route::get('admin/hotel/{hotel_id}/orders', [\App\Http\Controllers\OrderController::class, 'listOrdersByHotel'] )->name('orders.list');
+    Route::get('admin/hotel/{hotel_id}/orders/v2', [\App\Http\Controllers\OrderItemController::class, 'listOrdersByHotelv2'] )->name('orders.listv2');
     Route::get('admin/hotel/{hotel_id}/order-pick-list', [\App\Http\Controllers\OrderController::class, 'listOrderItemsForPicking'] )->name('orders.listItemsForPicking');
+
+    Route::get('admin/hotel/{hotel_id}/orders/export-to-csv', [\App\Http\Controllers\OrderItemController::class, 'exportOrdersToCsv'] )->name('orders.export-to-csv');
 
     Route::post('admin/order-item/{id}/update', [\App\Http\Controllers\OrderItemController::class, 'update'] )->name('orderItem.update');
     Route::post('admin/product/store', [ProductController::class, 'store'] )->name('product.store');
@@ -92,6 +95,7 @@ Route::middleware(['auth', 'verified'])->group(function(){
     Route::get('admin/hotel/{id}/create-booking', [\App\Http\Controllers\BookingController::class, 'create'] )->name('booking.create');
     Route::post('admin/hotel/{id}/store-booking', [\App\Http\Controllers\BookingController::class, 'store'] )->name('booking.store');
     Route::get('admin/hotel/{id}/list-bookings', [\App\Http\Controllers\BookingController::class, 'list'] )->name('bookings.list');
+    Route::get('admin/hotel/{id}/bookings/export-to-csv', [\App\Http\Controllers\BookingController::class, 'exportGuestsToCSV'] )->name('bookings.export-to-csv');
     Route::post('admin/booking/{booking_id}/update', [\App\Http\Controllers\BookingController::class, 'updateBooking'] )->name('booking.update');
     Route::post('admin/hotel/{hotel_id}/fetch-bookings-by-date', [\App\Http\Controllers\BookingController::class, 'fetchBookingsByDate'] )->name('booking.fetch-by-date');
 

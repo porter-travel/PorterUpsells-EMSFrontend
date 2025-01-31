@@ -63,13 +63,19 @@ class OrderController extends Controller
 
     public function updateOrder(Request $request){
         $order = Order::find($request->id);
-        $order->status = $request->status;
-        $order->items()->update(['status' => $request->status]);
+        if($request->has('status')) {
+            $order->status = $request->status;
+            $order->items()->update(['status' => $request->status]);
+        }
+
+        if($request->has('room')) {
+            $order->room_number = $request->room;
+        }
 
         $order->save();
 
 
-        if($order->status == 'complete') {
+        if($order->status == 'complete' || $order->status == 'fulfilled') {
             // Send email to customer later
             $className = 'bg-mint';
         }
