@@ -64,7 +64,7 @@ class CartControllerTest extends TestCase
                 'variation_id' => $variation->id,
                 'quantity' => 2,
                 'product_id' => $variation->id,
-                'hotel_id' => 1,
+                'hotel_id' => $hotel->id,
                 'arrival_time' => '10:00',
                 'product_name' => 'Test Product',
                 'product_type' => 'room',

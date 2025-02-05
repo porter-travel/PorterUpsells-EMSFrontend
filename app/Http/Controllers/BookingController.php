@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\TrackEmailSends;
 use App\Models\Booking;
 use App\Models\CustomerEmail;
 use App\Models\Hotel;
+use App\Services\CustomerEmailService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -15,6 +17,7 @@ class BookingController extends Controller
     public function create($id)
     {
         $hotel = Hotel::find($id);
+
         return view('admin.booking.create', ['hotel' => $hotel]);
     }
 
@@ -23,6 +26,7 @@ class BookingController extends Controller
         $hotel = Hotel::find($id);
         $content = $request->only(['guest_name', 'arrival_date', 'departure_date', 'email_address', 'booking_ref']);
 
+//        dd($content);
         $booking = Booking::create([
             'hotel_id' => $id,
             'name' => $content['guest_name'],
@@ -33,21 +37,15 @@ class BookingController extends Controller
         ]);
 
         if ($request->has('send_email')) {
-            foreach ($request->send_email as $email) {
-                $customer_email = new CustomerEmail(['booking_id' => $booking->id]);
-
-                if (is_numeric($email)) {
-                    $customer_email->email_type = 'pre-arrival';
-                    $customer_email->scheduled_at = Carbon::createFromFormat('Y-m-d', $content['arrival_date'])->subDays($email);
-                } else {
-                    $customer_email->email_type = $email;
-                    $customer_email->scheduled_at = Carbon::now();
-                    Mail::to($content['email_address'])->send(new \App\Mail\CustomerEmail($hotel, $content));
-                    $customer_email->sent_at = Carbon::now();
-                }
-
-                $customer_email->save();
-            }
+            $customerEmailService = new CustomerEmailService();
+            $customerEmailService->setupEmailSchedule([
+                'days' => $request->send_email,
+                'booking' => $booking,
+                'arrival_date' => $content['arrival_date'],
+                'email_address' => $content['email_address'],
+                'hotel' => $hotel,
+                'content' => $content,
+            ]);
         }
 
         return to_route('bookings.list', ['id' => $id]);
@@ -57,14 +55,7 @@ class BookingController extends Controller
 
     public function list(Request $request, $id)
     {
-        // Import Carbon at the top of the controller if not already done
-        if ($request->has('start_date') && $request->has('end_date')) {
-            $startDate = Carbon::createFromFormat('Y-m-d', $request->input('start_date'));
-            $endDate = Carbon::createFromFormat('Y-m-d', $request->input('end_date'));
-        } else {
-            $startDate = Carbon::now()->startOfDay();
-            $endDate = Carbon::now()->addDays(7)->endOfDay();
-        }
+
 
         // Fetch the hotel by ID
         $hotel = Hotel::find($id);
@@ -78,24 +69,58 @@ class BookingController extends Controller
             return redirect()->back()->with('error', 'Hotel not found');
         }
 
-        // Filter bookings based on the date range
-        $bookings = $hotel->bookings()
-            ->where(function ($query) use ($startDate, $endDate) {
-                $query->whereBetween('arrival_date', [$startDate, $endDate])
-                    ->orWhereBetween('departure_date', [$startDate, $endDate])
-                    ->orWhere(function ($query) use ($startDate, $endDate) {
-                        $query->where('arrival_date', '<=', $startDate)
-                            ->where('departure_date', '>=', $endDate);
-                    });
-            })
-            ->get();
+        $bookings = $this->getListOfOrders($hotel, $request);
+
 
         return view('admin.booking.list', [
             'bookings' => $bookings,
             'hotel' => $hotel,
-            'startDate' => $startDate,
-            'endDate' => $endDate
+            'startDate' => $request->input('start_date', Carbon::now()->format('Y-m-d')),
+            'endDate' => $request->input('end_date', Carbon::now()->addDays(7)->format('Y-m-d')),
         ]);
+    }
+
+    public function exportGuestsToCSV($id, Request $request)
+    {
+
+        // Fetch the hotel by ID
+        $hotel = Hotel::find($id);
+
+        if ($hotel->user_id != auth()->user()->id && auth()->user()->role != 'superadmin') {
+            return redirect()->route('dashboard');
+        }
+
+        // Ensure the hotel is found
+        if (!$hotel) {
+            return redirect()->back()->with('error', 'Hotel not found');
+        }
+
+        $bookings = $this->getListOfOrders($hotel, $request);
+
+        $headers = [
+            "Content-Type" => "text/csv",
+            "Content-Disposition" => "attachment; filename=guests.csv",
+        ];
+
+        $callback = function () use ($bookings) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, ['Booking Ref', 'Room', 'Stay Dates', 'Name', 'Email Address']);
+
+            foreach ($bookings as $booking) {
+                fputcsv($file, [
+                    $booking->booking_ref,
+                    $booking->room,
+                    \App\Helpers\Date::formatToDayAndMonth($booking->arrival_date) . ' - ' . \App\Helpers\Date::formatToDayAndMonth($booking->departure_date),
+                    $booking->name,
+                    $booking->email_address,
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+
     }
 
     public function updateBooking($booking_id, Request $request)
@@ -127,6 +152,30 @@ class BookingController extends Controller
             ->select(['name', 'room'])->get();
 
         return response()->json($bookings);
+    }
+
+    private function getListOfOrders($hotel, $request)
+    {
+        // Import Carbon at the top of the controller if not already done
+        if ($request->has('start_date') && $request->has('end_date')) {
+            $startDate = Carbon::createFromFormat('Y-m-d', $request->input('start_date'));
+            $endDate = Carbon::createFromFormat('Y-m-d', $request->input('end_date'));
+        } else {
+            $startDate = Carbon::now()->startOfDay();
+            $endDate = Carbon::now()->addDays(7)->endOfDay();
+        }
+
+        // Filter bookings based on the date range
+        return $hotel->bookings()
+            ->where(function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('arrival_date', [$startDate, $endDate])
+                    ->orWhereBetween('departure_date', [$startDate, $endDate])
+                    ->orWhere(function ($query) use ($startDate, $endDate) {
+                        $query->where('arrival_date', '<=', $startDate)
+                            ->where('departure_date', '>=', $endDate);
+                    });
+            })
+            ->get();
     }
 
 }

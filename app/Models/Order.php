@@ -21,7 +21,6 @@ class Order extends Model
         'stripe_id',
         'payment_status',
         'subtotal',
-        'total_tax',
         'total'
     ];
 
@@ -34,7 +33,6 @@ class Order extends Model
             'arrival_date' => $data['arrival_date'],
             'departure_date' => $data['departure_date'],
             'subtotal' => $data['subtotal'],
-            'total_tax' => $data['total_tax'],
             'total' => $data['total']
         ]);
     }
@@ -52,7 +50,6 @@ class Order extends Model
             'stripe_id' => $response->id,
             'payment_status' => $response->payment_status,
             'subtotal' => $response->amount_subtotal,
-            'total_tax' => $response->total_details->amount_tax,
             'total' => $response->amount_total
         ]);
 

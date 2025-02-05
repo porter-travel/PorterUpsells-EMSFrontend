@@ -114,7 +114,7 @@ function updateTotals(data) {
         tax.innerText = '£' + data.tax.toFixed(2);
     }
     if (total) {
-        total.innerText = '£' + data.total_with_tax.toFixed(2);
+        total.innerText = '£' + data.total.toFixed(2);
     }
 
     for (let key in data) {

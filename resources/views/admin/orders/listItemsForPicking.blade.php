@@ -8,23 +8,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <form method="get">
-                        @csrf
-                        <div class="flex items-center pb-6">
-                            <div>
-                                <label>Start Date
-                                    <input type="date" name="start_date" value="{{$startDate}}"></label>
-                            </div>
-
-                            <div class="mx-4">
-                                <label>End Date
-                                    <input type="date" name="end_date" value="{{$endDate}}"></label>
-                            </div>
-                            <div>
-                                <x-secondary-button type="submit">Filter</x-secondary-button>
-                            </div>
-                        </div>
-                    </form>
+                    <x-date-filter-bar :startDate="$startDate" :endDate="$endDate"/>
 
                     @if(count($orders) > 0)
 
@@ -44,7 +28,7 @@
 
                                     <tr class="border">
                                         <td class="p-2">{{$order['booking_ref']}}</td>
-                                        <td class="p-2">{{date_create_from_format('Y-m-d', $order['arrival_date'])->format('d/m/Y')}}</td>
+                                        <td class="p-2">{{$order['arrival_date'] ?? date_create_from_format('Y-m-d', $order['arrival_date'])->format('d/m/Y')}}</td>
                                         <td class="p-2">{{$order['name']}}</td>
                                         {{--                                        <td class="p-2">{{$order->created_at}}</td>--}}
                                         <td class="p-2">
@@ -54,11 +38,11 @@
                                                 @if($item['product_type'] == 'variable')
                                                     <br><span class="text-sm">{{$item['variation_name']}}</span>
                                                 @endif
-                                            @foreach($item['meta'] as $meta)
-                                                @if($meta['key'] == 'arrival_time')
-                                                    <br><span class="text-sm">Time: {{$meta['value']}}</span>
-                                                @endif
-                                            @endforeach
+                                                @foreach($item['meta'] as $meta)
+                                                    @if($meta['key'] == 'arrival_time')
+                                                        <br><span class="text-sm">Time: {{$meta['value']}}</span>
+                                                    @endif
+                                                @endforeach
                                                 <br>
                                             @endforeach
                                         </td>

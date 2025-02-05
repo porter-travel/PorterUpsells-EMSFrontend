@@ -1,4 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+@php use App\Helpers\Money; @endphp
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
@@ -145,18 +146,13 @@
                     </tr>
                     <tr>
                         <td style="padding: 16px">
-                            <p style="font-weight: 700">Hi {{$content['guest_name']}},</p>
-                            <p>We can’t wait to welcome you to {{$hotel->name}} in just {{$days}}.</p>
-
-                            <p>To make sure you have the best experience possible, we’ve partnered with Enhance My Stay
-                                to give you the opportunity to personalise your hotel experience with us. </p>
-                            <p>Ready to enhance your stay? Click below to view our special upsell offers.</p>
+                            <p>{!! $key_message !!}</p>
                         </td>
                     </tr>
                     <tr>
                         <td style="padding: 16px; text-align: center">
                             <a href="{{env('APP_URL')}}/hotel/{{$hotel->slug}}/welcome?name={{$content['guest_name']}}&arrival_date={{$content['arrival_date']}}&departure_date={{$content['departure_date']}}&email_address={{$content['email_address']}}&booking_ref={{$content['booking_ref']}}"
-                               style="background-color: {{$hotel->button_color}}; color: {{$hotel->button_text_color}}; font-weight: bold; padding: 16px; text-decoration: none; border-radius: 4px">Personalise My Stay</a>
+                               style="background-color: {{$hotel->button_color}}; color: {{$hotel->button_text_color}}; font-weight: bold; padding: 16px; text-decoration: none; border-radius: 4px">{{$button_text}}</a>
                         </td>
                     </tr>
                     <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
@@ -165,42 +161,52 @@
                             valign="top">
                             <table width="100%" cellpadding="0" cellspacing="0"
                                    style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
-                                <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
-                                    <td class="content-block"
-                                        style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;"
-                                        valign="top">
+                                <tr>
+                                    <td style="padding: 8px">
+                                        <table style="width: 100%; table-layout: fixed">
+                                            <tr>
 
+                                                @foreach($featured_products as $key => $product)
+                                                    <td style="padding: 8px; vertical-align: top; position: relative">
+                                                        @if($product == null || (is_numeric($product) && ($product == 0 || $product == '0')))
+                                                        @else
+                                                            <a
+                                                                class=" featuredProductLink"
+                                                                href="{{env('APP_URL')}}/hotel/{{$hotel->slug}}/item/{{$product->id}}">
+
+                                                                <div class="">
+                                                                    <div
+                                                                        style="width: 156px; height: 156px; position: relative; overflow: hidden;">
+                                                                        <img src="{{$product->image}}"
+                                                                             alt="{{$product->name}}"
+                                                                             style="width: 100%; height: 100%; display: block; object-fit: cover;"/>
+                                                                    </div>
+                                                                    <p style="text-align: left">{{$product->name}}</p>
+                                                                    <strong>{{Money::lookupCurrencySymbol($hotel->user->currency)}}{{Money::format($product->price)}}</strong>
+                                                                </div>
+
+
+                                                            </a>
+                                                        @endif
+                                                    </td>
+
+                                                @endforeach
+
+
+                                            </tr>
+                                        </table>
                                     </td>
                                 </tr>
-                                {{--                                @if(isset($link))--}}
-                                {{--                                    <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">--}}
-                                {{--                                        <td class="content-block"--}}
-                                {{--                                            style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 20px;"--}}
-                                {{--                                            valign="top">--}}
-                                {{--                                            <a href="{{$link}}" class="btn-primary"--}}
-                                {{--                                               style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; color: #FFF; text-decoration: none; line-height: 2em; font-weight: bold; text-align: center; cursor: pointer; display: inline-block; border-radius: 5px; text-transform: capitalize; background-color: #348eda; margin: 0; border-color: #348eda; border-style: solid; border-width: 10px 20px;">--}}
-                                {{--                                                {{$linkText}}</a>--}}
-                                {{--                                        </td>--}}
-                                {{--                                    </tr>--}}
-                                {{--                                @endif--}}
+
+                                <tr>
+                                    <td style="padding: 16px">
+                                        <p>{!! $additional_information !!}</p>
+                                    </td>
+                                </tr>
                             </table>
                         </td>
                     </tr>
                 </table>
-                {{--                <div class="footer"--}}
-                {{--                     style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; width: 100%; clear: both; color: #999; margin: 0; padding: 20px;">--}}
-                {{--                    <table width="100%"--}}
-                {{--                           style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">--}}
-                {{--                        <tr style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">--}}
-                {{--                            <td class="aligncenter content-block"--}}
-                {{--                                style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 12px; vertical-align: top; color: #999; text-align: center; margin: 0; padding: 0 0 20px;"--}}
-                {{--                                align="center" valign="top"><a href="http://www.mailgun.com"--}}
-                {{--                                                               style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 12px; color: #999; text-decoration: underline; margin: 0;">Unsubscribe</a>--}}
-                {{--                                from these alerts.--}}
-                {{--                            </td>--}}
-                {{--                        </tr>--}}
-                {{--                    </table>--}}
-                {{--                </div>--}}
             </div>
         </td>
         <td style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0;"

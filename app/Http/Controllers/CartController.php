@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Intervals;
+use App\Jobs\TrackCartProducts;
+use App\Jobs\TrackCartView;
 use App\Models\Connection;
 use App\Models\Hotel;
 use App\Models\Product;
 use App\Models\ProductSpecific;
 use App\Models\Variation;
-use App\Services\ResDiary\CreateBooking;
+//use App\Services\ResDiary\CreateBooking;
 use App\Services\ResDiary\ResDiaryBooking;
 use Illuminate\Http\Request;
 
@@ -16,6 +18,7 @@ class CartController extends Controller
 {
     function show($hotel_id)
     {
+
 
         session()->put('hotel_id', $hotel_id);
 
@@ -32,6 +35,8 @@ class CartController extends Controller
             $hotel = Hotel::where('slug', $hotel_id)->first();
         }
 
+        TrackCartView::dispatch($hotel->id);
+
 //        dd($data);
         return view('cart.show', ['data' => $data, 'hotel' => $hotel])->with('hotel_id', $hotel_id);
     }
@@ -47,6 +52,8 @@ class CartController extends Controller
         $arrival_time = $items['arrival_time'] ?? null;
         $product_name = $items['product_name'];
         $product_type = $items['product_type'];
+
+        TrackCartProducts::dispatch($hotel_id, $product_id, $id);
 
         $max_qty = $items['max_qty'] ?? null;
 
@@ -228,7 +235,7 @@ class CartController extends Controller
     private function calculateCartTotals($cart)
     {
         $cart['total'] = $this->calculateTotal($cart);
-        $cart['total_with_tax'] = $this->calculateTotalWithTax($cart);
+//        $cart['total_with_tax'] = $this->calculateTotalWithTax($cart);
         $cart['tax'] = $this->calculateTax($cart);
         $cartCount = 0;
         foreach ($cart as $item) {

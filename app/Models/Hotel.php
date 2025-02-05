@@ -79,5 +79,41 @@ class Hotel extends Model
         return $this->hasMany(CalendarBooking::class);
 
     }
+    public function hotelAnalytics()
+    {
+        return $this->hasMany(HotelAnalytics::class);
+    }
+
+    public function productViews()
+    {
+        return $this->hasMany(ProductViews::class);
+    }
+
+    public function meta()
+    {
+        return $this->hasMany(HotelMeta::class);
+    }
+
+    public function hotelEmails()
+    {
+        return $this->hasMany(HotelEmail::class);
+    }
+
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
+    public function emailSchedule(){
+        $emails = $this->meta()->where('key', 'like', 'email-schedule%')->get();
+        $schedule = [];
+        foreach ($emails as $email) {
+            $key = preg_replace('/[^0-9]/', '', $email->key);
+            if($key && $email->value){
+                $schedule[] = $key;
+            }
+        }
+        return $schedule;
+    }
 
 }

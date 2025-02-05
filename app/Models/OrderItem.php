@@ -30,4 +30,9 @@ class OrderItem extends Model
     {
         return $this->hasMany(OrderItemMeta::class);
     }
+
+    public function hotel()
+    {
+        return $this->belongsTo(Hotel::class);
+    }
 }

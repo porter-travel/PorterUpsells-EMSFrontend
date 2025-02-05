@@ -45,7 +45,7 @@
                                 </a>
                                 <div class="mx-4">
                                     <label><span class=" sr-only block">Date</span>
-                                        <input onchange="this.form.submit();" type="date" name="date" value="{{$date}}"></label>
+                                        <input id="calendarDatePicker" onchange="this.form.submit();" type="date" name="date" value="{{$date}}"></label>
                                 </div>
                                 <a href="?date={{$tomorrow}}"><svg width="6" height="11" viewBox="0 0 6 11" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M6 5.5L-4.80825e-07 0L0 11L6 5.5Z" fill="black"/>

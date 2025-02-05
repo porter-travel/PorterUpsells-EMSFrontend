@@ -37,5 +37,10 @@ class Product extends Model
 
     }
 
+    public function productViews()
+    {
+        return $this->hasMany(ProductViews::class);
+    }
+
 
 }

@@ -79,8 +79,7 @@ class CheckoutController extends Controller
         $order->departure_date = $departure_date;
         $order->payment_status = 'pending';
         $order->subtotal = $cart['total'];
-        $order->total_tax = $cart['tax'];
-        $order->total = $cart['total_with_tax'];
+        $order->total = $cart['total'];
 
         $order->save();
 
@@ -102,6 +101,7 @@ class CheckoutController extends Controller
                 $OrderItem->image = $item['image'];
                 $OrderItem->date = $item['date'];
                 $OrderItem->product_type = $item['product_type'];
+                $OrderItem->hotel_id = $the_hotel_id;
 
                 $OrderItem->save();
 
@@ -231,6 +231,7 @@ class CheckoutController extends Controller
                 ]);
 
                 Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($event)));
+                Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest(json_encode($session)));
 //                $line_items = $session->line_items;
 
 
@@ -254,9 +255,20 @@ class CheckoutController extends Controller
 
                 $this->createCalendarBooking($order, $session);
 
+                $hotel_id = $order->hotel_id;
+                if (is_numeric($hotel_id)) {
+                    $hotel = Hotel::find($hotel_id);
+                } else {
+                    $hotel = Hotel::where('slug', $hotel_id)->first();
+                }
 
-                Mail::to($session->customer_details->email, $session->metadata->name)->send(new OrderConfirmation($order));
+                $bcc = $hotel->meta->where('hotel_id', $hotel->id)->where('key', 'email-recipients')->first()->value;
 
+                if($bcc) {
+                    Mail::to($session->customer_details->email, $session->metadata->name)->bcc($bcc)->send(new OrderConfirmation($order));
+                } else {
+                    Mail::to($session->customer_details->email, $session->metadata->name)->send(new OrderConfirmation($order));
+                }
 
                 //Cancel any Scheduled Emails for the customer
 

@@ -47,6 +47,9 @@ class HotelControllerTest extends TestCase
     /** @test */
     public function it_displays_the_welcome_page_with_valid_hotel_slug()
     {
+
+        $this->refreshDatabase();
+
         $user = \App\Models\User::factory()->create();
         $hotel = Hotel::factory()->create(['user_id' => $user->id]);
 

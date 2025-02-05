@@ -116,11 +116,11 @@
             <div class="text">
                 <h3>3. A CONNECTED ECOSYSTEM OF INTEGRATIONS</h3>
                 <p>
-                    We’re building a network of integrations, with tools like ResDiary, to unlock more upsell opportunities. From dining reservations to curated experiences, we connect seamlessly with your existing systems - making it easy to offer more, all in one place.
+                    We’re building a network of integrations, with tools like restaurant integrations, to unlock more upsell opportunities. From dining reservations to curated experiences, we connect seamlessly with your existing systems - making it easy to offer more, all in one place.
                 </p>
             </div>
             <div class="image">
-                <img src="fe/images/integrations.png" alt="Connected Ecosystem">
+                <img src="fe/images/integrations-2.png" alt="Connected Ecosystem">
             </div>
         </div>
     </div>
