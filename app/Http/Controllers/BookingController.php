@@ -26,7 +26,7 @@ class BookingController extends Controller
         $hotel = Hotel::find($id);
         $content = $request->only(['guest_name', 'arrival_date', 'departure_date', 'email_address', 'booking_ref']);
 
-        dd($content);
+//        dd($content);
         $booking = Booking::create([
             'hotel_id' => $id,
             'name' => $content['guest_name'],
