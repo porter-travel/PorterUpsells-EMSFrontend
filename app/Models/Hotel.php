@@ -104,4 +104,16 @@ class Hotel extends Model
         return $this->hasMany(OrderItem::class);
     }
 
+    public function emailSchedule(){
+        $emails = $this->meta()->where('key', 'like', 'email-schedule%')->get();
+        $schedule = [];
+        foreach ($emails as $email) {
+            $key = preg_replace('/[^0-9]/', '', $email->key);
+            if($key && $email->value){
+                $schedule[] = $key;
+            }
+        }
+        return $schedule;
+    }
+
 }

@@ -6,6 +6,7 @@ use App\Jobs\TrackEmailSends;
 use App\Models\Booking;
 use App\Models\CustomerEmail;
 use App\Models\Hotel;
+use App\Services\CustomerEmailService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -16,6 +17,7 @@ class BookingController extends Controller
     public function create($id)
     {
         $hotel = Hotel::find($id);
+
         return view('admin.booking.create', ['hotel' => $hotel]);
     }
 
@@ -24,6 +26,7 @@ class BookingController extends Controller
         $hotel = Hotel::find($id);
         $content = $request->only(['guest_name', 'arrival_date', 'departure_date', 'email_address', 'booking_ref']);
 
+        dd($content);
         $booking = Booking::create([
             'hotel_id' => $id,
             'name' => $content['guest_name'],
@@ -34,22 +37,15 @@ class BookingController extends Controller
         ]);
 
         if ($request->has('send_email')) {
-            foreach ($request->send_email as $email) {
-                $customer_email = new CustomerEmail(['booking_id' => $booking->id]);
-
-                if (is_numeric($email)) {
-                    $customer_email->email_type = 'pre-arrival';
-                    $customer_email->scheduled_at = Carbon::createFromFormat('Y-m-d', $content['arrival_date'])->subDays($email);
-                } else {
-                    $customer_email->email_type = $email;
-                    $customer_email->scheduled_at = Carbon::now();
-                    Mail::to($content['email_address'])->send(new \App\Mail\CustomerEmail($hotel, $content));
-                    $customer_email->sent_at = Carbon::now();
-                    TrackEmailSends::dispatch($hotel->id);
-                }
-
-                $customer_email->save();
-            }
+            $customerEmailService = new CustomerEmailService();
+            $customerEmailService->setupEmailSchedule([
+                'days' => $request->send_email,
+                'booking' => $booking,
+                'arrival_date' => $content['arrival_date'],
+                'email_address' => $content['email_address'],
+                'hotel' => $hotel,
+                'content' => $content,
+            ]);
         }
 
         return to_route('bookings.list', ['id' => $id]);

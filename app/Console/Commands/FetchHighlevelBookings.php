@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Booking;
 use App\Models\Hotel;
+use App\Services\CustomerEmailService;
 use Illuminate\Console\Command;
 use App\Services\HotelBookings\HotelBookingsService;
 use Carbon\Carbon;
@@ -38,13 +39,13 @@ class FetchHighlevelBookings extends Command
             // Find hotel id
             $hotelExternalId = $Reservation->hotelId;
             $Hotel = Hotel::where("id_for_integration", $hotelExternalId)->first();
-            if($Hotel==null)
+            if ($Hotel == null)
                 continue(1);
             // Check have we already got it
             $Booking = Booking::where("booking_ref", $Reservation->externalBookingId)->first();
             if ($Booking == null) {
                 $dateTime = null;
-                if($Reservation->checkedInString!=null)
+                if ($Reservation->checkedInString != null)
                     $dateTime = Carbon::parse($Reservation->checkedInString);
                 $Booking = new Booking(
                     [
@@ -58,6 +59,24 @@ class FetchHighlevelBookings extends Command
                         'checkin' => $dateTime?->toDateTimeString(),
                     ]
                 );
+
+                $emailSchedule = $Hotel->emailSchedule;
+
+                $customerEmailService = new CustomerEmailService();
+                $customerEmailService->setupEmailSchedule([
+                    'days' => $emailSchedule,
+                    'booking' => $Booking,
+                    'arrival_date' => $Reservation->HotelDates->checkinString,
+                    'email_address' => $Reservation->email,
+                    'hotel' => $Hotel,
+                    'content' => [
+                        'guest_name' => '',
+                        'arrival_date' => $Reservation->HotelDates->checkinString,
+                        'departure_date' => $Reservation->HotelDates->checkoutString,
+                        'email_address' => $Reservation->email,
+                        'booking_ref' => $Reservation->externalBookingId
+                    ],
+                ]);
 
                 $Booking->save();
             }
