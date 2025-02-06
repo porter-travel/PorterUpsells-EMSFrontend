@@ -22,8 +22,8 @@
                                     <x-input-error :messages="$errors->get('name')" class="mt-2"/>
                                 </div>
                                 <div class="md:basis-1/2 md:pl-4 basis-full">
-                                    <x-input-label class=" font-sans" for="property-type" :value="__('Property Type')"/>
-                                    <select name="property_type" id="property-type" class="border-[#C4C4C4] rounded-md w-full">
+                                    <x-input-label class=" font-sans" for="property-type" :value="__('Property Type (Coming Soon)')"/>
+                                    <select disabled name="property_type" id="property-type" class="border-[#C4C4C4] rounded-md w-full">
                                         <option value="hotel">Hotel</option>
                                         <option value="restaurant">Restaurant</option>
                                     </select>
