@@ -1,7 +1,7 @@
 <x-hotel-admin-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Add New Hotel') }}
+            {{ __('Add New Property') }}
         </h2>
     </x-slot>
 
@@ -13,14 +13,27 @@
                     <form enctype="multipart/form-data" method="post" action="/admin/hotel/create">
                         @csrf
                         <div class="mt-4">
-                            <x-input-label class="text-white font-sans" for="name" :value="__('Name')"/>
-                            <x-text-input dusk="hotel-name" id="name" class="block mt-1 w-full p-4" type="text" name="name" :value="old('name')"
-                                          required placeholder="Name"/>
-                            <x-input-error :messages="$errors->get('name')" class="mt-2"/>
+                            <div class="flex flex-wrap">
+                                <div class="md:basis-1/2 md:pr-4 basis-full">
+                                    <x-input-label class=" font-sans" for="name" :value="__('Name')"/>
+                                    <x-text-input dusk="hotel-name" id="name" class="block mt-1 w-full" type="text"
+                                                  name="name" :value="old('name')"
+                                                  required placeholder="Name"/>
+                                    <x-input-error :messages="$errors->get('name')" class="mt-2"/>
+                                </div>
+                                <div class="md:basis-1/2 md:pl-4 basis-full">
+                                    <x-input-label class=" font-sans" for="property-type" :value="__('Property Type')"/>
+                                    <select name="property_type" id="property-type" class="border-[#C4C4C4] rounded-md w-full">
+                                        <option value="hotel">Hotel</option>
+                                        <option value="restaurant">Restaurant</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                         <div class="mt-4">
-                            <x-input-label class="text-white font-sans" for="name" :value="__('Address')"/>
-                            <x-text-input dusk="hotel-address" id="address" class="block mt-1 w-full p-4" type="text" name="address" :value="old('address')"
+                            <x-input-label class=" font-sans" for="name" :value="__('Address')"/>
+                            <x-text-input dusk="hotel-address" id="address" class="block mt-1 w-full " type="text"
+                                          name="address" :value="old('address')"
                                           required placeholder="Address"/>
                             <x-input-error :messages="$errors->get('address')" class="mt-2"/>
                         </div>
@@ -31,11 +44,14 @@
                         </div>
 
                         <div class="mt-4">
-                            <x-input-label class="text-black font-sans" for="featured_image" :value="__('Featured Image')"/>
+                            <x-input-label class="text-black font-sans" for="featured_image"
+                                           :value="__('Featured Image')"/>
                             <input type="file" name="featured_image" id="featured_image">
                         </div>
-
-                        <x-primary-button dusk="create-hotel" class="w-full justify-center mt-4">Add Hotel</x-primary-button>
+                        <div class="text-right">
+                            <x-primary-button dusk="create-hotel" class=" justify-center mt-4">Add Hotel
+                            </x-primary-button>
+                        </div>
                     </form>
 
                 </div>

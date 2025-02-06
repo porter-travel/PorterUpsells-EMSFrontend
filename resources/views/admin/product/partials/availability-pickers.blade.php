@@ -1,4 +1,4 @@
-@if($type == 'standard')
+@if($type == 'standard' && $hotel->property_type == 'hotel')
     {{-- If the "type" is null we're looking at a classic / standard product which should be set --}}
     <div class="lg:basis-1/2 basis-full">
         <h4 class="font-bold pb-4">Availability</h4>

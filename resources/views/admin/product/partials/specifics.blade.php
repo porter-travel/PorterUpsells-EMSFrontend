@@ -60,10 +60,14 @@
             <li data-target="availability-tab"
                 class="settings-button text-lg mb-2 px-4 py-2 bg-grey rounded-full cursor-pointer active">Availability
             </li>
-            @if($type == 'standard')
-                <li data-target="storage-tab"
-                    class="settings-button text-lg mb-2 px-4 py-2 bg-grey rounded-full cursor-pointer">Storage / Quality
-                </li>
+            @if($hotel->property_type == 'hotel')
+
+                @if($type == 'standard')
+                    <li data-target="storage-tab"
+                        class="settings-button text-lg mb-2 px-4 py-2 bg-grey rounded-full cursor-pointer">Storage /
+                        Quality
+                    </li>
+                @endif
             @endif
             <li data-target="notice-tab"
                 class="settings-button text-lg mb-2 px-4 py-2 bg-grey rounded-full cursor-pointer">Notice Period
@@ -88,8 +92,8 @@
     <div class="lg:basis-4/5">
         <div class="settings-tab" id="availability-tab">
             <div class="flex flex-wrap">
-               @include('admin.product.partials/availability-pickers')
-               @include('admin.product.partials/available-days')
+                @include('admin.product.partials/availability-pickers')
+                @include('admin.product.partials/available-days')
 
             </div>
         </div>
