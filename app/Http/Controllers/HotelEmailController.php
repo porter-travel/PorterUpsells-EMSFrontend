@@ -69,7 +69,7 @@ class HotelEmailController extends Controller
                         $hotel_meta->hotel_id = $hotel_id;
                         $hotel_meta->key = $key;
                     }
-                    if ($value) {
+                    if ($value || $value === '0') {
                         $hotel_meta->value = $value;
                         $hotel_meta->save();
                     }
