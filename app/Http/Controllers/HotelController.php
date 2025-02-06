@@ -101,6 +101,9 @@ class HotelController extends Controller
             $featuredImageUrl = Storage::disk('s3')->url($featuredImageFilePath);
             $hotel->featured_image = $featuredImageUrl;
         }
+
+        $hotel->property_type = $request->property_type;
+
         $hotel->save();
 
         HotelEmail::createStandardTemplates($hotel->id);

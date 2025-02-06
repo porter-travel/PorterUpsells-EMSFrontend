@@ -17,14 +17,12 @@
 
                     <form method="post" action="{{route('email.store-customisations', $hotel->id)}}" class="">
                         @csrf
+                        @if($hotel->property_type == 'hotel')
                         <div class="flex">
                             <div>
 
                                 <x-fancy-checkbox dusk="pre-arrival-email"
-
-
                                                   :isChecked="(!empty($email_schedule) && isset($email_schedule['email-schedule-2-day-pre-arrival'])) ? $email_schedule['email-schedule-2-day-pre-arrival'] : true"
-
                                                   name="hotel_meta[email-schedule-2-day-pre-arrival]"
                                                   label="2 days pre-arrival"/>
                             </div>
@@ -42,11 +40,42 @@
                             </div>
                             <div>
                                 <x-fancy-checkbox dusk="pre-arrival-email"
+                                                  :isChecked="(!empty($email_schedule) && isset($email_schedule['email-schedule-21-day-pre-arrival'])) ? $email_schedule['email-schedule-21-day-pre-arrival'] : true"
+                                                  name="hotel_meta[email-schedule-21-day-pre-arrival]"
+                                                  label="21 days pre-arrival"/>
+                            </div>
+                            <div>
+                                <x-fancy-checkbox dusk="pre-arrival-email"
                                                   :isChecked="(!empty($email_schedule) && isset($email_schedule['email-schedule-30-day-pre-arrival'])) ? $email_schedule['email-schedule-30-day-pre-arrival'] : true"
                                                   name="hotel_meta[email-schedule-30-day-pre-arrival]"
                                                   label="30 days pre-arrival"/>
                             </div>
                         </div>
+                            @else
+                            <div class="flex">
+                                <div>
+
+                                    <x-fancy-checkbox dusk="pre-arrival-email"
+                                                      :isChecked="(!empty($email_schedule) && isset($email_schedule['email-schedule-1-day-pre-arrival'])) ? $email_schedule['email-schedule-1-day-pre-arrival'] : true"
+                                                      name="hotel_meta[email-schedule-1-day-pre-arrival]"
+                                                      label="1 days pre-arrival"/>
+                                </div>
+
+                                <div>
+
+                                    <x-fancy-checkbox dusk="pre-arrival-email"
+                                                      :isChecked="(!empty($email_schedule) && isset($email_schedule['email-schedule-3-day-pre-arrival'])) ? $email_schedule['email-schedule-3-day-pre-arrival'] : true"
+                                                      name="hotel_meta[email-schedule-3-day-pre-arrival]"
+                                                      label="3 days pre-arrival"/>
+                                </div>
+                                <div>
+                                    <x-fancy-checkbox dusk="pre-arrival-email"
+                                                      :isChecked="(!empty($email_schedule) && isset($email_schedule['email-schedule-5-day-pre-arrival'])) ? $email_schedule['email-schedule-5-day-pre-arrival'] : true"
+                                                      name="hotel_meta[email-schedule-5-day-pre-arrival]"
+                                                      label="5 days pre-arrival"/>
+                                </div>
+                            </div>
+                        @endif
                         <div class="flex items-end justify-end">
                             <x-primary-button dusk="save-pre-arrival-email" class="mt-4">Save</x-primary-button>
                         </div>

@@ -68,12 +68,14 @@
                                             Calendar Product
                                         </a>
                                     </li>
-                                    <li class="pl-12 border-b border-darkGrey py-2">
-                                        <a href="/admin/hotel/{{$hotel->id}}/product/create/restaurant">
+                                    @if($hotel->property_type == 'hotel')
+                                        <li class="pl-12 border-b border-darkGrey py-2">
+                                            <a href="/admin/hotel/{{$hotel->id}}/product/create/restaurant">
                                             <span style="color: grey">Restaurant
                                             Booking (coming soon)</span>
-                                        </a>
-                                    </li>
+                                            </a>
+                                        </li>
+                                    @endif
 
 
                                 </ul>
@@ -140,7 +142,7 @@
             </div>
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="py-6 text-gray-900">
-                    <h2 class="text-2xl font-bold mb-6">Hotel Details</h2>
+                    <h2 class="text-2xl font-bold mb-6">Property Details</h2>
                     <form enctype="multipart/form-data" method="post" action="/admin/hotel/{{$hotel->id}}/update">
                         @csrf
                         <div class="mt-4">
@@ -167,48 +169,50 @@
                                           required placeholder="Email Address"/>
                             <x-input-error :messages="$errors->get('email_address')" class="mt-2"/>
                         </div>
+                        @if($hotel->property_type == 'hotel')
+                            <div class="mt-4">
+                                <div class="flex items-start justify-start flex-wrap">
+                                    <div class="lg:basis-1/2 basis-full pr-4">
+                                        <x-input-label class="text-black font-sans" for="integration_name"
+                                                       :value="__('PMS Name')"/>
+                                        <select id="integration_name" name="integration_name"
+                                                class="border-[#C4C4C4] rounded-md w-full">
+                                            <option></option>
+                                            <option @if($hotel->integration_name == 'zonal') selected
+                                                    @endif value="zonal">
+                                                Zonal / High Level Software
+                                            </option>
+                                        </select>
 
-                        <div class="mt-4">
-                            <div class="flex items-start justify-start flex-wrap">
-                                <div class="lg:basis-1/2 basis-full pr-4">
-                                    <x-input-label class="text-black font-sans" for="integration_name"
-                                                   :value="__('PMS Name')"/>
-                                    <select id="integration_name" name="integration_name"
-                                            class="border-[#C4C4C4] rounded-md w-full">
-                                        <option></option>
-                                        <option @if($hotel->integration_name == 'zonal') selected @endif value="zonal">
-                                            Zonal / High Level Software
-                                        </option>
-                                    </select>
-
+                                    </div>
+                                    <div class="lg:basis-1/2 basis-full">
+                                        <x-input-label class="text-black font-sans" for="id_for_integration"
+                                                       :value="__('Hotel PMS ID')"/>
+                                        <x-text-input id="id_for_integration" class="block mt-1 w-full px-3 py-2"
+                                                      type="text"
+                                                      name="id_for_integration"
+                                                      :value="$hotel->id_for_integration"
+                                                      placeholder="Integration Partner ID"/>
+                                        <x-input-error :messages="$errors->get('id_for_integration')" class="mt-2"/>
+                                    </div>
                                 </div>
-                                <div class="lg:basis-1/2 basis-full">
-                                    <x-input-label class="text-black font-sans" for="id_for_integration"
-                                                   :value="__('Hotel PMS ID')"/>
-                                    <x-text-input id="id_for_integration" class="block mt-1 w-full px-3 py-2"
+
+                                <div class=" mt-4 basis-full">
+                                    <x-input-label class="text-black font-sans" for="resdiary_microsite_name"
+                                                   :value="__('ResDiary Microsite Name')"/>
+                                    <x-text-input id="resdiary_microsite_name" class="block mt-1 w-full px-3 py-2"
                                                   type="text"
-                                                  name="id_for_integration"
-                                                  :value="$hotel->id_for_integration"
-                                                  placeholder="Integration Partner ID"/>
-                                    <x-input-error :messages="$errors->get('id_for_integration')" class="mt-2"/>
+                                                  name="resdiary_microsite_name"
+                                                  :value="$resdiary_microsite_name"
+                                                  placeholder="EnhanceMyStay"/>
+                                    <x-input-error :messages="$errors->get('resdiary_microsite_name')" class="mt-2"/>
+                                </div>
+                                @endif
+                                <div class="text-right">
+                                    <x-primary-button dusk="update-hotel-details" class=" mt-4">Update
+                                    </x-primary-button>
                                 </div>
                             </div>
-
-                            <div class=" mt-4 basis-full">
-                                <x-input-label class="text-black font-sans" for="resdiary_microsite_name"
-                                               :value="__('ResDiary Microsite Name')"/>
-                                <x-text-input id="resdiary_microsite_name" class="block mt-1 w-full px-3 py-2"
-                                              type="text"
-                                              name="resdiary_microsite_name"
-                                              :value="$resdiary_microsite_name"
-                                              placeholder="EnhanceMyStay"/>
-                                <x-input-error :messages="$errors->get('resdiary_microsite_name')" class="mt-2"/>
-                            </div>
-
-                            <div class="text-right">
-                                <x-primary-button dusk="update-hotel-details" class=" mt-4">Update</x-primary-button>
-                            </div>
-                        </div>
                     </form>
                     <form class="border-t border-[#C4C4C4] mt-4 pt-4 flex items-end justify-between"
                           enctype="multipart/form-data" method="post" action="/admin/hotel/{{$hotel->id}}/update">

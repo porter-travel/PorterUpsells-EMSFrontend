@@ -93,7 +93,8 @@ class HotelControllerTest extends TestCase
             'name' => 'Test Hotel',
             'address' => '123 Test Street',
             'logo' => UploadedFile::fake()->image('logo.jpg'),
-            'featured_image' => UploadedFile::fake()->image('featured_image.jpg')
+            'featured_image' => UploadedFile::fake()->image('featured_image.jpg'),
+            'property_type' => 'hotel',
         ];
 
         // Ensure CSRF token is included
