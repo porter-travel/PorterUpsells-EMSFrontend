@@ -188,7 +188,7 @@
                 </div>
 
                 <div class="mt-4 hotel-text-color">
-                    {{$product->description}}
+                    {!! $product->description !!}
                 </div>
                 @if($have_details)
             </form>

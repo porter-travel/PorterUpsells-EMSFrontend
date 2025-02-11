@@ -153,7 +153,7 @@ class ProductController extends Controller
         $product = new Product();
         $product->status = $request->status;
         $product->name = $request->name;
-        $product->description = $request->description;
+        $product->description = strip_tags($request->description, '<p><a><strong><em><ul><li><ol><br>');
         $product->price = $request->price;
         $product->hotel_id = $request->hotel_id;
         $product->image = $url;
