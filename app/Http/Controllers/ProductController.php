@@ -125,7 +125,6 @@ class ProductController extends Controller
         $product->specifics = $specificsArray;
 
 
-//        dd($product);
         return view('admin.product.edit', ['hotel' => $hotel, 'product' => $product, 'type' => $product->type]);
     }
 
@@ -161,6 +160,7 @@ class ProductController extends Controller
         $product->save();
 
 
+//        dd($request->variants);
         if (isset($request->variants)) {
             foreach ($request->variants as $variant) {
 
@@ -230,10 +230,12 @@ class ProductController extends Controller
 
         $product->save();
 
+//dd($request->variants);
         if (isset($request->variants)) {
             foreach ($request->variants as $variant) {
                 if (isset($variant['variant_id'])) {
                     $variation = $product->variations()->find($variant['variant_id']);
+//                    dd($variation);
                     $variation->name = $variant['variant_name'];
                     $variation->price = $variant['variant_price'];
                     if (isset($variant['variant_image'])) {

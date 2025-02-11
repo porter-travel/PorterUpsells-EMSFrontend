@@ -30,7 +30,7 @@
 
 
                                 <div>
-                                    <button data-id="0"
+                                    <button data-id="{{count($product->variations) + 1}}"
                                             class="add-item flex items-center px-8 py-2 bg-mint rounded-full"
                                             role="button">
                                         <img style="pointer-events: none" src="/img/icons/plus.svg" alt="add" class="mr-2">
