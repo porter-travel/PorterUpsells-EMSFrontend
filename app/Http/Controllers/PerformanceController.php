@@ -39,6 +39,7 @@ class PerformanceController extends Controller
             $endDate
         );
 
+//        dd($analytics['productAnalytics']);
 //        dd($analytics['customerAnalytics']->sortByDesc('total_value'));
 //        dd($analytics['productAnalytics']);
         // Return view

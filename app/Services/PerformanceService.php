@@ -52,6 +52,7 @@ class PerformanceService
             'productAnalytics' => \DB::table('order_items')
                 ->join('orders', 'order_items.order_id', '=', 'orders.id') // Join order_items with orders
                 ->join('products', 'order_items.product_id', '=', 'products.id') // Join order_items with products
+                ->where('orders.payment_status', 'paid') // Filter by paid orders
                 ->whereIn('orders.hotel_id', $hotelIds) // Filter by the provided hotel IDs
                 ->whereBetween('orders.created_at', [$startDate, $endDate]) // Filter by the date range
                 ->select(
@@ -72,6 +73,7 @@ class PerformanceService
 //                ->sortByDesc('total_value') // Sort by total_value in descending order
                 ->values(), // Reset collection keys for proper indexing
             'customerAnalytics' => Order::whereIn('hotel_id', $hotelIds)
+                ->where('payment_status', 'paid')
                 ->whereBetween('created_at', [$startDate, $endDate])
                 ->groupBy('email')
                 ->selectRaw('email, COUNT(*) as total_orders, SUM(subtotal) as total_value')
