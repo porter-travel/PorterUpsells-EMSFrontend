@@ -21,6 +21,7 @@ class PerformanceService
 
             'orders' => Order::whereIn('hotel_id', $hotelIds)
                 ->whereBetween('created_at', [$startDate, $endDate])
+                ->where('payment_status', 'paid')
                 ->get(),
 
             'cartAnalytics' => CartAnalytics::whereIn('hotel_id', $hotelIds)
@@ -33,6 +34,7 @@ class PerformanceService
 
             'hotelOrders' => Order::whereIn('hotel_id', $hotelIds)
                 ->whereBetween('created_at', [$startDate, $endDate])
+                ->where('payment_status', 'paid')
                 ->selectRaw('hotel_id, COUNT(*) as total_orders, SUM(subtotal) as total_value')
                 ->groupBy('hotel_id')
                 ->with('hotel:id,name') // Fetch hotel name alongside the orders
