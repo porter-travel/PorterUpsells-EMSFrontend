@@ -11,12 +11,12 @@ use App\Models\ProductSpecific;
 use App\Models\Unavailability;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
     public function show($hotel_id, $item_id, Request $request)
     {
-
 
 
         if (is_numeric($hotel_id)) {
@@ -141,6 +141,11 @@ class ProductController extends Controller
     public function store(Request $request)
     {
 
+        //If the Image is larger than 1MB, return an error
+        if ($request->file('image')->getSize() > 1000000) {
+            return redirect()->back()->with('error', 'The image size is too large. Please upload an image that is less than 1MB');
+        }
+
         $filePath = $request->file('image')->store('product-images', 's3');
 
         // You can also specify visibility and ACL (Access Control List) if needed
@@ -203,6 +208,14 @@ class ProductController extends Controller
     public function update(Request $request)
     {
 
+        Validator::make($request->all(), [
+            'name' => 'required',
+            'description' => 'required',
+            'price' => 'required',
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:1024',
+        ], [
+            'image.max' => 'The image must be no larger than 1MB.',
+        ])->validate();
 
         $product = Product::find($request->product_id);
 
@@ -221,6 +234,7 @@ class ProductController extends Controller
         if ($request->price) {
             $product->price = $request->price;
         }
+
 
         if ($request->file('image')) {
             $filePath = $request->file('image')->store('product-images', 's3');
@@ -241,6 +255,8 @@ class ProductController extends Controller
                     if (isset($variant['variant_image'])) {
                         $filePath = $variant['variant_image']->store('product-images', 's3');
                         $url = Storage::disk('s3')->url($filePath);
+                    } elseif ($variation->image) {
+                        $url = $variation->image;
                     } else {
                         $url = $product->image;
                     }
@@ -352,17 +368,17 @@ class ProductController extends Controller
             }
         }
 
-        foreach ($bookings as $booking){
+        foreach ($bookings as $booking) {
 //            dd($booking);
-            foreach ($availableTimes as $key => $time){
-                if ($time['time'] == $booking){
+            foreach ($availableTimes as $key => $time) {
+                if ($time['time'] == $booking) {
                     $availableTimes[$key]['qty'] = $availableTimes[$key]['qty'] - 1;
                 }
             }
         }
 
-        foreach ($availableTimes as $key => $time){
-            if ($time['qty'] == 0){
+        foreach ($availableTimes as $key => $time) {
+            if ($time['qty'] == 0) {
                 unset($availableTimes[$key]);
             }
         }

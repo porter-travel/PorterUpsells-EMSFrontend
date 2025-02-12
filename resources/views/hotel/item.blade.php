@@ -8,6 +8,9 @@
     <x-slot:favicon>{{$hotel->logo}}</x-slot:favicon>
 
     @include('hotel.partials.css-overrides', ['hotel' => $hotel])
+<script>
+    const productVariations = {!!  json_encode($variations) !!}
+</script>
 
     <style>
         .fancy-checkbox {
@@ -52,7 +55,12 @@
                         stroke="black"/>
                 </svg>
                 <span id="cartCount"
-                      class="hotel-accent-color-50 text-black rounded-full px-2 py-1 ml-2 absolute left-0 bottom-0 -translate-x-full translate-y-1/2 text-xs">
+                      class="
+                      @if(!$cart || !isset($cart['cartCount']) || $cart['cartCount'] ==  0)
+                      hidden
+                        @endif
+                      hotel-accent-color-50 text-black rounded-full px-2 py-1 ml-2 absolute left-0 bottom-0 -translate-x-full translate-y-1/2 text-xs">
+
                     @if($cart && isset($cart['cartCount']) && $cart['cartCount'] > 0)
                         {{$cart['cartCount']}}
                     @endif</span>
@@ -74,11 +82,12 @@
                 @endif
                 <div class="flex flex-wrap items-end">
                     <div class="lg:basis-1/2 basis-full lg:pr-4">
-                        @include ('hotel.partials.product-image', ['item' => $product])                </div>
+                        @include ('hotel.partials.product-image', ['item' => $product])
+                    </div>
                     <div class="lg:basis-1/2 basis-full lg:pl-4">
                         <div class="mt-4 lg:mt-0">
                             <p class="open-sans text-3xl mb-2 hotel-text-color">{{$product->name}}</p>
-                            <p class="open-sans text-xl mb-6 hotel-text-color">
+                            <p id="price" data-currency="{{strtoupper($hotel->user->currency)}}" class="open-sans text-xl mb-6 hotel-text-color">
                                 <x-money-display :amount="$product->price"
                                                  :currency="$hotel->user->currency"></x-money-display>
                             </p>

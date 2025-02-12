@@ -8,6 +8,7 @@ import './unavailability.js'
 import './resdiary-functions.js'
 import './calendar-product-functions.js'
 import './date-picker-functions.js'
+import './variation-change.js'
 import Alpine from 'alpinejs';
 
 window.Alpine = Alpine;

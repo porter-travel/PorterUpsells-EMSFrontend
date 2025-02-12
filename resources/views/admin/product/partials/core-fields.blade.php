@@ -1,4 +1,19 @@
+@if($errors->any())
+    <div class="bg-pink/50 border border-pink rounded-3xl p-4">
+        <ul>
+        @foreach($errors->all() as $error)
+            <li class="text-red">{{$error}}</li>
+        @endforeach
+        </ul>
+    </div>
+@endif
+
 <div class="flex flex-wrap">
+
+{{--    {{dd($errors)}}--}}
+
+
+
     <div class="md:basis-1/2 basis-full md:pr-4 mt-4">
         <x-input-label class="text-black font-sans" for="image" :value="__('Product Image')"/>
         <div class="flex items-end">
@@ -10,6 +25,7 @@
             @endif
             <input @if($method == 'create') required @endif type="file" name="image" id="image">
         </div>
+            <p class="text-sm text-gray-500 mt-2">Images should be 500x500 pixels in size and no larger than 1Mb.</p>
     </div>
 
     <div class="md:basis-1/2 basis-full md:pr-4 mt-4 text-right">

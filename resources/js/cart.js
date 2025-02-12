@@ -36,6 +36,7 @@ if (form) {
                 }
                 else {
                     document.getElementById('cartCount').innerText = response.data.cart.cartCount;
+                    document.getElementById('cartCount').classList.remove('hidden');
                     document.getElementById('success').classList.remove('hidden');
                     document.getElementById('success').classList.add('block')
                 }
