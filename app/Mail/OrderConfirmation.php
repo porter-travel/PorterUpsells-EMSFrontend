@@ -14,12 +14,14 @@ class OrderConfirmation extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $hotel;
 
     /**
      * Create a new message instance.
      */
     public function __construct(public Order $order)
     {
+        $this->hotel = $this->order->hotel;
     }
 
     /**
@@ -28,9 +30,8 @@ class OrderConfirmation extends Mailable
     public function envelope(): Envelope
     {
 
-        $hotel = $this->order->hotel;
         return new Envelope(
-            subject: "$hotel->name Order Confirmation",
+            subject: "{$this->hotel->name} Order Confirmation",
         );
     }
 
