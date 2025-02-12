@@ -145,6 +145,11 @@
                         </td>
                     </tr>
                     <tr>
+                        <td>
+                            <p style="color: black; font-size: 20px; font-weight: bold; padding: 16px">Order Summary</p>
+                        </td>
+                    </tr>
+                    <tr>
                         <td style="padding: 16px">
                             @foreach(json_decode($order['items'], true) as $key => $item)
                                 @if(isset($item['image']))
@@ -156,14 +161,19 @@
                                             </td>
                                             <td style="padding-left: 5px">
                                                 <p><strong>{{$item['product_name']}}</strong></p>
+                                                @if($item['variation_name'])
+                                                    <p>Options: {{$item['variation_name']}}</p>
+                                                @endif
+                                                <p>Date: {{ \Carbon\Carbon::parse($item['date'])->format('jS M') }}</p>
+                                                @if($item['arrival_time'])
+                                                    <p>Time: {{$item['arrival_time']}}</p>
+                                                @endif
                                                 <p>
                                                     <x-money-display :amount="$item['price']"
                                                                      :currency="$order->hotel->user->currency"></x-money-display>
 
                                                 </p>
-                                                @if($item['variation_name'])
-                                                    <p>Options: {{$item['variation_name']}}</p>
-                                                @endif
+
                                             </td>
                                         </tr>
                                     </table>

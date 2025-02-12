@@ -31,7 +31,7 @@ class OrderConfirmation extends Mailable
     {
 
         return new Envelope(
-            subject: "$this->hotel->name Order Confirmation",
+            subject: "{$this->hotel->name} Order Confirmation",
         );
     }
 
