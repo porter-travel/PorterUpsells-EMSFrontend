@@ -155,19 +155,25 @@
                                 @if(isset($item['image']))
                                     <table>
                                         <tr>
-                                            <td style="width: 150px;">
-                                                <img src="{{$item['image']}}" alt="{{$item['variation_name']}}"
-                                                     class="w-full">
+                                            <td>
+                                                <div
+                                                    style="width: 156px; height: 156px; position: relative; overflow: hidden;">
+                                                    <img src="{{$item['image']}}" alt="{{$item['variation_name']}}"
+                                                         style="width: 100%; height: 100%; display: block; object-fit: cover;"
+                                                         class="w-full">
+                                                </div>
                                             </td>
                                             <td style="padding-left: 5px">
                                                 <p><strong>{{$item['product_name']}}</strong></p>
-                                                @if($item['variation_name'])
-                                                    <p>Options: {{$item['variation_name']}}</p>
-                                                @endif
-                                                <p>Date: {{ \Carbon\Carbon::parse($item['date'])->format('jS M') }}</p>
-                                                @if(isset($item['arrival_time']) && $item['arrival_time'])
-                                                    <p>Time: {{$item['arrival_time']}}</p>
-                                                @endif
+                                                <p>
+                                                    @if($item['variation_name'])
+                                                        Options: {{$item['variation_name']}}<br/>
+                                                    @endif
+                                                    Date: {{ \Carbon\Carbon::parse($item['date'])->format('jS M') }}
+                                                    @if(isset($item['arrival_time']) && $item['arrival_time'])
+                                                        <br/>Time: {{$item['arrival_time']}}
+                                                    @endif
+                                                </p>
                                                 <p>
                                                     <x-money-display :amount="$item['price']"
                                                                      :currency="$order->hotel->user->currency"></x-money-display>
