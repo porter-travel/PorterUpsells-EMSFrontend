@@ -280,6 +280,7 @@ class ProductControllerTest extends TestCase
             'product_id' => $product->id,
             'name' => 'Updated Product',
             'price' => 150,
+            'description' => 'Updated Product Description',
             'image' => $newImage,
             'hotel_id' => $hotel->id,
             'variants' => [
@@ -303,6 +304,7 @@ class ProductControllerTest extends TestCase
             'id' => $product->id,
             'name' => 'Updated Product',
             'price' => 150,
+            'description' => 'Updated Product Description',
         ]);
 
         // Assert the new product image was stored
@@ -351,6 +353,7 @@ class ProductControllerTest extends TestCase
         $data = [
             'product_id' => $product->id,
             'name' => 'Updated Product',
+            'description' => 'Updated Product Description',
             'price' => 150,
             'image' => $newImage,
             'hotel_id' => $hotel->id,
@@ -421,6 +424,7 @@ class ProductControllerTest extends TestCase
         $variant = $product->variations()->create(['image' => $image, 'name' => 'To be removed', 'price' => 50]);
 
         $data = [
+            'name' => 'Original Product', 'price' => 100, 'description' => 'Original Product Description', 'image' => $image,
             'hotel_id' => $hotel->id,
             'product_id' => $product->id,
             'remove' => [$variant->id],
@@ -444,6 +448,7 @@ class ProductControllerTest extends TestCase
         $image = UploadedFile::fake()->image('product.jpg');
 
         $data = [
+            'name' => 'No Variants', 'price' => 200, 'description' => 'No Variants Description', 'image' => $image,
             'hotel_id' => $hotel->id,
             'product_id' => $product->id,
         ];
