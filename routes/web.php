@@ -2,21 +2,25 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\FulfilmentController;
 use App\Http\Controllers\HotelController;
 use App\Http\Controllers\HotelEmailController;
+use App\Http\Controllers\IntegrationTokenController;
 use App\Http\Controllers\PerformanceController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResDiaryController;
 use App\Http\Controllers\WelcomeController;
+use App\Http\Middleware\IsSuperUser;
 use App\Models\Hotel;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
 
 Route::get('/about', function () {
     return view('about');
@@ -135,12 +139,24 @@ Route::middleware(['auth', 'verified'])->group(function(){
     Route::get('/admin/hotel/{id}/email/customise', [HotelEmailController::class, 'show'])->name('email.customise');
     Route::post('/admin/hotel/{hotel_id}/email/store-customisations', [HotelEmailController::class, 'storeCustomisations'])->name('email.store-customisations');
 
+    Route::post('/admin/chat/rewrite-product-descriptions', [ChatController::class, 'rewrite_product_descriptions'])->name('chat.rewrite-product-descriptions');
 });
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+Route::middleware([IsSuperUser::class])->group(function(){
+
+
+    Route::get('/admin/highlevel-tokens', [IntegrationTokenController::class, 'viewHighLevelTokens'])->name('highlevel-tokens');
+    Route::post('/admin/store-highlevel-token', [IntegrationTokenController::class, 'storeHighLevelToken'])->name('store-highlevel-token');
+    Route::get('/admin/delete-integration-token/{id}', [IntegrationTokenController::class, 'delete'])->name('highlevel-tokens.delete');
+    Route::get('/superadmin', function(){
+        return view('superadmin.dashboard');
+    })->name('superadmin-dashboard');
 });
 
 require __DIR__.'/auth.php';
