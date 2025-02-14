@@ -28,6 +28,14 @@
                         {{ __('Performance') }}
                     </x-nav-link>
                 </div>
+
+                @if(auth()->user()->role == 'superadmin')
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('superadmin-dashboard')">
+                        {{ __('Settings') }}
+                    </x-nav-link>
+                </div>
+                    @endif
             </div>
 
             <!-- Settings Dropdown -->

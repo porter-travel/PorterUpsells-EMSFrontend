@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Booking;
 use App\Models\Hotel;
+use App\Models\IntegrationToken;
 use App\Services\CustomerEmailService;
 use Illuminate\Console\Command;
 use App\Services\HotelBookings\HotelBookingsService;
@@ -26,59 +27,67 @@ class FetchHighlevelBookings extends Command
     // Execute the console command
     public function handle()
     {
-        $config =
-            [
-                "apiKey" => env("HLS_API_KEY"),
-                "host" => env("HLS_HOST"),
-                //"host" => "https://api.high-level-software.com"
-                "token" => env("HLS_TOKEN"),
-                "secret" => env("HLS_SECRET"),
-            ];
-        $HotelBookingsService = new HotelBookingsService($config);
-        foreach ($HotelBookingsService->fetchReservations() as $Reservation) {
-            // Find hotel id
-            $hotelExternalId = $Reservation->hotelId;
-            $Hotel = Hotel::where("id_for_integration", $hotelExternalId)->first();
-            if ($Hotel == null)
-                continue(1);
-            // Check have we already got it
-            $Booking = Booking::where("booking_ref", $Reservation->externalBookingId)->first();
-            if ($Booking == null) {
-                $dateTime = null;
-                if ($Reservation->checkedInString != null)
-                    $dateTime = Carbon::parse($Reservation->checkedInString);
-                $Booking = new Booking(
-                    [
-                        'hotel_id' => $Hotel->id,
-                        'name' => $Reservation->name,
-                        'email_address' => $Reservation->email,
+
+        $tokens = IntegrationToken::where('type', 'highlevel')->get();
+        if ($tokens->count() == 0) {
+            $this->error("No HighLevel tokens found");
+            return;
+        }
+        foreach ($tokens as $token) {
+            $config =
+                [
+                    "apiKey" => env("HLS_API_KEY"),
+                    "host" => env("HLS_HOST"),
+                    //"host" => "https://api.high-level-software.com"
+                    "token" => $token->token,
+                    "secret" => $token->secret,
+                ];
+            $HotelBookingsService = new HotelBookingsService($config);
+            foreach ($HotelBookingsService->fetchReservations() as $Reservation) {
+                // Find hotel id
+                $hotelExternalId = $Reservation->hotelId;
+                $Hotel = Hotel::where("id_for_integration", $hotelExternalId)->first();
+                if ($Hotel == null)
+                    continue(1);
+                // Check have we already got it
+                $Booking = Booking::where("booking_ref", $Reservation->externalBookingId)->first();
+                if ($Booking == null) {
+                    $dateTime = null;
+                    if ($Reservation->checkedInString != null)
+                        $dateTime = Carbon::parse($Reservation->checkedInString);
+                    $Booking = new Booking(
+                        [
+                            'hotel_id' => $Hotel->id,
+                            'name' => $Reservation->name,
+                            'email_address' => $Reservation->email,
+                            'arrival_date' => $Reservation->HotelDates->checkinString,
+                            'departure_date' => $Reservation->HotelDates->checkoutString,
+                            'booking_ref' => $Reservation->externalBookingId,
+                            'room' => $Reservation->roomNumber,
+                            'checkin' => $dateTime?->toDateTimeString(),
+                        ]
+                    );
+
+                    $emailSchedule = $Hotel->emailSchedule();
+
+                    $customerEmailService = new CustomerEmailService();
+                    $customerEmailService->setupEmailSchedule([
+                        'days' => $emailSchedule,
+                        'booking' => $Booking,
                         'arrival_date' => $Reservation->HotelDates->checkinString,
-                        'departure_date' => $Reservation->HotelDates->checkoutString,
-                        'booking_ref' => $Reservation->externalBookingId,
-                        'room' => $Reservation->roomNumber,
-                        'checkin' => $dateTime?->toDateTimeString(),
-                    ]
-                );
-
-                $emailSchedule = $Hotel->emailSchedule;
-
-                $customerEmailService = new CustomerEmailService();
-                $customerEmailService->setupEmailSchedule([
-                    'days' => $emailSchedule,
-                    'booking' => $Booking,
-                    'arrival_date' => $Reservation->HotelDates->checkinString,
-                    'email_address' => $Reservation->email,
-                    'hotel' => $Hotel,
-                    'content' => [
-                        'guest_name' => '',
-                        'arrival_date' => $Reservation->HotelDates->checkinString,
-                        'departure_date' => $Reservation->HotelDates->checkoutString,
                         'email_address' => $Reservation->email,
-                        'booking_ref' => $Reservation->externalBookingId
-                    ],
-                ]);
+                        'hotel' => $Hotel,
+                        'content' => [
+                            'guest_name' => '',
+                            'arrival_date' => $Reservation->HotelDates->checkinString,
+                            'departure_date' => $Reservation->HotelDates->checkoutString,
+                            'email_address' => $Reservation->email,
+                            'booking_ref' => $Reservation->externalBookingId
+                        ],
+                    ]);
 
-                $Booking->save();
+                    $Booking->save();
+                }
             }
         }
     }

@@ -21,6 +21,7 @@ class HotelBookingsHighlevel
      */
     function __construct(array $config)
     {
+
         $AuthParamsProvider = new AuthParamsProvider();
         $params = $AuthParamsProvider->getParams();
         $AuthObject = new HighLevelAuthObject($params);
@@ -30,14 +31,14 @@ class HotelBookingsHighlevel
         }
         else
         {
-            
+
             $Authorise = new Authorise($config);
             $this->authParams = $Authorise->authParams;
             $this->authParams +=  $config;
             $this->config = $config;
             $AuthParamsProvider->saveParams($this->authParams);
         }
-        
+
     }
 
     /**

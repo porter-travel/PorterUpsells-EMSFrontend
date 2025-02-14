@@ -83,3 +83,15 @@ button[disabled]{
     right: 0;
     background-color: #80C7EDF2;
 }
+
+li[data-list=ordered]{
+    list-style: decimal;
+}
+
+li[data-list=bullet]{
+    list-style: disc;
+}
+
+.ql-editor li > .ql-ui:before{
+    content: none!important;
+}
