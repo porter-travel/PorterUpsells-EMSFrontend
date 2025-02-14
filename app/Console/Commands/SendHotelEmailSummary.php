@@ -32,7 +32,7 @@ class SendHotelEmailSummary extends Command
         if($this->option('hotel_id') === 'all') {
             $hotels = Hotel::all();
             foreach($hotels as $hotel) {
-                if($hotel->email_address)
+                if($hotel->email_address && filter_var($hotel->email_address, FILTER_VALIDATE_EMAIL))
                     Mail::to($hotel->email_address)->send(new HotelOrderSummary($hotel));
             }
             return;
