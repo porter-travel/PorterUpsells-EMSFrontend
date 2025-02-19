@@ -70,7 +70,14 @@
                     <div>
                         <h3 class="hotel-text-color open-sans text-sm md:text-xl">{{$product->name}}</h3>
                         <p class="hotel-text-color open-sans text-sm md:text-xl font-semibold"><strong>
-                            <x-money-display :amount="$product->price" :currency="$hotel->user->currency"></x-money-display>
+                                @if(is_countable($product->variations) && count($product->variations) <= 1)
+                                    <x-money-display :amount="$product->price"
+                                                     :currency="$hotel->user->currency"></x-money-display>
+                                @else
+                                    <x-money-display :amount="$product->variations[0]->price"
+                                                     :currency="$hotel->user->currency"></x-money-display>
+                                @endif
+
                             </strong></p>
                     </div>
 
