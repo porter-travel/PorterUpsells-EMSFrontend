@@ -61,7 +61,7 @@ class Hotel extends Model
     }
 
     public function activeProducts(){
-        return $this->products()->where('status', 'active')->get();
+        return $this->products()->where('status', 'active')->orderBy('order')->get();
     }
 
     public function connections()

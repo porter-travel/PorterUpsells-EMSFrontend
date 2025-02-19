@@ -165,6 +165,5 @@ class OrderServiceTest extends TestCase
 
         $orderArray = $service->getOrdersByHotelForNextSevenDays($hotel->id);
 
-        dd($orderArray);
     }
 }

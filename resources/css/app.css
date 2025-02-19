@@ -95,3 +95,22 @@ li[data-list=bullet]{
 .ql-editor li > .ql-ui:before{
     content: none!important;
 }
+
+.sortable-list {
+    list-style: none;
+    padding: 0;
+    margin: auto;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+.sortable-item {
+    padding: 0px 20px;
+    transition: background 0.2s, transform 0.2s;
+}
+.dragging {
+    opacity: 0.7;
+}
+.over {
+    border: 2px dashed #ff8c42;
+    background: #fff3e0;
+}

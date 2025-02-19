@@ -9,6 +9,7 @@ use App\Models\Hotel;
 use App\Models\Product;
 use App\Models\ProductSpecific;
 use App\Models\Unavailability;
+use App\Models\Variation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -387,6 +388,39 @@ class ProductController extends Controller
 
         return response($availableTimes);
 
+    }
+
+    public function updateProductOrder(Request $request){
+        $hotel = Hotel::find($request->hotel_id);
+
+        if ($hotel->user->id != auth()->user()->id && auth()->user()->role != 'superadmin') {
+            return redirect()->route('dashboard');
+        }
+
+        $product_ids = $request->product_ids;
+        foreach($product_ids as $key => $product_id){
+            $product = Product::find($product_id);
+            $product->order = $key;
+            $product->save();
+        }
+        return response()->json(['success' => 'Products order updated successfully']);
+    }
+
+
+    public function updateVariantOrder(Request $request){
+        $hotel = Hotel::find($request->hotel_id);
+
+        if ($hotel->user->id != auth()->user()->id && auth()->user()->role != 'superadmin') {
+            return redirect()->route('dashboard');
+        }
+
+        $product_ids = $request->variant_ids;
+        foreach($product_ids as $key => $product_id){
+            $product = Variation::find($product_id);
+            $product->order = $key;
+            $product->save();
+        }
+        return response()->json(['success' => 'Products order updated successfully']);
     }
 
     public function softDeleteProduct($hotel_id, $product_id)

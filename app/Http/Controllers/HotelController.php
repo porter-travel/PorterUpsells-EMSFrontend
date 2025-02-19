@@ -124,7 +124,9 @@ class HotelController extends Controller
         if ($hotel->user_id != auth()->user()->id && auth()->user()->role != 'superadmin'){
             return redirect()->route('dashboard');
         }
-        return view('admin.hotel.edit', ['hotel' => $hotel, 'resdiary_microsite_name' => $resdiary_microsite_name]);
+
+        $products = $hotel->activeProducts();
+        return view('admin.hotel.edit', ['hotel' => $hotel, 'resdiary_microsite_name' => $resdiary_microsite_name, 'products' => $products]);
     }
 
     public function update(Request $request, $id)
