@@ -95,6 +95,8 @@ Route::middleware(['auth', 'verified'])->group(function(){
     Route::post('admin/order-item/{id}/update', [\App\Http\Controllers\OrderItemController::class, 'update'] )->name('orderItem.update');
     Route::post('admin/product/store', [ProductController::class, 'store'] )->name('product.store');
     Route::post('admin/product/update', [ProductController::class, 'update'] )->name('product.update');
+    Route::post('admin/product/update-product-order', [ProductController::class, 'updateProductOrder'] )->name('product.update-product-order');
+    Route::post('admin/product/update-variant-order', [ProductController::class, 'updateVariantOrder'] )->name('product.update-variant-order');
 
     Route::get('admin/hotel/{id}/create-booking', [\App\Http\Controllers\BookingController::class, 'create'] )->name('booking.create');
     Route::post('admin/hotel/{id}/store-booking', [\App\Http\Controllers\BookingController::class, 'store'] )->name('booking.store');

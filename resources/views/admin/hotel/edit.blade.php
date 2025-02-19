@@ -82,186 +82,12 @@
                             </div>
                         </details>
                     </div>
-                    @if(count($hotel->products) > 0)
-
-                        @foreach($hotel->products as $key => $product)
-                            <div
-                                class="flex items-center justify-between border-b border-[#C4C4C4] py-2 @if($key == array_key_first($hotel->products->toArray())) border-t @endif">
-                                <a class="flex items-center justify-start"
-                                   href="/admin/hotel/{{$hotel->id}}/product/{{$product->id}}/edit">
-                                    <div class="max-w-[70px] mr-4">
-                                        @include ('hotel.partials.product-image', ['item' => $product])
-                                    </div>
-
-                                    <p class="mr-2 text-xl">{{$product->name}}</p>
-                                </a>
-                                <div class="flex items-center justify-end">
-                                    <p class="mr-2">
-                                    <span class="mr-4 py-2 px-4 rounded-full w-[100px] text-center inline-block
-                                     @if($product->status == 'active') text-[#63B090] bg-[#D5F8E7] @elseif($product->status == 'inactive') text-[#C20000] bg-[#FFF5F5] @else text-darkGrey bg-grey @endif font-bold
-                                     ">
-                                    {{ucfirst($product->status)}}
-                                        </span>
-                                        <x-money-display :amount="$product->price"
-                                                         :currency="auth()->user()->currency"/>
-                                    </p>
-
-
-                                    <a class="launchProductDeleteModal" data-hotel-id="{{$hotel->id}}"
-                                       data-product-id="{{$product->id}}" data-product-name="{{$product->name}}"
-                                       href="#">
-                                        <svg width="36" height="36" viewBox="0 0 36 36" fill="none"
-                                             xmlns="http://www.w3.org/2000/svg"
-                                             xmlns:xlink="http://www.w3.org/1999/xlink">
-                                            <circle cx="18" cy="18" r="18" fill="#C20000"/>
-                                            <rect x="6" y="6" width="24" height="24" fill="url(#pattern0_5506_7)"/>
-                                            <defs>
-                                                <pattern id="pattern0_5506_7" patternContentUnits="objectBoundingBox"
-                                                         width="1" height="1">
-                                                    <use xlink:href="#image0_5506_7" transform="scale(0.0111111)"/>
-                                                </pattern>
-                                                <image id="image0_5506_7" width="90" height="90"
-                                                       xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFoAAABaCAYAAAA4qEECAAAACXBIWXMAAAsTAAALEwEAmpwYAAAB40lEQVR4nO2cS2rDQBBEtYpz8ijnyWLQhfK5RRmBDAaHENszPVXd9UDglal+SK0RGvWyGGOMMcYYY4wxxpgbAJwAvAP4Po7990lFFRTyA3gB8IFbNgCvCzkS+f8IyRdWNf8/QvKEVc1/R0hK2RL5HwhJJVsi/3F3bnicNvNuLpP/WPY8S5shu4PkC2tE2H2N2YMtso080S5+40dJdJjszpJ3PpeA0Cv60ka2kY7t4pq3UXlHB28jZCtljboUu7cRhYzyhYA4W5qCQJipC0yFgSjLEBgKBEGGEGYWiiqSZxaMapJnFI6qkiMFoLrkCBGw5LBH4DbgP7neeN/LoLOvdrsQlL2lkUwse0snmVB2XslEsvNLJpBdR/JE2fUkT5BdV3KgbEsOkG3J11h0AHDrSCH5Qt0WAi/vUkqud2bDj+AlJOc/s8EjOa9s8EnOJ5tYch7ZfjkbgLcbBOANNAF4S1gA3uQYgLftBsCwFw4EGYbCVCCIsnSFsTAQZnoK5oJAnC1dIRDImOazXwhlHTWvQ/2je6l5HcpjJKTmdWzCg1Fk5nU08VE/EvM6modXZRpnliW/xIC+LPklRk5myS8xRDVLfomxwFnyH6uRfen3dRyr0me/EM9vjDHGGGOMMcYYswRyBpias+umnbidAAAAAElFTkSuQmCC"/>
-                                            </defs>
-                                        </svg>
-                                    </a>
-                                </div>
-                            </div>
-
-                        @endforeach
-
-                    @else
-
-                        <a href="/admin/hotel/{{$hotel->id}}/product/create"
-                           class="text-black font-bold">Add your first product</a>
-
-                    @endif
+                    @include('admin.hotel.partials.product-listings')
 
                 </div>
 
             </div>
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="py-6 text-gray-900">
-                    <h2 class="text-2xl font-bold mb-6">Property Details</h2>
-                    <form enctype="multipart/form-data" method="post" action="/admin/hotel/{{$hotel->id}}/update">
-                        @csrf
-                        <div class="mt-4">
-                            <x-input-label class="text-black font-sans" for="name" :value="__('Name')"/>
-                            <x-text-input id="name" class="block mt-1 w-full px-3 py-2" type="text" name="name"
-                                          :value="$hotel->name"
-                                          required placeholder="Name"/>
-                            <x-input-error :messages="$errors->get('name')" class="mt-2"/>
-                        </div>
-                        <div class="mt-4">
-                            <x-input-label class="text-black font-sans" for="address" :value="__('Address')"/>
-                            <x-text-input id="address" class="block mt-1 w-full px-3 py-2" type="text" name="address"
-                                          :value="$hotel->address"
-                                          required placeholder="Address"/>
-                            <x-input-error :messages="$errors->get('address')" class="mt-2"/>
-                        </div>
-
-                        <div class="mt-4">
-                            <x-input-label class="text-black font-sans" for="email_address"
-                                           :value="__('Email Address')"/>
-                            <x-text-input id="email_address" class="block mt-1 w-full px-3 py-2" type="text"
-                                          name="email_address"
-                                          :value="$hotel->email_address"
-                                          required placeholder="Email Address"/>
-                            <x-input-error :messages="$errors->get('email_address')" class="mt-2"/>
-                        </div>
-                        @if($hotel->property_type == 'hotel')
-                            <div class="mt-4">
-                                <div class="flex items-start justify-start flex-wrap">
-                                    <div class="lg:basis-1/2 basis-full pr-4">
-                                        <x-input-label class="text-black font-sans" for="integration_name"
-                                                       :value="__('PMS Name')"/>
-                                        <select id="integration_name" name="integration_name"
-                                                class="border-[#C4C4C4] rounded-md w-full">
-                                            <option></option>
-                                            <option @if($hotel->integration_name == 'zonal') selected
-                                                    @endif value="zonal">
-                                                Zonal / High Level Software
-                                            </option>
-                                        </select>
-
-                                    </div>
-                                    <div class="lg:basis-1/2 basis-full">
-                                        <x-input-label class="text-black font-sans" for="id_for_integration"
-                                                       :value="__('Hotel PMS ID')"/>
-                                        <x-text-input id="id_for_integration" class="block mt-1 w-full px-3 py-2"
-                                                      type="text"
-                                                      name="id_for_integration"
-                                                      :value="$hotel->id_for_integration"
-                                                      placeholder="Integration Partner ID"/>
-                                        <x-input-error :messages="$errors->get('id_for_integration')" class="mt-2"/>
-                                    </div>
-                                </div>
-
-                                <div class=" mt-4 basis-full">
-                                    <x-input-label class="text-black font-sans" for="resdiary_microsite_name"
-                                                   :value="__('ResDiary Microsite Name')"/>
-                                    <x-text-input id="resdiary_microsite_name" class="block mt-1 w-full px-3 py-2"
-                                                  type="text"
-                                                  name="resdiary_microsite_name"
-                                                  :value="$resdiary_microsite_name"
-                                                  placeholder="EnhanceMyStay"/>
-                                    <x-input-error :messages="$errors->get('resdiary_microsite_name')" class="mt-2"/>
-                                </div>
-                                @endif
-                                <div class="text-right">
-                                    <x-primary-button dusk="update-hotel-details" class=" mt-4">Update
-                                    </x-primary-button>
-                                </div>
-                            </div>
-                    </form>
-                    <form class="border-t border-[#C4C4C4] mt-4 pt-4 flex items-end justify-between"
-                          enctype="multipart/form-data" method="post" action="/admin/hotel/{{$hotel->id}}/update">
-                        @csrf
-                        <div class="flex items-end justify-start">
-                            <div class="mr-12">
-                                <p class="open-sans text-2xl mb-6">Logo</p>
-                                <img src="{{$hotel->logo}}" alt="hotel" class="h-[70px] rounded-3xl mr-2"/>
-                            </div>
-
-                            <div class="mt-4">
-                                <x-input-label class="text-black font-sans sr-only" for="logo" :value="__('Logo')"/>
-                                <input type="file" name="logo" id="logo" value="{{$hotel->logo}}">
-                            </div>
-                        </div>
-                        <div>
-                            <x-primary-button class=" mt-4">Update</x-primary-button>
-                        </div>
-                    </form>
-
-                    <form class="border-t border-[#C4C4C4] mt-4 pt-4 flex items-end justify-between"
-                          enctype="multipart/form-data" method="post" action="/admin/hotel/{{$hotel->id}}/update">
-                        @csrf
-                        <div class="flex items-end justify-start">
-                            <div class="mr-12">
-                                <p class="open-sans text-2xl mb-6">Cover Image</p>
-                                <img alt="current featured image" class="w-[140px] h-auto"
-                                     src="{{$hotel->featured_image}}">
-                            </div>
-                            <x-input-label class="text-black font-sans sr-only" for="featured_image"
-                                           :value="__('Featured Image')"/>
-                            <input type="file" name="featured_image" id="featured_image">
-                        </div>
-                        <div>
-                            <x-primary-button class="mt-4">Update</x-primary-button>
-                        </div>
-                    </form>
-
-                    <form class="border-t border-[#C4C4C4] mt-4 pt-4 " method="post"
-                          action="/admin/hotel/{{$hotel->id}}/update">
-
-                        @include('admin.hotel.partials.colour-scheme', ['hotel' => $hotel])
-                        <div class="text-right">
-                            <x-primary-button class=" mt-4">Update
-                            </x-primary-button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+            @include('admin.hotel.partials.property-details')
         </div>
     </div>
 
@@ -279,8 +105,76 @@
         </div>
 
     </div>
+    <script>
+        const list = document.querySelector('.sortable-list');
+        let draggingItem = null;
+
+        // Enable dragging only when clicking the handle
+        list.addEventListener('dragstart', (e) => {
+            console.log(e.target.closest('.handle'))
+            console.log(e.target)
+            const handle = e.target.closest('.handle'); // Check if handle was clicked
+            if (!handle) {
+                e.preventDefault();
+                return;
+            }
+            draggingItem = handle.closest('.sortable-item'); // Get the parent li
+            draggingItem.classList.add('dragging');
+        });
+
+        // Remove dragging styles
+        list.addEventListener('dragend', () => {
+            if (draggingItem) {
+                draggingItem.classList.remove('dragging');
+                draggingItem = null;
+            }
+
+            document.querySelectorAll('.sortable-item').forEach(item => item.classList.remove('over'));
+
+            // Collect the ordered product IDs
+            const orderedProductIds = [...document.querySelectorAll('.sortable-item')]
+                .map(item => item.dataset.productId);
+
+            // Send the order to the server
+            fetch('/admin/product/update-product-order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content // Ensure you have a CSRF token meta tag in your HTML
+                },
+                body: JSON.stringify({ product_ids: orderedProductIds, hotel_id: {{$hotel->id}} })
+            })
+                .then(response => response.json())
+                .then(data => console.log('Order updated:', data))
+                .catch(error => console.error('Error updating order:', error));
+        });
 
 
+        // Handle drag over events
+        list.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            const draggingOverItem = getDragAfterElement(list, e.clientY);
+            document.querySelectorAll('.sortable-item').forEach(item => item.classList.remove('over'));
+
+            if (draggingOverItem) {
+                draggingOverItem.classList.add('over');
+                list.insertBefore(draggingItem, draggingOverItem);
+            } else {
+                list.appendChild(draggingItem);
+            }
+        });
+
+        // Get the element to insert after
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.sortable-item:not(.dragging)')];
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                return offset < 0 && offset > closest.offset ? { offset, element: child } : closest;
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+    </script>
     <script>
 
         document.addEventListener("DOMContentLoaded", () => {
