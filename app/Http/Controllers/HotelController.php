@@ -125,7 +125,7 @@ class HotelController extends Controller
             return redirect()->route('dashboard');
         }
 
-        $products = $hotel->activeProducts();
+        $products = $hotel->notDeletedProducts();
         return view('admin.hotel.edit', ['hotel' => $hotel, 'resdiary_microsite_name' => $resdiary_microsite_name, 'products' => $products]);
     }
 

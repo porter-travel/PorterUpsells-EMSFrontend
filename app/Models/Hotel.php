@@ -64,6 +64,10 @@ class Hotel extends Model
         return $this->products()->where('status', 'active')->orderBy('order')->get();
     }
 
+    public function notDeletedProducts(){
+        return $this->products()->where('deleted_at', '=', null)->orderBy('order')->get();
+    }
+
     public function connections()
     {
         return $this->hasMany(Connection::class);
