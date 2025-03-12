@@ -17,16 +17,21 @@ class Reservations extends HighlevelEndpoint
         $endpoint = "/api/v1/reservations/search";
 
         $daysRange = 90;
-        $from = date("Y-m-d",time() - ($daysRange * 24 * 60 * 60));
+        $from = date("Y-m-d",time());
         $to = date("Y-m-d",time() + ($daysRange * 24 * 60 * 60));
         $searchParams =
         [
-          "booked" =>
+          "arriving" =>
           [
             "type" => "between",
             "from" => $from,
             "to" => $to
-          ]
+          ],
+            "checked-in" =>
+            [
+                "type" => "bool",
+                "value" => false
+            ]
         ];
         $searchParams += $this->parseAuthParams($this->authParams);
 
