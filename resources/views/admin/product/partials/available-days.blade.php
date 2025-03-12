@@ -36,9 +36,9 @@
     <div class="basis-full">
 
         <div class="flex mb-4">
-            <div class="basis-1/2 pr-4">
-                <x-input-label class="text-black font-sans" for="specifics[concurrent_availability]">
-                    No. of spaces/items available concurrently:
+            <div class="basis-1/3 pr-4">
+                <x-input-label class="text-black !text-sm font-sans" for="specifics[concurrent_availability]">
+                    Spaces available concurrently:
                 </x-input-label>
                 <x-text-input
                     required
@@ -48,9 +48,20 @@
                     value="{{$product->specifics['concurrent_availability'] ?? 1}}"
                     placeholder="1"></x-text-input>
             </div>
+            <div class="basis-1/3 px-4">
+                <x-input-label class="text-black !text-sm font-sans" for="specifics[max_bookings_per_day]">
+                    Max bookings per day:
+                </x-input-label>
+                <x-text-input
+                    class="w-full"
+                    type="number"
+                    name="specifics[max_bookings_per_day]"
+                    value="{{$product->specifics['max_bookings_per_day'] ?? ''}}"
+                    placeholder=""></x-text-input>
+            </div>
 
-            <div class="basis-1/2 pl-4">
-                <x-input-label class="text-black font-sans" for="specifics[time_intervals]">
+            <div class="basis-1/3 pl-4">
+                <x-input-label class="text-black !text-sm font-sans" for="specifics[time_intervals]">
                     Time intervals of bookings:
                 </x-input-label>
                 <select

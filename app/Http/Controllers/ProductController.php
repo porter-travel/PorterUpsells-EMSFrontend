@@ -341,8 +341,17 @@ class ProductController extends Controller
         $date = $request->date;
         $product = Product::find($product_id);
         $concurrentAvailability = $product->specifics->where('name', "concurrent_availability")->first()->value;
+        $maxBookingsPerDay = $product->specifics->where('name', "max_bookings_per_day")->first() ? $product->specifics->where('name', "max_bookings_per_day")->first()->value : $concurrentAvailability;
 
+//        dd($maxBookingsPerDay);
         $existingBookings = CalendarBooking::where('product_id', $product_id)->where('date', $date)->get();
+        $currentNumberOfBookings = count($existingBookings);
+
+        if($currentNumberOfBookings >= $maxBookingsPerDay){
+            return response([]);
+        }
+
+        $currentDailyAvailability = $maxBookingsPerDay - $currentNumberOfBookings;
 
 
         $product = Product::find($product_id);
@@ -379,6 +388,11 @@ class ProductController extends Controller
         }
 
         foreach ($availableTimes as $key => $time) {
+
+            if($time['qty'] > $currentDailyAvailability){
+                $availableTimes[$key]['qty'] = $currentDailyAvailability;
+            }
+
             if ($time['qty'] == 0) {
                 unset($availableTimes[$key]);
             }
