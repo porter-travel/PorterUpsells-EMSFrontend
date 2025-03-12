@@ -68,25 +68,34 @@ class FetchHighlevelBookings extends Command
                         ]
                     );
 
-                    $emailSchedule = $Hotel->emailSchedule();
 
-                    $customerEmailService = new CustomerEmailService();
-                    $customerEmailService->setupEmailSchedule([
-                        'days' => $emailSchedule,
-                        'booking' => $Booking,
-                        'arrival_date' => $Reservation->HotelDates->checkinString,
-                        'email_address' => $Reservation->email,
-                        'hotel' => $Hotel,
-                        'content' => [
-                            'guest_name' => '',
-                            'arrival_date' => $Reservation->HotelDates->checkinString,
-                            'departure_date' => $Reservation->HotelDates->checkoutString,
-                            'email_address' => $Reservation->email,
-                            'booking_ref' => $Reservation->externalBookingId
-                        ],
-                    ]);
+                    $existingCustomer = Booking::where('email_address', $Reservation->email)->where('arrival_date', Carbon::parse($Reservation->HotelDates->checkinString))->first();
 
                     $Booking->save();
+
+
+//                    dd($existingCustomer);
+                    if ($existingCustomer == null) {
+                        $emailSchedule = $Hotel->emailSchedule();
+
+                        $customerEmailService = new CustomerEmailService();
+                        $customerEmailService->setupEmailSchedule([
+                            'days' => $emailSchedule,
+                            'booking' => $Booking,
+                            'arrival_date' => $Reservation->HotelDates->checkinString,
+                            'email_address' => $Reservation->email,
+                            'hotel' => $Hotel,
+                            'content' => [
+                                'guest_name' => '',
+                                'arrival_date' => $Reservation->HotelDates->checkinString,
+                                'departure_date' => $Reservation->HotelDates->checkoutString,
+                                'email_address' => $Reservation->email,
+                                'booking_ref' => $Reservation->externalBookingId
+                            ],
+                        ]);
+                    }
+
+
                 }
             }
         }

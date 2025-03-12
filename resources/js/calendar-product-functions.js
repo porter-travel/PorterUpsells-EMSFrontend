@@ -55,13 +55,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function processAvailableTimes(times) {
 console.log("Times:", times);
-        setMaxQty(times[0].qty);
-        let output = '<label for="arrival_time">From Time</label>';
-        output += '<select id="calendarProductSelector" class="w-full rounded mr-2" name="arrival_time">';
-        times.forEach(time => {
-            output += `<option data-availability="${time.qty}">${time.time}</option>`;
-        })
-        output += '</select>';
+        let output
+        if(times.length === 0) {
+            setMaxQty(0)
+            output = '<p>Unfortunately there are no times available for this day, please try a different day</p>';
+            document.getElementById('addToCartButton').disabled = true;
+        } else {
+            document.getElementById('addToCartButton').disabled = false;
+
+            setMaxQty(times[0].qty);
+            output  = '<label for="arrival_time">From Time</label>';
+            output += '<select id="calendarProductSelector" class="w-full rounded mr-2" name="arrival_time">';
+            times.forEach(time => {
+                output += `<option data-availability="${time.qty}">${time.time}</option>`;
+            })
+            output += '</select>';
+        }
         document.getElementById('calendar_product_time_selector').innerHTML = output;
     }
 

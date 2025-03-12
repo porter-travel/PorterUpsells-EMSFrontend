@@ -168,17 +168,16 @@
 
                             @if($type == 'calendar')
                                 <div class="flex">
-                                    <div class="basis-full sm:basis-1/2 md:basis-1/3 pr-2">
+                                    <div class="basis-full sm:basis-1/2 pr-2">
                                         <div id="calendar_product_time_selector"></div>
                                     </div>
                                 </div>
                             @endif
                             <x-primary-button
+                                id="addToCartButton"
                                 :disabled="!$have_details"
                                 class=" justify-center mt-4 w-full md:w-1/2 hotel-button-color hotel-button-text-color">
-                                Add
-                                to
-                                basket
+                                Add to basket
                             </x-primary-button>
                         @endif
                     @else
