@@ -37,6 +37,7 @@ class Reservations extends HighlevelEndpoint
 
 
         $response = $this->client->request('POST', $endpoint,['json' => $searchParams]);
+
         $responseString = $response->getBody();
         $responseObject = json_decode($responseString);
         $reservationsArray = [];

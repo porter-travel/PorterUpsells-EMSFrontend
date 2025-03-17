@@ -267,6 +267,7 @@
 
         document.addEventListener('DOMContentLoaded', function () {
             const featuredProductLinks = document.querySelectorAll('.featuredProductLink');
+            const body = document.querySelector('body');
 
             featuredProductLinks.forEach(link => {
                 link.addEventListener('click', function (e) {
@@ -290,11 +291,12 @@
                         .then(response => response.json())
                         .then(data => {
                             console.log(data);
+                            body.classList.add('overflow-hidden');
                             //Create a modal with the products
                             const modal = document.createElement('div');
                             modal.classList.add('fixed', 'top-0', 'left-0', 'w-full', 'h-full', 'bg-black/20', 'flex', 'justify-center', 'items-center');
                             modal.innerHTML = `
-                                <div class="bg-white p-4 rounded-2xl">
+                                <div class="bg-white p-4 rounded-2xl h-[500px] overflow-scroll">
                                     <h2 class="text-xl font-bold">Select a product</h2>
                                     <ul>
                                         ${data.map(product => {
@@ -313,6 +315,14 @@
                             `;
                             document.body.appendChild(modal);
                             //Add event listener to the add button
+
+                            //If the outer modal background is clicked, remove the modal
+                            modal.addEventListener('click', function (e) {
+                                if (e.target === modal) {
+                                    modal.remove();
+                                    body.classList.remove('overflow-hidden');
+                                }
+                            });
 
                             setupAddProductButtons(slotId, modal)
 
@@ -348,6 +358,7 @@
                             slot.appendChild(input);
                             //Remove the modal
                             modal.remove();
+                            body.classList.remove('overflow-hidden');
                             //Show the remove icon
                             const removeIcon = document.querySelector(`[data-remove-slot-id="${slotId}"`);
                             removeIcon.classList.remove('hidden');
