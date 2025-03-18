@@ -16,7 +16,7 @@ class Reservations extends HighlevelEndpoint
     {
         $endpoint = "/api/v1/reservations/search";
 
-        $daysRange = 90;
+        $daysRange = 31;
         $from = date("Y-m-d",time());
         $to = date("Y-m-d",time() + ($daysRange * 24 * 60 * 60));
         $searchParams =
