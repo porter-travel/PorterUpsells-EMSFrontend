@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Mail\ConfigTest;
 use App\Models\Booking;
 use App\Models\Hotel;
 use App\Models\IntegrationToken;
@@ -9,6 +10,7 @@ use App\Services\CustomerEmailService;
 use Illuminate\Console\Command;
 use App\Services\HotelBookings\HotelBookingsService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
 
 class FetchHighlevelBookings extends Command
 {
@@ -27,6 +29,8 @@ class FetchHighlevelBookings extends Command
     // Execute the console command
     public function handle()
     {
+        Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest('Starting FetchHighlevelBookings'));
+
 
         $tokens = IntegrationToken::where('type', 'highlevel')->get();
         if ($tokens->count() == 0) {
@@ -99,6 +103,10 @@ class FetchHighlevelBookings extends Command
 
                 }
             }
+
         }
+
+        Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest('Finished FetchHighlevelBookings'));
+
     }
 }
