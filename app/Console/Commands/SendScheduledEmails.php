@@ -54,7 +54,7 @@ class SendScheduledEmails extends Command
 
 // Call the send method of CustomerEmailController
             $controller = new CustomerEmailController();
-//            $controller->send($request, $booking->hotel_id);
+            $controller->send($request, $booking->hotel_id);
 
 // Update the sent_at column to the current time
             DB::table('customer_emails')
