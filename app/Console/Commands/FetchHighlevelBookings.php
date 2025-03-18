@@ -43,6 +43,7 @@ class FetchHighlevelBookings extends Command
                     "secret" => $token->secret,
                 ];
             $HotelBookingsService = new HotelBookingsService($config);
+
             foreach ($HotelBookingsService->fetchReservations() as $Reservation) {
                 // Find hotel id
                 $hotelExternalId = $Reservation->hotelId;
