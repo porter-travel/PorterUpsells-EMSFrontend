@@ -173,7 +173,7 @@
                             <table width="100%" cellpadding="0" cellspacing="0"
                                    style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
                                 <tr>
-                                    <td style="padding: 8px">
+                                    <td class="featured-products-grid" style="padding: 8px">
                                         <table style="width: 100%; table-layout: fixed">
                                             <tr>
 
