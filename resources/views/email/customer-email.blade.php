@@ -86,6 +86,17 @@
                 width: 100% !important;
             }
 
+            /* Featured Products Grid for Mobile */
+            .featured-products-grid table {
+                width: 100% !important;
+            }
+
+            .featured-products-grid td {
+                width: 50% !important; /* 2 columns on mobile */
+                display: inline-block;
+                box-sizing: border-box;
+            }
+
 
         }
     </style>
@@ -181,8 +192,8 @@
                                                                              alt="{{$product->name}}"
                                                                              style="width: 100%; height: 100%; display: block; object-fit: cover;"/>
                                                                     </div>
-                                                                    <p style="text-align: left">{{$product->name}}</p>
-                                                                    <strong>{{Money::lookupCurrencySymbol($hotel->user->currency)}}{{Money::format($product->price)}}</strong>
+                                                                    <p style="text-align: left; color: #222; text-decoration: none; margin-bottom: 0 ">{{$product->name}}</p>
+                                                                    <strong style="color: #222; text-decoration: none ">{{Money::lookupCurrencySymbol($hotel->user->currency)}}{{Money::format($product->price)}}</strong>
                                                                 </div>
 
 
