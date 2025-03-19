@@ -182,6 +182,7 @@
                                                         @if($product == null || (is_numeric($product) && ($product == 0 || $product == '0')))
                                                         @else
                                                             <a
+                                                                style="text-decoration: none"
                                                                 class=" featuredProductLink"
                                                                 href="{{env('APP_URL')}}/hotel/{{$hotel->slug}}/item/{{$product->id}}">
 
