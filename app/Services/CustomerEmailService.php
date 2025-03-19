@@ -15,7 +15,7 @@ class CustomerEmailService {
 
             if (is_numeric($email)) {
                 $customer_email->email_type = 'pre-arrival';
-                $customer_email->scheduled_at = Carbon::parse($params['arrival_date'])->subDays($email)->setTime('15',0);
+                $customer_email->scheduled_at = Carbon::parse($params['arrival_date'])->subDays($email)->setTime(11,30);
             } else {
                 $customer_email->email_type = $email;
                 $customer_email->scheduled_at = Carbon::now();
