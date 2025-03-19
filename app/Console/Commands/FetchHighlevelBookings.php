@@ -29,7 +29,6 @@ class FetchHighlevelBookings extends Command
     // Execute the console command
     public function handle()
     {
-        Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest('Starting FetchHighlevelBookings'));
 
 
         $tokens = IntegrationToken::where('type', 'highlevel')->get();
@@ -106,7 +105,6 @@ class FetchHighlevelBookings extends Command
 
         }
 
-        Mail::to('alex@gluestudio.co.uk', 'Alex')->send(new ConfigTest('Finished FetchHighlevelBookings'));
 
     }
 }
