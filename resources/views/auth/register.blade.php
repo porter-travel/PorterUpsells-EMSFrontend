@@ -2,7 +2,7 @@
 
     <div class="mt-20">
         <div class="bg-white px-8 pt-20 pb-12 max-w-[500px] mx-auto rounded-3xl relative">
-            <form method="POST" action="{{ route('register') }}">
+            <form id="register-form" method="POST" action="{{ route('register') }}">
                 @csrf
 
                 <!-- Name -->
@@ -39,11 +39,21 @@
                         {{ __('Already registered?') }}
                     </a>
 
-                    <x-primary-button class="ms-4">
+                    <button
+                        class="g-recaptcha ms-4 inline-flex items-center px-8 py-1 bg-black text-white font-sans uppercase  rounded-full font-bold text-lg "
+                        data-sitekey="6Le7wbIqAAAAAAiTNCo57jYjq57BF4fouKs9hULT"
+                        data-callback='onSubmit'
+                        data-action='submit'>
                         {{ __('Register') }}
-                    </x-primary-button>
+                    </button>
                 </div>
             </form>
         </div>
     </div>
+
+    <script>
+        function onSubmit(token) {
+            document.getElementById("register-form").submit();
+        }
+    </script>
 </x-guest-layout>
