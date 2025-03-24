@@ -21,13 +21,13 @@
                 </div>
 
                 <div class="flex items-center justify-end mt-4">
-                    <x-primary-button
+                    <button
                         class="g-recaptcha"
                         data-sitekey="reCAPTCHA_site_key"
                         data-callback='onSubmit'
                         data-action='submit'>
                         {{ __('Email Password Reset Link') }}
-                    </x-primary-button>
+                    </button>
                 </div>
             </form>
         </div>

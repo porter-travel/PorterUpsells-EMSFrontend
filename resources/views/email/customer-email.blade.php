@@ -162,7 +162,7 @@
                     </tr>
                     <tr>
                         <td style="padding: 16px; text-align: center">
-                            <a href="{{env('APP_URL')}}/hotel/{{$hotel->slug}}/welcome?name={{$content['guest_name']}}&arrival_date={{$content['arrival_date']}}&departure_date={{$content['departure_date']}}&email_address={{$content['email_address']}}&booking_ref={{$content['booking_ref']}}"
+                            <a href="{{env('APP_URL')}}/hotel/{{$hotel->slug}}/welcome?utm_source=pre_arrival_email&utm_medium=email&utm_campaign=days_before_arrival_{{$days}}&utm_content=main_cta&name={{$content['guest_name']}}&arrival_date={{$content['arrival_date']}}&departure_date={{$content['departure_date']}}&email_address={{$content['email_address']}}&booking_ref={{$content['booking_ref']}}"
                                style="background-color: {{$hotel->button_color}}; color: {{$hotel->button_text_color}}; font-weight: bold; padding: 16px; text-decoration: none; border-radius: 4px">{{$button_text}}</a>
                         </td>
                     </tr>
@@ -184,7 +184,7 @@
                                                             <a
                                                                 style="text-decoration: none"
                                                                 class=" featuredProductLink"
-                                                                href="{{env('APP_URL')}}/hotel/{{$hotel->slug}}/item/{{$product->id}}">
+                                                                href="{{env('APP_URL')}}/hotel/{{$hotel->slug}}/item/{{$product->id}}?utm_source=pre_arrival_email&utm_medium=email&utm_campaign=days_before_arrival_{{$days}}&utm_content={{$product->name}}">
 
                                                                 <div class="">
                                                                     <div

@@ -12,7 +12,7 @@
         "laravel/socialite": "^5.16",
         "laravel/tinker": "^2.9",
         "league/flysystem-aws-s3-v3": "^3.0",
-        "mailersend/laravel-driver": "^2.4",
+        "mailersend/laravel-driver": "^2.8",
         "openai-php/laravel": "^0.10.2",
         "stripe/stripe-php": "^13.17",
         "symfony/http-client": "^7.0",
