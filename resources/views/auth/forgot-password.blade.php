@@ -23,7 +23,7 @@
                 <div class="flex items-center justify-end mt-4">
                     <button
                         class="g-recaptcha"
-                        data-sitekey="reCAPTCHA_site_key"
+                        data-sitekey="6Le7wbIqAAAAAAiTNCo57jYjq57BF4fouKs9hULT"
                         data-callback='onSubmit'
                         data-action='submit'>
                         {{ __('Email Password Reset Link') }}
