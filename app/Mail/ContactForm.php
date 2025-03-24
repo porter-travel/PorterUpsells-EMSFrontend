@@ -5,10 +5,11 @@ namespace App\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use MailerSend\LaravelDriver\MailerSendTrait;
 
 class ContactForm extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable, SerializesModels, MailerSendTrait;
 
     public $data; // Define the public property to store the data
 
@@ -33,6 +34,9 @@ class ContactForm extends Mailable
                 <p><strong>Company:</strong> {$this->data['company']}</p>
                 <p><strong>Message:</strong></p>
                 <p>{$this->data['message']}</p>
-            ");
+            ")->mailersend(
+                null,
+                ['contact-form']
+            );
     }
 }

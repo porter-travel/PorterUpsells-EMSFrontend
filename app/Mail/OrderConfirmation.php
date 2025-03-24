@@ -9,10 +9,11 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use MailerSend\LaravelDriver\MailerSendTrait;
 
 class OrderConfirmation extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable, SerializesModels, MailerSendTrait;
 
     public $hotel;
 
@@ -40,6 +41,11 @@ class OrderConfirmation extends Mailable
      */
     public function content(): Content
     {
+
+        $this->mailersend(
+            null,
+            ['order-confirmation']
+        );
         return new Content(
             view: 'email.order-confirmation',
 

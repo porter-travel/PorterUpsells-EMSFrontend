@@ -10,10 +10,11 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use MailerSend\LaravelDriver\MailerSendTrait;
 
 class CustomerEmail extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable, SerializesModels, MailerSendTrait;
 
     public $subject = '';
 
@@ -68,6 +69,11 @@ class CustomerEmail extends Mailable
      */
     public function content(): Content
     {
+
+        $this->mailersend(
+            null,
+            ['pre-arrival-email'],
+        );
         return new Content(
             view: 'email.customer-email',
             with: ['hotel' => $this->hotel,
@@ -76,7 +82,8 @@ class CustomerEmail extends Mailable
                 'key_message' => $this->key_message,
                 'button_text' => $this->button_text,
                 'featured_products' => $this->featured_products,
-                'additional_information' => $this->additional_information]
+                'additional_information' => $this->additional_information
+            ]
         );
     }
 

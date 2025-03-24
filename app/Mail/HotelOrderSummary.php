@@ -10,10 +10,11 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use MailerSend\LaravelDriver\MailerSendTrait;
 
 class HotelOrderSummary extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable, SerializesModels, MailerSendTrait;
 
     public $orders;
 
@@ -43,6 +44,11 @@ class HotelOrderSummary extends Mailable
      */
     public function content(): Content
     {
+
+        $this->mailersend(
+            null,
+            ['hotel-order-summary']
+        );
         return new Content(
             view: 'email.hotel-order-summary',
             with: ['orders' => $this->orders]
