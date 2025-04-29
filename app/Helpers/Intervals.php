@@ -11,6 +11,9 @@ class Intervals {
             case '1hr':
                 $step = 60 * 60; // 1 hour
                 break;
+            case '90mins':
+                $step = 90 * 60; // 90 minutes
+                break;
             case '2hrs':
                 $step = 2 * 60 * 60; // 2 hours
                 break;

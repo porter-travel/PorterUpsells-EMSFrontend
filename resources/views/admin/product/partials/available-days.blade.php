@@ -55,6 +55,8 @@
                 <x-text-input
                     class="w-full"
                     type="number"
+                    min="1"
+                    required
                     name="specifics[max_bookings_per_day]"
                     value="{{$product->specifics['max_bookings_per_day'] ?? ''}}"
                     placeholder=""></x-text-input>
@@ -73,6 +75,7 @@
                     <option value="" disabled selected>Please Select</option>
                     <option @selected(isset($product->specifics['time_intervals']) && $product->specifics['time_intervals'] == '30mins') value="30mins">30 Minutes</option>
                     <option @selected(isset($product->specifics['time_intervals']) && $product->specifics['time_intervals'] == '1hr') value="1hr">1 Hour</option>
+                    <option @selected(isset($product->specifics['time_intervals']) && $product->specifics['time_intervals'] == '90mins') value="90mins">90 Minutes</option>
                     <option @selected(isset($product->specifics['time_intervals']) && $product->specifics['time_intervals'] == '2hrs') value="2hrs">2 Hours</option>
                     <option @selected(isset($product->specifics['time_intervals']) && $product->specifics['time_intervals'] == 'halfday') value="halfday">Half Day</option>
                     <option @selected(isset($product->specifics['time_intervals']) && $product->specifics['time_intervals'] == 'fullday') value="fullday">Full Day</option>
