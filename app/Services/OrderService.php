@@ -4,7 +4,9 @@ namespace App\Services;
 
 use App\Models\Hotel;
 use App\Models\Order;
+use App\Models\OrderItem;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class OrderService
@@ -76,5 +78,28 @@ class OrderService
         }
 
         return $output;
+    }
+
+    public function getFilteredOrders($hotel_id, Request $request)
+    {
+        $startDate = Carbon::now()->startOfDay();
+        $endDate = Carbon::now()->addDays(7)->endOfDay();
+        $filter = $request->input('status', 'all');
+
+        if ($request->has('start_date') && $request->has('end_date')) {
+            $startDate = Carbon::createFromFormat('Y-m-d', $request->input('start_date'));
+            $endDate = Carbon::createFromFormat('Y-m-d', $request->input('end_date'));
+        }
+
+        return OrderItem::where('hotel_id', $hotel_id)
+            ->whereBetween('date', [$startDate->toDateString(), $endDate->toDateString()])
+            ->when($filter !== 'all', function ($query) use ($filter) {
+                $query->where('status', $filter);
+            })
+            ->whereHas('order', function ($query) {
+                $query->where('payment_status', '!=', 'pending');
+            })
+            ->with(['order', 'product', 'meta'])
+            ->orderBy('date');
     }
 }

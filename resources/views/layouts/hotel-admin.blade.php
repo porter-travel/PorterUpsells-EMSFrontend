@@ -22,8 +22,12 @@
                             </li>
                             <li class="mr-4 text-xl">
                                 <a href="{{route('calendar.list-product-grid', ['id' => $hotel->id])}}">Calendar</a>
-                            </li><li class="mr-4 text-xl">
+                            </li>
+                            <li class="mr-4 text-xl">
                                 <a href="{{route('email.customise', ['id' => $hotel->id])}}">Emails</a>
+                            </li>
+                            <li class="mr-4 text-xl">
+                                <a href="{{route('overview.index', ['id' => $hotel->id])}}">Overview</a>
                             </li>
 
 

@@ -6,6 +6,7 @@ use App\Jobs\TrackEmailSends;
 use App\Models\Booking;
 use App\Models\CustomerEmail;
 use App\Models\Hotel;
+use App\Services\BookingService;
 use App\Services\CustomerEmailService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -69,7 +70,8 @@ class BookingController extends Controller
             return redirect()->back()->with('error', 'Hotel not found');
         }
 
-        $bookings = $this->getListOfOrders($hotel, $request);
+        $BS = new BookingService();
+        $bookings = $BS->getListOfOrders($hotel, $request);
 
 
         return view('admin.booking.list', [
@@ -95,7 +97,8 @@ class BookingController extends Controller
             return redirect()->back()->with('error', 'Hotel not found');
         }
 
-        $bookings = $this->getListOfOrders($hotel, $request);
+        $BS = new BookingService();
+        $bookings = $BS->getListOfOrders($hotel, $request);
 
         $headers = [
             "Content-Type" => "text/csv",
@@ -154,28 +157,6 @@ class BookingController extends Controller
         return response()->json($bookings);
     }
 
-    private function getListOfOrders($hotel, $request)
-    {
-        // Import Carbon at the top of the controller if not already done
-        if ($request->has('start_date') && $request->has('end_date')) {
-            $startDate = Carbon::createFromFormat('Y-m-d', $request->input('start_date'));
-            $endDate = Carbon::createFromFormat('Y-m-d', $request->input('end_date'));
-        } else {
-            $startDate = Carbon::now()->startOfDay();
-            $endDate = Carbon::now()->addDays(7)->endOfDay();
-        }
 
-        // Filter bookings based on the date range
-        return $hotel->bookings()
-            ->where(function ($query) use ($startDate, $endDate) {
-                $query->whereBetween('arrival_date', [$startDate, $endDate])
-                    ->orWhereBetween('departure_date', [$startDate, $endDate])
-                    ->orWhere(function ($query) use ($startDate, $endDate) {
-                        $query->where('arrival_date', '<=', $startDate)
-                            ->where('departure_date', '>=', $endDate);
-                    });
-            })
-            ->get();
-    }
 
 }

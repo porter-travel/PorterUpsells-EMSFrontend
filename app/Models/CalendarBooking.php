@@ -28,7 +28,7 @@ class CalendarBooking extends Model
 
     public function product()
     {
-        return $this->hasOne(Product::class);
+        return $this->belongsTo(Product::class);
     }
 
     public function order()
@@ -38,7 +38,7 @@ class CalendarBooking extends Model
 
     public function variation()
     {
-        return $this->hasOne(Variation::class);
+        return $this->belongsTo(Variation::class);
     }
 
     public function hotel()

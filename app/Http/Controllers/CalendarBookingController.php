@@ -6,6 +6,7 @@ use App\Helpers\Intervals;
 use App\Models\CalendarBooking;
 use App\Models\Hotel;
 use App\Models\Product;
+use App\Services\CalendarBookingService;
 use App\Services\OrderService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -135,7 +136,9 @@ class CalendarBookingController extends Controller
             ->with([])
             ->get();
 
-        $bookings = $this->processBookingsIntoGroups($bookings->toArray());
+        $CBS = new CalendarBookingService();
+
+        $bookings = $CBS->processBookingsIntoGroups($bookings->toArray());
 
         $availableTimes = $this->mapBookingsToTimes($bookings, $availableTimes);
 
@@ -177,41 +180,7 @@ class CalendarBookingController extends Controller
         return redirect()->back();
     }
 
-    private function processBookingsIntoGroups($bookings)
-    {
-        // Group child bookings by parent_booking_id
-        $parentChildGroups = [];
-        foreach ($bookings as $key => $booking) {
-            if ($booking['parent_booking_id'] !== null) {
-                $parentChildGroups[$booking['parent_booking_id']][] = $booking;
-//                unset($bookings[$key]); // Remove child bookings
-            }
-        }
 
-        // Update parent bookings with the latest end_time and count children
-        foreach ($bookings as &$parentBooking) {
-            $parentId = $parentBooking['id'];
-            if (isset($parentChildGroups[$parentId])) {
-                $latestEndTime = $parentBooking['end_time'];
-                $childrenCount = 0;
-
-                foreach ($parentChildGroups[$parentId] as $childBooking) {
-                    $childrenCount++;
-                    if ($childBooking['end_time'] > $latestEndTime) {
-                        $latestEndTime = $childBooking['end_time'];
-                    }
-                }
-
-                $parentBooking['end_time'] = $latestEndTime;
-                $parentBooking['bookings_count'] = $childrenCount + 1; // Include the parent in the count
-            } else {
-                $parentBooking['bookings_count'] = 1; // No children, count only the parent
-            }
-        }
-
-        // Reindex the array and return
-        return array_values($bookings);
-    }
 
     public function mapBookingsToTimes($bookings, $timeSlots)
     {

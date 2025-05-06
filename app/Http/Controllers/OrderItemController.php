@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Hotel;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Services\OrderService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -41,7 +42,9 @@ class OrderItemController extends Controller
             return redirect()->route('dashboard');
         }
 
-        $orders = $this->getFilteredOrders($hotel_id, $request)->paginate(10)->appends(request()->query());
+        $OS = new OrderService();
+
+        $orders = $OS->getFilteredOrders($hotel_id, $request)->paginate(10)->appends(request()->query());
 
         return view('admin.orders.listv2', [
             'orders' => $orders,
@@ -61,7 +64,8 @@ class OrderItemController extends Controller
             return redirect()->route('dashboard');
         }
 
-        $orders = $this->getFilteredOrders($hotel_id, $request)->get();
+        $OS = new OrderService();
+        $orders = $OS->getFilteredOrders($hotel_id, $request)->get();
 
         $headers = [
             "Content-Type" => "text/csv",
@@ -102,27 +106,6 @@ class OrderItemController extends Controller
     }
 
 
-    private function getFilteredOrders($hotel_id, Request $request)
-    {
-        $startDate = Carbon::now()->startOfDay();
-        $endDate = Carbon::now()->addDays(7)->endOfDay();
-        $filter = $request->input('status', 'all');
 
-        if ($request->has('start_date') && $request->has('end_date')) {
-            $startDate = Carbon::createFromFormat('Y-m-d', $request->input('start_date'));
-            $endDate = Carbon::createFromFormat('Y-m-d', $request->input('end_date'));
-        }
-
-        return OrderItem::where('hotel_id', $hotel_id)
-            ->whereBetween('date', [$startDate->toDateString(), $endDate->toDateString()])
-            ->when($filter !== 'all', function ($query) use ($filter) {
-                $query->where('status', $filter);
-            })
-            ->whereHas('order', function ($query) {
-                $query->where('payment_status', '!=', 'pending');
-            })
-            ->with(['order', 'product', 'meta'])
-            ->orderBy('date');
-    }
 
 }

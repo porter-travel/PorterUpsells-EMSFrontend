@@ -8,6 +8,7 @@ use App\Http\Controllers\FulfilmentController;
 use App\Http\Controllers\HotelController;
 use App\Http\Controllers\HotelEmailController;
 use App\Http\Controllers\IntegrationTokenController;
+use App\Http\Controllers\OverviewController;
 use App\Http\Controllers\PerformanceController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
@@ -140,6 +141,8 @@ Route::middleware(['auth', 'verified'])->group(function(){
 
     Route::get('/admin/hotel/{id}/email/customise', [HotelEmailController::class, 'show'])->name('email.customise');
     Route::post('/admin/hotel/{hotel_id}/email/store-customisations', [HotelEmailController::class, 'storeCustomisations'])->name('email.store-customisations');
+
+    Route::get('/admin/hotel/{id}/overview', [OverviewController::class, 'index'])->name('overview.index');
 
     Route::post('/admin/chat/rewrite-product-descriptions', [ChatController::class, 'rewrite_product_descriptions'])->name('chat.rewrite-product-descriptions');
 });
