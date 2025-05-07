@@ -26,7 +26,11 @@ class ReservationEndpoint extends HighlevelEndpoint
             "type" => "between",
             "from" => $from,
             "to" => $to
-          ]
+          ],
+            "status" => [
+                "type" => "equal",
+                "value" => "active"
+            ]
         ];
         $searchParams += $this->parseAuthParams($this->authParams);
 
