@@ -7,6 +7,7 @@ use App\Models\Product;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
@@ -59,7 +60,14 @@ class CustomerEmail extends Mailable
      */
     public function envelope(): Envelope
     {
+
+        if($this->hotel->id == 15){
+            $sender = 'enquiries@riversideaymestrey.co.uk';
+        } else {
+            $sender = env('MAIL_FROM_ADDRESS');
+        }
         return new Envelope(
+            from: new Address( $sender,$this->hotel->name),
             subject: $this->subject,
         );
     }
