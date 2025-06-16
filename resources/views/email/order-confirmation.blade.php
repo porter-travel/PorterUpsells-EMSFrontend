@@ -164,7 +164,7 @@
                                                 </div>
                                             </td>
                                             <td style="padding-left: 5px">
-                                                <p><strong>{{$item['product_name']}}</strong></p>
+                                                <p><strong>{{$item['quantity']}} x {{$item['product_name']}}</strong></p>
                                                 <p>
                                                     @if($item['variation_name'])
                                                         Options: {{$item['variation_name']}}<br/>
@@ -174,11 +174,16 @@
                                                         <br/>Time: {{$item['arrival_time']}}
                                                     @endif
                                                 </p>
-                                                <p>
+                                                <p> {{$item['quantity']}} x
                                                     <x-money-display :amount="$item['price']"
                                                                      :currency="$order->hotel->user->currency"></x-money-display>
-
                                                 </p>
+                                                @if($item['quantity'] > 1)
+                                                    <p><strong>Total: <x-money-display :amount="$order['total']"
+                                                                              :currency="$order->hotel->user->currency"></x-money-display>
+                                                        </strong>
+                                                    </p>
+                                                @endif
 
                                             </td>
                                         </tr>
