@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!--TEST-->
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <!-- Google tag (gtag.js) -->
