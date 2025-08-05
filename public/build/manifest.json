@@ -4,7 +4,7 @@
     "src": "public/img/icons/check.svg"
   },
   "resources/css/app.css": {
-    "file": "assets/app-DAzPZwIr.css",
+    "file": "assets/app-Bs2XS3Fs.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
@@ -12,6 +12,12 @@
     "file": "assets/app-BP1pXNrT.js",
     "name": "app",
     "src": "resources/js/app.js",
+    "isEntry": true
+  },
+  "resources/js/app.jsx": {
+    "file": "assets/app-C08qZgSC.js",
+    "name": "app",
+    "src": "resources/js/app.jsx",
     "isEntry": true
   }
 }
